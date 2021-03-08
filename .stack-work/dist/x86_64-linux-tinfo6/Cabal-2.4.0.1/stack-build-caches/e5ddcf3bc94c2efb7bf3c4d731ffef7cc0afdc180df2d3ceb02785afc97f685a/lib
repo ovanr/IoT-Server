@@ -1,0 +1,24 @@
+/home/ovr/haskell/custom-iot/amqp-forw/amqp-forw.cabal:
+  hash: 9c6fde99cca603cd75942a5c880d8fb367c1f8d7b28bd02e88e948af5c3aae93
+  size: 2552
+  modtime: 1597067722
+/home/ovr/haskell/custom-iot/amqp-forw/ChangeLog.md:
+  hash: 3a0815129e0c73f7d734f6105bbb816d715b88d157c1da41a0364d78983ed7ae
+  size: 49
+  modtime: 1595418538
+/home/ovr/haskell/custom-iot/amqp-forw/src/Custom/IOT/Server.hs:
+  hash: fc8305918cebe0ff6a60026941021f870c49bcd1235b2d88eecd2fb0d2da9d5a
+  size: 6252
+  modtime: 1597933440
+/home/ovr/haskell/custom-iot/amqp-forw/package.yaml:
+  hash: 98e9954baea08904dd195a9a572fd1a11f08a564ea5c4b92af58d3a62524f430
+  size: 1443
+  modtime: 1597067718
+/home/ovr/haskell/custom-iot/amqp-forw/README.md:
+  hash: a948994eace73c055ff34bac68d65ea6a44dc236b216440468c8fa78ef042497
+  size: 12
+  modtime: 1595418539
+/home/ovr/haskell/custom-iot/amqp-forw/src/Custom/IOT/Server/Types.hs:
+  hash: bf2a5f3554e1a07d0dded2e99ecdf500f52e6a31bdf42cafc25b6c5c140fbf1c
+  size: 2326
+  modtime: 1597916098

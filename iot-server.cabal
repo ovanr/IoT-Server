@@ -1,0 +1,129 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: ac3f9183b00a3259dcebe583dc3b5fbb87f3049c0e7028248e19b99da8c21587
+
+name:           iot-server
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/ovanr/iot-server#readme>
+homepage:       https://github.com/ovanr/IoT-Server#readme
+bug-reports:    https://github.com/ovanr/IoT-Server/issues
+author:         Orpheas van Rooij
+maintainer:     orpheas.vanrooij@outlook.com
+copyright:      2020 Orpheas van Rooij
+license:        GNU2
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/ovanr/IoT-Server
+
+library
+  exposed-modules:
+      IOT.Server
+      IOT.Server.Types
+  other-modules:
+      Paths_iot_server
+  hs-source-dirs:
+      src
+  build-depends:
+      aeson
+    , amqp
+    , base
+    , base64-bytestring
+    , bytestring
+    , comonad
+    , concurrent-extra
+    , containers
+    , either
+    , exceptions
+    , hslogger
+    , influxdb
+    , io-streams
+    , iot-shared
+    , lens
+    , mtl
+    , mysql-haskell
+    , optparse-applicative
+    , text
+    , time
+    , transformers
+    , utf8-string
+    , zlib
+  default-language: Haskell2010
+
+executable iot-server
+  main-is: Main.hs
+  other-modules:
+      Paths_iot_server
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , amqp
+    , base
+    , base64-bytestring
+    , bytestring
+    , comonad
+    , concurrent-extra
+    , containers
+    , either
+    , exceptions
+    , hslogger
+    , influxdb
+    , io-streams
+    , iot-server
+    , iot-shared
+    , lens
+    , mtl
+    , mysql-haskell
+    , optparse-applicative
+    , text
+    , time
+    , transformers
+    , utf8-string
+    , zlib
+  default-language: Haskell2010
+
+test-suite iot-server-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_iot_server
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , amqp
+    , base
+    , base64-bytestring
+    , bytestring
+    , comonad
+    , concurrent-extra
+    , containers
+    , either
+    , exceptions
+    , hslogger
+    , influxdb
+    , io-streams
+    , iot-server
+    , iot-shared
+    , lens
+    , mtl
+    , mysql-haskell
+    , optparse-applicative
+    , text
+    , time
+    , transformers
+    , utf8-string
+    , zlib
+  default-language: Haskell2010

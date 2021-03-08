@@ -1,0 +1,14 @@
+/home/ovr/haskell/iot-server/iot-server.cabal:
+  hash: 3a879263fdb5eeae21e6d8e326043aa3f5bf1a01a65a42bcddca14923ae9e8d9
+/home/ovr/haskell/iot-server/.stack-work/dist/x86_64-linux-tinfo6/Cabal-3.2.1.0/build/autogen/Paths_iot_server.hs:
+  hash: 920a6d4ed83856b3630544ddae15419b5555ea1bdc20b06d075c02fb6518a208
+/home/ovr/haskell/iot-server/ChangeLog.md:
+  hash: 3a0815129e0c73f7d734f6105bbb816d715b88d157c1da41a0364d78983ed7ae
+/home/ovr/haskell/iot-server/README.md:
+  hash: f503db08f53e0f779ea74b5e7631f2cd6a20cb2e0cd5e43548fc51a8949c0f65
+/home/ovr/haskell/iot-server/src/IOT/Server.hs:
+  hash: 171f5d327740dc1b9ff3467da2a123d90d684a8831aa6417208278289ac0c247
+/home/ovr/haskell/iot-server/package.yaml:
+  hash: 13408f29e738e57b453c1672e2703c34fdc3a4fe869228514488821bbc5ab69b
+/home/ovr/haskell/iot-server/src/IOT/Server/Types.hs:
+  hash: 6692cb30f1c15b0a4705f6b0891bdfe257a16f0e8586b5cb42ecdaf73013a113
