@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ac3f9183b00a3259dcebe583dc3b5fbb87f3049c0e7028248e19b99da8c21587
+-- hash: 8d48969701b113f73d516c96a6fad33f62ef22d386740c8276eafa2d1ad072f5
 
 name:           iot-server
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      IOT.Misc
       IOT.Server
       IOT.Server.Types
   other-modules:
@@ -39,6 +40,8 @@ library
     , base
     , base64-bytestring
     , bytestring
+    , co-log
+    , co-log-core
     , comonad
     , concurrent-extra
     , containers
@@ -72,6 +75,8 @@ executable iot-server
     , base
     , base64-bytestring
     , bytestring
+    , co-log
+    , co-log-core
     , comonad
     , concurrent-extra
     , containers
@@ -107,6 +112,8 @@ test-suite iot-server-test
     , base
     , base64-bytestring
     , bytestring
+    , co-log
+    , co-log-core
     , comonad
     , concurrent-extra
     , containers

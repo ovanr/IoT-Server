@@ -22,29 +22,31 @@ import Data.Either.Combinators
 import Data.IORef
 import qualified Data.Map.Strict as Map
 import Data.String (fromString)
+import Control.Monad.Catch (MonadMask, bracket)
 import qualified Data.Text as T
+import qualified Control.Exception as Exception
 import Data.Time.Clock (UTCTime)
 import Database.InfluxDB
 import Database.MySQL.Base hiding (Packet(..))
 import IOT.Packet.Format (isImg, isJson)
 import IOT.Packet.Types (Packet(..), PacketUnique(..))
-import IOT.Misc (refModify', liftEither)
+import IOT.Misc (refModify', liftEither, sleep, loopUntil)
 import IOT.Server.Types
    ( App 
    , AppState(..)
+   , Tag
    , AppEnv(..)
    , AppCb(..)
    , ServerArgs(..)
    , ServerConf(..)
+   , unApp
    , runAppCb
-   , amqpConn
    , amqpHost
    , logAction
    , amqpPass
    , amqpUser
    , amqpVhost
    , confPath
-   , event
    , infxConn
    , infxDb
    , infxHost
@@ -61,7 +63,6 @@ import IOT.Server.Types
    , Uid
    )
 import System.Timeout
-import Control.Exception
 import Control.Concurrent
 import Control.Lens
 import Data.Bifunctor (bimap)
@@ -77,10 +78,11 @@ import Colog.Actions
 import Colog.Core.Severity 
 import Colog.Core.Action
 
+import Control.Monad.State.Class
 import qualified Codec.Compression.GZip as GZip
-import qualified Control.Concurrent.Event as Event
 import Control.Monad ((=<<))
 import Control.Monad.Trans.Except
+import System.IO
 
 queueSensorData :: (Real a, MonadReader (AppEnv m) m, MonadIO m) => [(T.Text, a)] -> Uid -> m () 
 queueSensorData f uid = do
@@ -101,20 +103,22 @@ queueSensorData f uid = do
 
 queueSensorImage :: (MonadReader (AppEnv m) m, MonadIO m) => T.Text -> BL.ByteString -> m ()
 queueSensorImage uid bin = do
+   logInfo "Appending image to Mysql Queue"
    q <- view pendingMysql 
    liftIO $ refModify' ((uid, bin) :) q
    return ()
 
 isOpenMysql :: MySQLConn -> IO Bool
-isOpenMysql c = catch (ping c >> return True) (\(e :: NetworkException) -> return False)
+isOpenMysql c = Exception.catch (ping c >> return True) (\(e :: NetworkException) -> return False)
 
 getMysqlConnection :: App IO MySQLConn
 getMysqlConnection = do
    conn <- use mysqlConn
+   conf <- view sConf
    isActive <- liftIO (isOpenMysql conn)
    unless isActive $ do
-      conf <- mysqlConfig
-      conn <- liftIO (connect conf)
+      let mysqlconf = mysqlConfig conf 
+      conn <- liftIO (connect mysqlconf)
       mysqlConn .= conn
 
    return conn
@@ -138,8 +142,12 @@ parseBody msg uid = do
 pktHandler :: AppEnv IO -> (Message, Envelope) -> IO ()
 pktHandler env (msg, e) = runAppCb menv $ do
    logInfo $ "Received a msg with key " <> (envRoutingKey e)
-   whenRight (parseBody msg uid) parsePacket
-  where
+   either 
+      (\b -> logError $ "Body parse error: " <> T.pack (show b)) 
+      parsePacket
+      (parseBody msg uid)
+
+   where
     menv = env & logAction %~ (hoistLogAction liftIO)  
     uid = last . T.split (== '.') . envRoutingKey $ e
     parsePacket (Packet uid uniq) = do
@@ -147,29 +155,20 @@ pktHandler env (msg, e) = runAppCb menv $ do
           (SensorData f) -> queueSensorData f uid 
           (SensorRaw bin) -> queueSensorImage uid bin
           _ -> fail "Incorrect packet format"
-       view event >>= (liftIO . Event.signal) 
 
-mysqlConfig :: (MonadReader (AppEnv m) m) => m ConnectInfo
-mysqlConfig = do
-   conf <- view sConf
-   return $ defaultConnectInfo
-             { ciHost = conf ^. mysqlHost
-             , ciUser = BU.fromString $ view mysqlUser conf
-             , ciPassword = BU.fromString $ view mysqlPass conf
-             , ciDatabase = BU.fromString $ view mysqlDb conf
-             }
 flushImageQueue :: App IO ()
 flushImageQueue = do
-   imgs <- view pendingMysql >>= (liftIO . readIORef)
-   conn <- getMysqlConnection
-   logInfo "Uploading image to DB"
-   stmt <-
-      liftIO $
-      prepareStmt conn "INSERT INTO device_images (node_id, bin) VALUES (?,?)"
-   flip mapM_ imgs $ \(uid, bin) ->
-      (logDebug . T.pack . show) =<<
-      liftIO
-         (executeStmt conn stmt [MySQLText uid, MySQLBytes (BL.toStrict bin)])
+   imgs <- view pendingMysql >>= (liftIO . refModify' (const []))
+   unless (null imgs) $ do 
+      logInfo "Uploading images to DB"
+      conn <- getMysqlConnection
+      stmt <-
+         liftIO $
+         prepareStmt conn "INSERT INTO device_images (node_id, bin) VALUES (?,?)"
+      flip mapM_ imgs $ \(uid, bin) ->
+         (logDebug . T.pack . show) =<<
+         liftIO
+            (executeStmt conn stmt [MySQLText uid, MySQLBytes (BL.toStrict bin)])
 
 flushDataQueue :: App IO ()
 flushDataQueue = do
@@ -185,11 +184,19 @@ flushQueues :: App IO ()
 flushQueues = do
    flushDataQueue 
    flushImageQueue 
-   view event >>= (liftIO . Event.wait) 
 
-initApp :: ServerArgs -> IO (AppState IO)
+mysqlConfig :: ServerConf -> ConnectInfo
+mysqlConfig conf = do
+   defaultConnectInfo
+      { ciHost = conf ^. mysqlHost
+      , ciUser = BU.fromString $ view mysqlUser conf
+      , ciPassword = BU.fromString $ view mysqlPass conf
+      , ciDatabase = BU.fromString $ view mysqlDb conf
+      }
+
+initApp :: ServerArgs -> IO (AppState (App IO))
 initApp args = do
-   putStrLn $ "Amqp-forw v." ++ (showVersion version)
+   putStrLn $ "IoT-Server v." ++ (showVersion version)
    
    let level =
           case args ^. verbosity of
@@ -207,36 +214,49 @@ initApp args = do
    env <- AppEnv richMessageAction conf 
             <$> newIORef [] 
             <*> newIORef [] 
-            <*> Event.new
    
-   let mysqlInfo = runReader mysqlConfig env
+   let mysqlInfo = mysqlConfig (env ^. sConf)
 
-   AppState env wp <$>
-      openConnection
-         (conf ^. amqpHost)
-         (conf ^. amqpVhost)
-         (conf ^. amqpUser)
-         (conf ^. amqpPass) <*> connect mysqlInfo
+   AppState env wp <$> connect mysqlInfo
 
-loop :: (Monad m) => m Bool -> m ()
-loop m = m >>= (`when` loop m)
+runThread :: (Monad m) => m Bool -> m ()
+runThread m = m >>= (`when` runThread m)
+
+withAmqpConnection :: (MonadMask m, MonadIO m) => String -> T.Text -> T.Text -> T.Text -> (Connection -> m a) -> m a
+withAmqpConnection host vhost user pass = bracket (liftIO $ openConnection host vhost user pass) (liftIO . closeConnection)
+
+withAmqpChannel :: (MonadMask m, MonadIO m) => Connection -> (Channel -> m a) -> m a
+withAmqpChannel conn = bracket (liftIO $ openChannel conn) (liftIO . closeChannel)
+
+withAmqpConsumer :: (MonadMask m, MonadIO m) => AppEnv IO -> Channel -> Tag -> (ConsumerTag -> m a) -> m a
+withAmqpConsumer env chan tag = bracket (liftIO $ consumeMsgs chan tag NoAck $ pktHandler env) (liftIO . cancelConsumer chan) 
 
 runApp :: App IO ()
 runApp = do
-   chan <- openChannel <$> use amqpConn
-   logDebug "hello" 
-   return ()
-   --th <- forkIO $ loop (threadDelay 10000000 >> flushQueues st >> return True)
-   --debugM "App.Run" $ "Thread " ++ show th ++ " started"
-   --tag <- consumeMsgs chan "q_all" NoAck $ pktHandler st
-   --loop $ do
-   --   putStrLn "Enter quit to exit program"
-   --   resp <- getLine
-   --   if resp == "quit"
-   --      then return False
-   --      else return True
-   --cancelConsumer chan tag
-   --killThread th
-   --st ^. amqpConn & closeConnection
-   --infoM "App.Run" "Exiting.."
-   --removeAllHandlers
+   host  <- view (sConf.amqpHost)
+   vhost <- view (sConf.amqpVhost)
+   user  <- view (sConf.amqpUser)
+   pass  <- view (sConf.amqpPass)
+
+   withAmqpConnection host vhost user pass $ \conn -> do
+      withAmqpChannel conn $ \chan -> do
+         env <- ask
+         state <- get
+         let envio = env & logAction %~ (unHoist state) 
+         
+         withAmqpConsumer envio chan "q_all" $ \_ -> do
+            loopUntil $ do
+               sleep 5
+               flushQueues
+               resp <- liftIO (hWaitForInput stdin 100000)
+               if resp then do
+                  c <- liftIO getChar
+                  return $ c == 'E'
+               else
+                  return False 
+   
+   logInfo "Exiting normally..."
+
+   where
+      unHoist :: Functor m => AppState (App m) -> LogAction (App m) x -> LogAction m x
+      unHoist s (LogAction xappm) = LogAction $ \x -> fst <$> unApp (xappm x) s

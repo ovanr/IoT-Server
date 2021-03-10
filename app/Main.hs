@@ -1,8 +1,8 @@
 module Main where
 
 import IOT.Server (initApp, runApp)
-import IOT.Server.Types (ServerArgs(..))
-
+import IOT.Server.Types (ServerArgs(..), unApp)
+import Control.Monad (void)
 import Options.Applicative
 import Data.Semigroup ((<>))
 
@@ -16,13 +16,13 @@ argParser = ServerArgs
          <> short 'c'
          <> metavar "FILE"
          <> showDefault
-         <> value "/etc/default/amqp-forw.conf"
+         <> value "/etc/default/iot-server.conf"
          <> help "Configuration file")
 
 main :: IO ()
-main = execParser opts >>= initApp >>= runApp
+main = execParser opts >>= initApp >>= (void . unApp runApp)
   where
     opts = info (argParser <**> helper)
       ( fullDesc
-     <> progDesc "Amqp-forw"
-     <> header "Amqp-forw - Forward data from IoT devices to persistent storage (db)" )
+     <> progDesc "IoT-Server"
+     <> header "IoT-Server - Forward data from IoT devices to persistent storage (db)" )

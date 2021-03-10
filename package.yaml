@@ -44,6 +44,9 @@ dependencies:
 - exceptions
 - iot-shared
 - either
+- co-log
+- co-log-core
+- transformers
 
 library:
   source-dirs: src

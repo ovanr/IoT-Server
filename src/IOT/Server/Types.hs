@@ -12,7 +12,6 @@
 
 module IOT.Server.Types where
 
-import Control.Concurrent.Event (Event(..))
 import Control.Lens (makeLenses, (^.), (.~), (%~), (&))
 import Data.Aeson.TH
 import qualified Data.ByteString.Lazy as BL
@@ -36,6 +35,13 @@ import Colog.Core.Action (LogAction(..))
 import Colog.Message (Message(..))
 import Colog.Core.Class (HasLog(..))
 import Colog.Core.Action
+import Control.Monad.Catch
+
+$(deriveJSON defaultOptions ''Measurement)
+$(deriveJSON defaultOptions {unwrapUnaryRecords = True} ''Database)
+
+type Tag = T.Text
+type Uid = T.Text
 
 data ServerArgs =
   ServerArgs
@@ -45,18 +51,6 @@ data ServerArgs =
   deriving (Show)
 
 makeLenses ''ServerArgs
-
-instance Show Envelope where
-  show (Envelope envDeliveryTag envRedelivered envExchangeName envRoutingKey envChannel) =
-    "Envelope " ++
-    "Delivery Tag {" ++
-    show envDeliveryTag ++
-    "} " ++
-    "Redelivered {" ++
-    show envRedelivered ++
-    "} " ++
-    "ExchangeName {" ++
-    show envExchangeName ++ "} " ++ "RoutingKey {" ++ show envRoutingKey ++ "}"
 
 data ServerConf =
    ServerConf
@@ -74,8 +68,7 @@ data ServerConf =
       }
 
 makeLenses ''ServerConf
-
-type Uid = T.Text
+$(deriveJSON defaultOptions {fieldLabelModifier = drop 1} ''ServerConf)
 
 data AppEnv (m :: * -> *) =
    AppEnv
@@ -83,7 +76,6 @@ data AppEnv (m :: * -> *) =
       , _sConf :: ServerConf
       , _pendingInfx :: IORef [Line UTCTime]
       , _pendingMysql :: IORef [(Uid, BL.ByteString)]
-      , _event :: Event
       }
 
 makeLenses ''AppEnv
@@ -92,7 +84,6 @@ data AppState (m :: * -> *) =
    AppState
       { _appEnv :: AppEnv m 
       , _infxConn :: WriteParams
-      , _amqpConn :: Connection
       , _mysqlConn :: MySQLConn
       }
 
@@ -157,8 +148,34 @@ instance MonadTrans App where
 instance MonadIO m => MonadIO (App m) where
    liftIO m = App $ \s -> (,s) <$> liftIO m
 
-$(deriveJSON defaultOptions ''Measurement)
+instance MonadThrow m => MonadThrow (App m) where
+   throwM = lift . throwM 
+   
+instance MonadCatch m => MonadCatch (App m) where
+   catch (App app) handler =
+      App $ \s -> app s `catch` (\e -> unApp (handler e) s)
 
-$(deriveJSON defaultOptions {unwrapUnaryRecords = True} ''Database)
+-- Identical to StateT version
+instance MonadMask m => MonadMask (App m) where
+   mask :: ((forall a. App m a -> App m a) -> App m b) -> App m b  
+   mask f = App $ \s -> mask $ \ma -> unApp (f $ maAppma ma) s
+    where
+      maAppma :: (forall a. m a -> m a) -> (forall a. App m a -> App m a) 
+      maAppma ma = \(App appma) -> App (ma . appma)
 
-$(deriveJSON defaultOptions {fieldLabelModifier = drop 1} ''ServerConf)
+   uninterruptibleMask :: ((forall a. App m a -> App m a) -> App m b) -> App m b  
+   uninterruptibleMask f = App $ \s -> uninterruptibleMask $ \ma -> unApp (f $ maAppma ma) s
+    where
+      maAppma :: (forall a. m a -> m a) -> (forall a. App m a -> App m a) 
+      maAppma ma = \(App appma) -> App (ma . appma)
+
+   generalBracket acquire release use = App $ \s0 -> do
+         ((b, _s2), (c, s3)) <- generalBracket (unApp acquire s0)
+               (\(resource, s1) exitCase -> 
+                  case exitCase of
+                     ExitCaseSuccess (b, s2) -> unApp (release resource (ExitCaseSuccess b)) s2
+                     ExitCaseException e     -> unApp (release resource (ExitCaseException e)) s1
+                     ExitCaseAbort           -> unApp (release resource ExitCaseAbort) s1
+               )
+               (\(resource, s1) -> unApp (use resource) s1)
+         return ((b, c), s3)
