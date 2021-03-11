@@ -45,7 +45,9 @@ import Database.MySQL.Base hiding (Packet(..))
 import IOT.Misc
    ( liftEither
    , withFileM
+   , withTempPipeM
    , loopUntil
+   , hTryGetChar 
    , refModify'
    , richMessageLogFileAction
    , sleep
@@ -257,15 +259,12 @@ runApp = runner `finally` closeLog
                let envio = env & logAction %~ unHoist state 
                
                withAmqpConsumer (pktHandler envio) chan "q_all" $ \_ -> do
-                  liftIO $ mkfifo "iot-server.run"
-                  withFileM "iot-server.run" ReadWriteMode $ \_ -> 
-                     withFileM "iot-server.run" ReadMode $ \handle -> 
+                  withTempPipeM "iot-server.run" $ \handle -> 
                         loopUntil $ do
                           sleep 5
                           flushQueues
-                          c <- liftIO $ ifM (hWaitForInput handle 10) (hGetChar handle) (pure 'n') `Exception.onException` pure 'n'
-                          return $ c == 'E'
-                  liftIO $ removeFile "iot-server.run"
+                          c <- hTryGetChar handle
+                          return $ c == Just 'E'
          
          logInfo "Exiting normally..."
 

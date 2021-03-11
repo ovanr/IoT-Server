@@ -63,3 +63,17 @@ mkfifo fp = flip Exception.finally (return False) $ do
       removeFile fp
    (code, _, _) <- readProcessWithExitCode "mkfifo" ["-m", "600", fp] ""
    return $ code == ExitSuccess
+
+withTempPipeM :: (MonadFail m, MonadMask m, MonadIO m) => FilePath -> (Handle -> m a) -> m a
+withTempPipeM fp cb = do
+   unlessM (liftIO $ mkfifo fp) $ 
+      fail "Unable to make pipe"
+   
+   r <- withFileM fp ReadWriteMode $ 
+         const $ withFileM fp ReadMode cb
+   
+   liftIO $ removeFile fp
+   return r
+
+hTryGetChar :: MonadIO m => Handle -> m  (Maybe Char)
+hTryGetChar h = liftIO $ ifM (hWaitForInput h 10) (Just <$> hGetChar h) (pure Nothing) `Exception.onException` pure Nothing 
