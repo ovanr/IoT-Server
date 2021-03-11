@@ -1,9 +1,0 @@
-[92m[Debug]   [0m[11 Mar 2021 13:20:25.051 +00:00] [IOT.Server.logDebug#197] [ThreadId 15] Attempting to flush queues
-[92m[Debug]   [0m[11 Mar 2021 13:20:30.067 +00:00] [IOT.Server.logDebug#197] [ThreadId 15] Attempting to flush queues
-[92m[Debug]   [0m[11 Mar 2021 13:20:35.068 +00:00] [IOT.Server.logDebug#197] [ThreadId 15] Attempting to flush queues
-[92m[Debug]   [0m[11 Mar 2021 13:20:40.074 +00:00] [IOT.Server.logDebug#197] [ThreadId 15] Attempting to flush queues
-[92m[Debug]   [0m[11 Mar 2021 13:20:45.080 +00:00] [IOT.Server.logDebug#197] [ThreadId 15] Attempting to flush queues
-[92m[Debug]   [0m[11 Mar 2021 13:20:50.081 +00:00] [IOT.Server.logDebug#197] [ThreadId 15] Attempting to flush queues
-[92m[Debug]   [0m[11 Mar 2021 13:20:55.094 +00:00] [IOT.Server.logDebug#197] [ThreadId 15] Attempting to flush queues
-[92m[Debug]   [0m[11 Mar 2021 13:21:00.110 +00:00] [IOT.Server.logDebug#197] [ThreadId 15] Attempting to flush queues
-[94m[Info]    [0m[11 Mar 2021 13:21:00.326 +00:00] [IOT.Server.logInfo#268] [ThreadId 15] Exiting normally...
