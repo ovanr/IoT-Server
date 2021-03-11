@@ -3,8 +3,7 @@
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-
+{-# LANGUAGE TypeApplications #-}
 module IOT.Server
    ( initApp
    , runApp
@@ -13,36 +12,59 @@ module IOT.Server
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Lazy.UTF8 as BLU
 
+import Colog.Actions
+import Colog.Core.Action
+import Colog.Core.Severity
+import Colog.Message hiding (Message(..))
+import qualified Colog.Message as Colog
+import Control.Concurrent
+import qualified Control.Exception as Exception
+import Control.Lens
+import Control.Monad.Catch (MonadMask, bracket, finally)
 import Control.Monad.Reader
 import Data.Aeson (eitherDecode)
+import System.Directory
+import Data.Bifunctor (bimap)
 import qualified Data.ByteString.UTF8 as BU
 import Data.Char
 import Data.Either
 import Data.Either.Combinators
+import Data.Function ((&))
 import Data.IORef
 import qualified Data.Map.Strict as Map
 import Data.String (fromString)
-import Control.Monad.Catch (MonadMask, bracket)
 import qualified Data.Text as T
-import qualified Control.Exception as Exception
+import Data.Time (getCurrentTime)
 import Data.Time.Clock (UTCTime)
+import Data.Time.Format
+import Control.Monad.Extra
+import Data.Version (showVersion)
 import Database.InfluxDB
+import Database.InfluxDB.Line
 import Database.MySQL.Base hiding (Packet(..))
+import IOT.Misc
+   ( liftEither
+   , withFileM
+   , loopUntil
+   , refModify'
+   , richMessageLogFileAction
+   , sleep
+   , withAmqpChannel
+   , mkfifo
+   , withAmqpConnection
+   , withAmqpConsumer
+   )
 import IOT.Packet.Format (isImg, isJson)
 import IOT.Packet.Types (Packet(..), PacketUnique(..))
-import IOT.Misc (refModify', liftEither, sleep, loopUntil)
 import IOT.Server.Types
-   ( App 
-   , AppState(..)
-   , Tag
-   , AppEnv(..)
+   ( App
    , AppCb(..)
+   , AppEnv(..)
+   , AppState(..)
    , ServerArgs(..)
    , ServerConf(..)
-   , unApp
-   , runAppCb
+   , Uid
    , amqpHost
-   , logAction
    , amqpPass
    , amqpUser
    , amqpVhost
@@ -51,6 +73,9 @@ import IOT.Server.Types
    , infxDb
    , infxHost
    , infxMeasurement
+   , logAction
+   , logHandle
+   , logPath
    , mysqlConn
    , mysqlDb
    , mysqlHost
@@ -58,32 +83,20 @@ import IOT.Server.Types
    , mysqlUser
    , pendingInfx
    , pendingMysql
+   , runAppCb
    , sConf
+   , unApp
    , verbosity
-   , Uid
    )
-import System.Timeout
-import Control.Concurrent
-import Control.Lens
-import Data.Bifunctor (bimap)
-import Data.Function ((&))
-import Data.Time (getCurrentTime)
-import Data.Time.Format
-import Database.InfluxDB.Line
 import Network.AMQP
-import Data.Version (showVersion)
 import Paths_iot_server (version)
-import Colog.Message hiding (Message)
-import Colog.Actions 
-import Colog.Core.Severity 
-import Colog.Core.Action
+import System.Timeout
 
-import Control.Monad.State.Class
 import qualified Codec.Compression.GZip as GZip
 import Control.Monad ((=<<))
+import Control.Monad.State.Class
 import Control.Monad.Trans.Except
 import System.IO
-
 queueSensorData :: (Real a, MonadReader (AppEnv m) m, MonadIO m) => [(T.Text, a)] -> Uid -> m () 
 queueSensorData f uid = do
    logInfo "Appending data item to Influx Queue"
@@ -141,14 +154,14 @@ parseBody msg uid = do
 
 pktHandler :: AppEnv IO -> (Message, Envelope) -> IO ()
 pktHandler env (msg, e) = runAppCb menv $ do
-   logInfo $ "Received a msg with key " <> (envRoutingKey e)
-   either 
+   logInfo $ "Received a msg with key " <> envRoutingKey e
+   either
       (\b -> logError $ "Body parse error: " <> T.pack (show b)) 
       parsePacket
       (parseBody msg uid)
 
    where
-    menv = env & logAction %~ (hoistLogAction liftIO)  
+    menv = env & logAction %~ hoistLogAction liftIO 
     uid = last . T.split (== '.') . envRoutingKey $ e
     parsePacket (Packet uid uniq) = do
        case uniq of
@@ -165,7 +178,7 @@ flushImageQueue = do
       stmt <-
          liftIO $
          prepareStmt conn "INSERT INTO device_images (node_id, bin) VALUES (?,?)"
-      flip mapM_ imgs $ \(uid, bin) ->
+      forM_ imgs $ \(uid, bin) ->
          (logDebug . T.pack . show) =<<
          liftIO
             (executeStmt conn stmt [MySQLText uid, MySQLBytes (BL.toStrict bin)])
@@ -182,6 +195,7 @@ flushDataQueue = do
 
 flushQueues :: App IO ()
 flushQueues = do
+   logDebug "Attempting to flush queues"
    flushDataQueue 
    flushImageQueue 
 
@@ -196,7 +210,7 @@ mysqlConfig conf = do
 
 initApp :: ServerArgs -> IO (AppState (App IO))
 initApp args = do
-   putStrLn $ "IoT-Server v." ++ (showVersion version)
+   putStrLn $ "IoT-Server v." ++ showVersion version
    
    let level =
           case args ^. verbosity of
@@ -210,53 +224,51 @@ initApp args = do
           writeParams (conf ^. infxDb) & 
           server . host .~ (conf ^. infxHost) &
           precision .~ Second
+   
+   logHandle <- openFile (args ^. logPath) WriteMode 
+   hSetBuffering logHandle LineBuffering
 
-   env <- AppEnv richMessageAction conf 
+   env <- AppEnv (richMessageLogFileAction level logHandle) conf 
             <$> newIORef [] 
             <*> newIORef [] 
-   
+    
    let mysqlInfo = mysqlConfig (env ^. sConf)
 
-   AppState env wp <$> connect mysqlInfo
-
-runThread :: (Monad m) => m Bool -> m ()
-runThread m = m >>= (`when` runThread m)
-
-withAmqpConnection :: (MonadMask m, MonadIO m) => String -> T.Text -> T.Text -> T.Text -> (Connection -> m a) -> m a
-withAmqpConnection host vhost user pass = bracket (liftIO $ openConnection host vhost user pass) (liftIO . closeConnection)
-
-withAmqpChannel :: (MonadMask m, MonadIO m) => Connection -> (Channel -> m a) -> m a
-withAmqpChannel conn = bracket (liftIO $ openChannel conn) (liftIO . closeChannel)
-
-withAmqpConsumer :: (MonadMask m, MonadIO m) => AppEnv IO -> Channel -> Tag -> (ConsumerTag -> m a) -> m a
-withAmqpConsumer env chan tag = bracket (liftIO $ consumeMsgs chan tag NoAck $ pktHandler env) (liftIO . cancelConsumer chan) 
+   AppState env (Just logHandle) wp <$> connect mysqlInfo
 
 runApp :: App IO ()
-runApp = do
-   host  <- view (sConf.amqpHost)
-   vhost <- view (sConf.amqpVhost)
-   user  <- view (sConf.amqpUser)
-   pass  <- view (sConf.amqpPass)
-
-   withAmqpConnection host vhost user pass $ \conn -> do
-      withAmqpChannel conn $ \chan -> do
-         env <- ask
-         state <- get
-         let envio = env & logAction %~ (unHoist state) 
-         
-         withAmqpConsumer envio chan "q_all" $ \_ -> do
-            loopUntil $ do
-               sleep 5
-               flushQueues
-               resp <- liftIO (hWaitForInput stdin 100000)
-               if resp then do
-                  c <- liftIO getChar
-                  return $ c == 'E'
-               else
-                  return False 
-   
-   logInfo "Exiting normally..."
-
+runApp = runner `finally` closeLog
    where
-      unHoist :: Functor m => AppState (App m) -> LogAction (App m) x -> LogAction m x
-      unHoist s (LogAction xappm) = LogAction $ \x -> fst <$> unApp (xappm x) s
+      closeLog = do
+         handle <- use logHandle
+         liftIO $ maybe mempty hClose handle
+         logHandle .= Nothing
+         
+      runner = do
+         host  <- view (sConf.amqpHost)
+         vhost <- view (sConf.amqpVhost)
+         user  <- view (sConf.amqpUser)
+         pass  <- view (sConf.amqpPass)
+         
+         withAmqpConnection host vhost user pass $ \conn -> do
+            withAmqpChannel conn $ \chan -> do
+               env <- ask
+               state <- get
+               let envio = env & logAction %~ unHoist state 
+               
+               withAmqpConsumer (pktHandler envio) chan "q_all" $ \_ -> do
+                  liftIO $ mkfifo "iot-server.run"
+                  withFileM "iot-server.run" ReadWriteMode $ \_ -> 
+                     withFileM "iot-server.run" ReadMode $ \handle -> 
+                        loopUntil $ do
+                          sleep 5
+                          flushQueues
+                          c <- liftIO $ ifM (hWaitForInput handle 10) (hGetChar handle) (pure 'n') `Exception.onException` pure 'n'
+                          return $ c == 'E'
+                  liftIO $ removeFile "iot-server.run"
+         
+         logInfo "Exiting normally..."
+
+         where
+            unHoist :: Functor m => AppState (App m) -> LogAction (App m) x -> LogAction m x
+            unHoist s (LogAction xappm) = LogAction $ \x -> fst <$> unApp (xappm x) s

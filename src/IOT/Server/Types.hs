@@ -12,7 +12,17 @@
 
 module IOT.Server.Types where
 
-import Control.Lens (makeLenses, (^.), (.~), (%~), (&))
+import Colog.Core.Action
+import Colog.Core.Class (HasLog(..))
+import Colog.Message (Message(..))
+import Control.Lens ((%~), (&), (.~), (^.), makeLenses)
+import Control.Monad.Catch
+import Control.Monad.IO.Class
+import Control.Monad.Reader.Class
+import Control.Monad.State.Class
+import Control.Monad.Trans.Class (MonadTrans(..))
+import Control.Monad.Trans.Reader hiding (reader)
+import GHC.IO.Handle.Types (Handle)
 import Data.Aeson.TH
 import qualified Data.ByteString.Lazy as BL
 import Data.IORef (IORef)
@@ -26,26 +36,16 @@ import Database.InfluxDB
    )
 import Database.MySQL.Base (MySQLConn(..))
 import Network.AMQP (Connection, Envelope(..))
-import Control.Monad.State.Class
-import Control.Monad.Reader.Class
-import Control.Monad.IO.Class
-import Control.Monad.Trans.Class (MonadTrans(..))
-import Control.Monad.Trans.Reader hiding (reader)
-import Colog.Core.Action (LogAction(..))
-import Colog.Message (Message(..))
-import Colog.Core.Class (HasLog(..))
-import Colog.Core.Action
-import Control.Monad.Catch
 
 $(deriveJSON defaultOptions ''Measurement)
 $(deriveJSON defaultOptions {unwrapUnaryRecords = True} ''Database)
 
-type Tag = T.Text
 type Uid = T.Text
 
 data ServerArgs =
   ServerArgs
     { _verbosity :: Int
+    , _logPath   :: String
     , _confPath  :: String
     }
   deriving (Show)
@@ -83,6 +83,7 @@ makeLenses ''AppEnv
 data AppState (m :: * -> *) =
    AppState
       { _appEnv :: AppEnv m 
+      , _logHandle :: Maybe Handle
       , _infxConn :: WriteParams
       , _mysqlConn :: MySQLConn
       }
@@ -133,6 +134,9 @@ instance Monad m => Monad (App m) where
          (b, s'') <- unApp (amb a) s'
          return (b, s'')
 
+instance MonadFail m => MonadFail (App m) where
+   fail = lift . fail
+
 instance Monad m => MonadState (AppState (App m)) (App m) where
    get = App $ \s -> return (s, s)
    put s = App . const . pure $ ((), s)
@@ -157,25 +161,30 @@ instance MonadCatch m => MonadCatch (App m) where
 
 -- Identical to StateT version
 instance MonadMask m => MonadMask (App m) where
-   mask :: ((forall a. App m a -> App m a) -> App m b) -> App m b  
+   mask :: ((forall a. App m a -> App m a) -> App m b) -> App m b
    mask f = App $ \s -> mask $ \ma -> unApp (f $ maAppma ma) s
-    where
-      maAppma :: (forall a. m a -> m a) -> (forall a. App m a -> App m a) 
-      maAppma ma = \(App appma) -> App (ma . appma)
-
-   uninterruptibleMask :: ((forall a. App m a -> App m a) -> App m b) -> App m b  
-   uninterruptibleMask f = App $ \s -> uninterruptibleMask $ \ma -> unApp (f $ maAppma ma) s
-    where
-      maAppma :: (forall a. m a -> m a) -> (forall a. App m a -> App m a) 
-      maAppma ma = \(App appma) -> App (ma . appma)
-
-   generalBracket acquire release use = App $ \s0 -> do
-         ((b, _s2), (c, s3)) <- generalBracket (unApp acquire s0)
-               (\(resource, s1) exitCase -> 
-                  case exitCase of
-                     ExitCaseSuccess (b, s2) -> unApp (release resource (ExitCaseSuccess b)) s2
-                     ExitCaseException e     -> unApp (release resource (ExitCaseException e)) s1
-                     ExitCaseAbort           -> unApp (release resource ExitCaseAbort) s1
-               )
+     where
+       maAppma :: (forall a. m a -> m a) -> (forall a. App m a -> App m a)
+       maAppma ma = \(App appma) -> App (ma . appma)
+   
+   uninterruptibleMask :: ((forall a. App m a -> App m a) -> App m b) -> App m b
+   uninterruptibleMask f =
+      App $ \s -> uninterruptibleMask $ \ma -> unApp (f $ maAppma ma) s
+     where
+       maAppma :: (forall a. m a -> m a) -> (forall a. App m a -> App m a)
+       maAppma ma = \(App appma) -> App (ma . appma)
+   
+   generalBracket acquire release use =
+      App $ \s0 -> do
+         ((b, _s2), (c, s3)) <-
+            generalBracket
+               (unApp acquire s0)
+               (\(resource, s1) exitCase ->
+                   case exitCase of
+                      ExitCaseSuccess (b, s2) ->
+                         unApp (release resource (ExitCaseSuccess b)) s2
+                      ExitCaseException e ->
+                         unApp (release resource (ExitCaseException e)) s1
+                      ExitCaseAbort -> unApp (release resource ExitCaseAbort) s1)
                (\(resource, s1) -> unApp (use resource) s1)
          return ((b, c), s3)

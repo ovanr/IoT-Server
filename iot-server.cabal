@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8d48969701b113f73d516c96a6fad33f62ef22d386740c8276eafa2d1ad072f5
+-- hash: 308378ee8c92d4c654a0ee8ec70655c1db8b46bba9e960a4592fa8b076206d96
 
 name:           iot-server
-version:        0.1.0.0
+version:        0.2.0
 description:    Please see the README on GitHub at <https://github.com/ovanr/iot-server#readme>
 homepage:       https://github.com/ovanr/IoT-Server#readme
 bug-reports:    https://github.com/ovanr/IoT-Server/issues
@@ -35,7 +35,9 @@ library
   hs-source-dirs:
       src
   build-depends:
-      aeson
+      Cabal
+    , QuickCheck
+    , aeson
     , amqp
     , base
     , base64-bytestring
@@ -45,8 +47,10 @@ library
     , comonad
     , concurrent-extra
     , containers
+    , directory
     , either
     , exceptions
+    , extra
     , hslogger
     , influxdb
     , io-streams
@@ -55,6 +59,7 @@ library
     , mtl
     , mysql-haskell
     , optparse-applicative
+    , process
     , text
     , time
     , transformers
@@ -70,7 +75,9 @@ executable iot-server
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      Cabal
+    , QuickCheck
+    , aeson
     , amqp
     , base
     , base64-bytestring
@@ -80,8 +87,10 @@ executable iot-server
     , comonad
     , concurrent-extra
     , containers
+    , directory
     , either
     , exceptions
+    , extra
     , hslogger
     , influxdb
     , io-streams
@@ -91,6 +100,7 @@ executable iot-server
     , mtl
     , mysql-haskell
     , optparse-applicative
+    , process
     , text
     , time
     , transformers
@@ -107,7 +117,9 @@ test-suite iot-server-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      Cabal
+    , QuickCheck
+    , aeson
     , amqp
     , base
     , base64-bytestring
@@ -117,8 +129,10 @@ test-suite iot-server-test
     , comonad
     , concurrent-extra
     , containers
+    , directory
     , either
     , exceptions
+    , extra
     , hslogger
     , influxdb
     , io-streams
@@ -128,6 +142,7 @@ test-suite iot-server-test
     , mtl
     , mysql-haskell
     , optparse-applicative
+    , process
     , text
     , time
     , transformers

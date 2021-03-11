@@ -1,5 +1,5 @@
 name:                iot-server
-version:             0.1.0.0
+version:             0.2.0
 github:              "ovanr/IoT-Server"
 license:             GNU2
 author:              "Orpheas van Rooij"
@@ -27,7 +27,9 @@ dependencies:
 - comonad
 - mtl
 - transformers
+- directory
 - influxdb
+- extra
 - lens
 - aeson
 - time
@@ -47,6 +49,9 @@ dependencies:
 - co-log
 - co-log-core
 - transformers
+- QuickCheck
+- Cabal
+- process 
 
 library:
   source-dirs: src

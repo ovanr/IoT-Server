@@ -12,6 +12,13 @@ argParser = ServerArgs
       short 'v'
          <> help "verbosity" ))
    <*> strOption
+      (long "logFile"
+         <> short 'l'
+         <> metavar "FILE"
+         <> showDefault
+         <> value "iot-server.log"
+         <> help "File to write logs to")
+   <*> strOption
       (long "confFile"
          <> short 'c'
          <> metavar "FILE"
