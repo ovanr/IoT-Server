@@ -105,6 +105,9 @@ newtype AppCb a =
             , MonadIO
             , MonadFail
             , MonadReader (AppEnv AppCb)
+            , MonadThrow
+            , MonadCatch
+            , MonadMask
             )
 
 runAppCb env (AppCb app) = runReaderT app env

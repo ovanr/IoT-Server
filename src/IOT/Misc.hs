@@ -1,3 +1,6 @@
+{-# LANGUAGE FlexibleContexts #-} 
+{-# LANGUAGE OverloadedStrings #-} 
+{-# LANGUAGE ScopedTypeVariables #-} 
 module IOT.Misc where
 
 import Data.IORef
@@ -8,9 +11,11 @@ import Control.Monad.Trans.Class (MonadTrans(..))
 import System.Exit (ExitCode(..))
 import Control.Monad.Trans.Reader hiding (reader)
 import Control.Monad.Reader.Class
+import Database.MySQL.Base hiding (Packet(..))
 import Control.Monad.IO.Class
 import Control.Monad.Catch
 import Control.Monad
+import IOT.Server.Types (App)
 import Control.Monad.Extra
 import Control.Concurrent (threadDelay)
 import Colog.Core.Severity
@@ -19,6 +24,8 @@ import System.Process (readProcessWithExitCode)
 import Colog.Message hiding (Message(..))
 import qualified Colog.Message as Colog 
 import Colog.Core.Action
+import Colog hiding (Message)
+import qualified Colog
 import System.Directory
 import System.IO
 
@@ -39,6 +46,13 @@ loopUntil :: Monad m => m Bool -> m ()
 loopUntil m = do
    b <- m 
    unless b $ loopUntil m
+
+executeStmt' ::
+      MonadIO m => MySQLConn -> StmtID -> [MySQLValue] -> m (Either String OK)
+executeStmt' conn stmt vals =
+   liftIO $
+   (Right <$> executeStmt conn stmt vals) `catch`
+   (\(e :: SomeException) -> return . Left . show $ e)
 
 withFileM :: (MonadMask m, MonadIO m) => FilePath -> IOMode -> (Handle -> m a) -> m a
 withFileM fp mode = bracket (liftIO $ openFile fp mode) (liftIO . hClose)
@@ -76,4 +90,4 @@ withTempPipeM fp cb = do
    return r
 
 hTryGetChar :: MonadIO m => Handle -> m  (Maybe Char)
-hTryGetChar h = liftIO $ ifM (hWaitForInput h 10) (Just <$> hGetChar h) (pure Nothing) `Exception.onException` pure Nothing 
+hTryGetChar h = liftIO $ ifM (hWaitForInput h 10) (Just <$> hGetChar h) (pure Nothing) `Exception.catch` (\(e :: SomeException) -> pure Nothing)

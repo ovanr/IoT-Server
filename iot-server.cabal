@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 308378ee8c92d4c654a0ee8ec70655c1db8b46bba9e960a4592fa8b076206d96
+-- hash: b6938c518e9ec88412b7369855d9a8bf50f89ae9ed377dab8ecf52e499173fae
 
 name:           iot-server
 version:        0.2.0
@@ -27,7 +27,10 @@ source-repository head
 
 library
   exposed-modules:
+      IOT.Device.Cam
       IOT.Misc
+      IOT.Packet.Format
+      IOT.Packet.Types
       IOT.Server
       IOT.Server.Types
   other-modules:
@@ -54,16 +57,19 @@ library
     , hslogger
     , influxdb
     , io-streams
-    , iot-shared
     , lens
     , mtl
     , mysql-haskell
+    , network-uri
     , optparse-applicative
     , process
+    , shelly
     , text
     , time
     , transformers
+    , unordered-containers
     , utf8-string
+    , vector
     , zlib
   default-language: Haskell2010
 
@@ -95,16 +101,19 @@ executable iot-server
     , influxdb
     , io-streams
     , iot-server
-    , iot-shared
     , lens
     , mtl
     , mysql-haskell
+    , network-uri
     , optparse-applicative
     , process
+    , shelly
     , text
     , time
     , transformers
+    , unordered-containers
     , utf8-string
+    , vector
     , zlib
   default-language: Haskell2010
 
@@ -137,15 +146,18 @@ test-suite iot-server-test
     , influxdb
     , io-streams
     , iot-server
-    , iot-shared
     , lens
     , mtl
     , mysql-haskell
+    , network-uri
     , optparse-applicative
     , process
+    , shelly
     , text
     , time
     , transformers
+    , unordered-containers
     , utf8-string
+    , vector
     , zlib
   default-language: Haskell2010

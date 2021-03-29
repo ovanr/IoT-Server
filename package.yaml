@@ -44,7 +44,6 @@ dependencies:
 - concurrent-extra
 - optparse-applicative
 - exceptions
-- iot-shared
 - either
 - co-log
 - co-log-core
@@ -52,6 +51,10 @@ dependencies:
 - QuickCheck
 - Cabal
 - process 
+- shelly
+- unordered-containers
+- vector
+- network-uri
 
 library:
   source-dirs: src

@@ -10,8 +10,12 @@ module IOT.Server
    ) where
 
 import qualified Data.ByteString.Lazy as BL
+import qualified Data.ByteString.Base64 as Base64
+import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy.UTF8 as BLU
-
+import qualified Data.Text.Encoding as TE
+import Control.Monad.Trans.Maybe
+import Data.Maybe
 import Colog.Actions
 import Colog.Core.Action
 import Colog.Core.Severity
@@ -20,7 +24,7 @@ import qualified Colog.Message as Colog
 import Control.Concurrent
 import qualified Control.Exception as Exception
 import Control.Lens
-import Control.Monad.Catch (MonadMask, bracket, finally)
+import Control.Monad.Catch (MonadMask, SomeException(..), catch, bracket, finally)
 import Control.Monad.Reader
 import Data.Aeson (eitherDecode)
 import System.Directory
@@ -45,6 +49,7 @@ import Database.MySQL.Base hiding (Packet(..))
 import IOT.Misc
    ( liftEither
    , withFileM
+   , executeStmt' 
    , withTempPipeM
    , loopUntil
    , hTryGetChar 
@@ -132,6 +137,7 @@ getMysqlConnection = do
    conf <- view sConf
    isActive <- liftIO (isOpenMysql conn)
    unless isActive $ do
+      logWarning "Detected closed Mysql connection" 
       let mysqlconf = mysqlConfig conf 
       conn <- liftIO (connect mysqlconf)
       mysqlConn .= conn
@@ -155,7 +161,7 @@ parseBody msg uid = do
           | otherwise -> Left "Incorrect Packet format"
 
 pktHandler :: AppEnv IO -> (Message, Envelope) -> IO ()
-pktHandler env (msg, e) = runAppCb menv $ do
+pktHandler env (msg, e) = runAppCb menv $ flip catch catcher $ do
    logInfo $ "Received a msg with key " <> envRoutingKey e
    either
       (\b -> logError $ "Body parse error: " <> T.pack (show b)) 
@@ -163,6 +169,7 @@ pktHandler env (msg, e) = runAppCb menv $ do
       (parseBody msg uid)
 
    where
+    catcher (e :: SomeException) = logWarning $ T.pack (show e)
     menv = env & logAction %~ hoistLogAction liftIO 
     uid = last . T.split (== '.') . envRoutingKey $ e
     parsePacket (Packet uid uniq) = do
@@ -170,6 +177,15 @@ pktHandler env (msg, e) = runAppCb menv $ do
           (SensorData f) -> queueSensorData f uid 
           (SensorRaw bin) -> queueSensorImage uid bin
           _ -> fail "Incorrect packet format"
+
+genSecureString :: MonadIO m => Int -> m (Maybe T.Text)
+genSecureString len = liftIO . runMaybeT $ T.take len . TE.decodeUtf8 . Base64.encode <$> randomBytes
+   where
+      readBytes :: IO B.ByteString
+      readBytes = withFile "/dev/urandom" ReadMode (`B.hGetSome` len)
+      randomBytes :: MaybeT IO B.ByteString
+      randomBytes =  MaybeT $ (Just <$> readBytes) `catch` (\(e :: SomeException) -> pure Nothing)
+
 
 flushImageQueue :: App IO ()
 flushImageQueue = do
@@ -179,11 +195,14 @@ flushImageQueue = do
       conn <- getMysqlConnection
       stmt <-
          liftIO $
-         prepareStmt conn "INSERT INTO device_images (node_id, bin) VALUES (?,?)"
-      forM_ imgs $ \(uid, bin) ->
-         (logDebug . T.pack . show) =<<
-         liftIO
-            (executeStmt conn stmt [MySQLText uid, MySQLBytes (BL.toStrict bin)])
+         prepareStmt conn "INSERT INTO device_images (id, node_id, bin) VALUES (?,?,?)"
+      forM_ imgs $ \(uid, bin) -> do
+         id <- genSecureString 64
+         when (isNothing id) $ fail "Unable to generate secure string" 
+         printOk =<< executeStmt' conn stmt [MySQLText $ fromJust id, MySQLText uid, MySQLBytes (BL.toStrict bin)]
+   where
+      printOk (Left err) = logWarning $ "Error on mysql insert: " <> T.pack err
+      printOk (Right ok) = logInfo $ "Success on mysql insert: " <> T.pack (show ok)
 
 flushDataQueue :: App IO ()
 flushDataQueue = do
@@ -214,12 +233,7 @@ initApp :: ServerArgs -> IO (AppState (App IO))
 initApp args = do
    putStrLn $ "IoT-Server v." ++ showVersion version
    
-   let level =
-          case args ^. verbosity of
-             3 -> Debug
-             2 -> Info
-             1 -> Warning
-             0 -> Error
+   let level = [Error, Warning, Info, Debug] !! min 3 (args ^. verbosity)
    
    conf <- liftEither . eitherDecode =<< BL.readFile (args ^. confPath)
    let wp =
