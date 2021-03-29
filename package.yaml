@@ -55,6 +55,9 @@ dependencies:
 - unordered-containers
 - vector
 - network-uri
+- proto-lens
+- proto-lens-runtime
+- proto-lens-protobuf-types
 
 library:
   source-dirs: src

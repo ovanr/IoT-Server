@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b6938c518e9ec88412b7369855d9a8bf50f89ae9ed377dab8ecf52e499173fae
+-- hash: 00926c81e9d87e27cb66fecae4785aa0f1db4a09c3b5f230fe5d9f888744141c
 
 name:           iot-server
 version:        0.2.0
@@ -33,6 +33,16 @@ library
       IOT.Packet.Types
       IOT.Server
       IOT.Server.Types
+      Proto.ConfigDt
+      Proto.ConfigDt_Fields
+      Proto.PacketDt
+      Proto.PacketDt_Fields
+      Proto.SensorDt
+      Proto.SensorDt_Fields
+      Proto.Sensors.CpuDt
+      Proto.Sensors.CpuDt_Fields
+      Proto.Sensors.RaspCamDt
+      Proto.Sensors.RaspCamDt_Fields
   other-modules:
       Paths_iot_server
   hs-source-dirs:
@@ -63,6 +73,9 @@ library
     , network-uri
     , optparse-applicative
     , process
+    , proto-lens
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
     , shelly
     , text
     , time
@@ -107,6 +120,9 @@ executable iot-server
     , network-uri
     , optparse-applicative
     , process
+    , proto-lens
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
     , shelly
     , text
     , time
@@ -152,6 +168,9 @@ test-suite iot-server-test
     , network-uri
     , optparse-applicative
     , process
+    , proto-lens
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
     , shelly
     , text
     , time
