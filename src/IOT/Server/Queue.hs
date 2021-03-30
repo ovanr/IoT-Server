@@ -5,20 +5,35 @@ module IOT.Server.Queue where
 
 import Control.Monad.Reader
 import qualified Data.Text as T
-import qualified Data.ByteString.Lazy as BL 
 import qualified Data.ByteString.Lazy.UTF8 as BLU
-import qualified Data.Map as Map
-import Data.String (fromString)
-import Database.InfluxDB.Line
-import Database.InfluxDB
+import Database.InfluxDB.Line (Line(..), encodeLines, Precision(..), LineField, Field(..))
 import IOT.Misc 
+import Proto.Sensors.RaspCamDt (RaspCamOut)
 import Colog
-import Control.Lens
+import Control.Lens (use, view, (.=), (^.))
 import Data.Time
 import Database.MySQL.Base
 import IOT.Server.Types
 import qualified Control.Exception as Exception
 import Data.Maybe
+import Data.Aeson (ToJSON(..), Value(..), KeyValue)
+import qualified Data.Aeson ((.=))
+import qualified Data.Map as Map
+import qualified Data.HashMap.Strict as HM
+import Database.InfluxDB (scaleTo, writeBatch, Key) 
+import Data.Bifunctor (bimap)
+import Data.String (fromString)
+
+toInfluxFields :: Value -> Map.Map Key LineField
+toInfluxFields j =
+   Map.fromList $ map (bimap (fromString . T.unpack) toInfluxField) (toPairs j)
+  where
+    toPairs :: (KeyValue a) => Value -> [a]
+    toPairs (Object x) =
+       reverse $ HM.foldlWithKey' (\acc k v -> (k Data.Aeson..= v) : acc) [] x
+    toInfluxField (Number n) = FieldFloat . realToFrac $ n
+    toInfluxField (String t) = FieldString t
+    toInfluxField (Bool b) = FieldBool b
 
 isOpenMysql :: MySQLConn -> IO Bool
 isOpenMysql c =
@@ -40,11 +55,11 @@ getMysqlConnection = do
    return conn
 
 queueSensorData ::
-      (Real a, MonadReader (AppEnv m) m, MonadIO m)
-   => [(T.Text, a)]
-   -> Uid
+      (ToJSON j, MonadReader (AppEnv m) m, MonadIO m)
+   => Uid 
+   -> j 
    -> m ()
-queueSensorData f uid = do
+queueSensorData uid f = do
    logInfo "Appending data item to Influx Queue"
    measurement <- view (sConf . infxMeasurement)
    t <- liftIO getCurrentTime
@@ -52,19 +67,18 @@ queueSensorData f uid = do
           Line
              measurement
              (Map.singleton "node_id" (fromString . T.unpack $ uid))
-             (Map.fromList $
-              map (bimap (fromString . T.unpack) (FieldFloat . realToFrac)) f)
+             (toInfluxFields (toJSON f))
              (Just t)
    q <- view pendingInfx
    liftIO $ refModify' (newL :) q
    return ()
 
 queueSensorImage ::
-      (MonadReader (AppEnv m) m, MonadIO m) => T.Text -> BL.ByteString -> m ()
-queueSensorImage uid bin = do
+      (MonadReader (AppEnv m) m, MonadIO m) => T.Text -> RaspCamOut -> m ()
+queueSensorImage uid img = do
    logInfo "Appending image to Mysql Queue"
    q <- view pendingMysql
-   liftIO $ refModify' ((uid, bin) :) q
+   liftIO $ refModify' ((uid, img ^. bin) :) q
    return ()
 
 flushImageQueue :: App IO ()
@@ -87,7 +101,7 @@ flushImageQueue = do
                stmt
                [ MySQLText $ fromJust id
                , MySQLText uid
-               , MySQLBytes (BL.toStrict bin)
+               , MySQLBytes bin
                ]
   where
     printOk (Left err) = logWarning $ "Error on mysql insert: " <> T.pack err

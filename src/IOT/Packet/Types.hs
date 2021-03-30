@@ -31,7 +31,6 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Base64 as Base64 (decode, encode)
 import qualified Data.ByteString.Lazy as BL (ByteString, fromStrict, toStrict)
 import Data.Function ((&))
-import qualified Data.HashMap.Strict as HM
 import Data.Maybe (maybeToList)
 import qualified Data.Text as T (Text, unpack)
 import qualified Data.Text.Encoding as TE (decodeUtf8, encodeUtf8)
@@ -50,10 +49,6 @@ import Proto.Sensors.RaspCamDt
 import Proto.Sensors.CpuDt
 import Proto.Google.Protobuf.Timestamp
 import Control.Monad.State
-
-toPairs :: (KeyValue a) => Value -> [a]
-toPairs (Object x) =
-  reverse $ HM.foldlWithKey' (\acc k v -> (k .= v) : acc) [] x
 
 maybeM :: Monad m => (a -> m b) -> Maybe a -> m (Maybe b)
 maybeM _ Nothing = return Nothing
