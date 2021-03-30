@@ -67,6 +67,7 @@ executables:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
+    - -fwarn-unused-imports 
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N

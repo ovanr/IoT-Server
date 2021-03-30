@@ -25,6 +25,13 @@ packages:
       sha256: c99a12bfcbeacc5da8f166fbed1eb105a45f08be1a3a071fe9f903b386b14e1d
   original:
     hackage: wire-streams-0.1.1.0@sha256:08816c7fa53b20f52e5c465252c106d9de8e6d9580ec0b6d9f000a34c7bcefc8,2130
+- completed:
+    hackage: smuggler2-0.3.6.2@sha256:743fb8982f90d8612db86ff01a76eaa008c261a8999c518e8cdb7ed720c38957,3943
+    pantry-tree:
+      size: 24252
+      sha256: 3075dfc34bb2986487302b79d3e2f1897d2161171f9c6cc366f60bf226a9f56e
+  original:
+    hackage: smuggler2-0.3.6.2@sha256:743fb8982f90d8612db86ff01a76eaa008c261a8999c518e8cdb7ed720c38957,3943
 snapshots:
 - completed:
     size: 563099

@@ -1,10 +1,29 @@
-module Main where
+module Main (
+  argParser,
+  main ) where
 
-import IOT.Server (initApp, runApp)
-import IOT.Server.Types (ServerArgs(..), unApp)
-import Control.Monad (void)
+import IOT.Server ( initApp, runApp )
+import IOT.Server.Types ( ServerArgs(..), unApp )
+import Control.Monad ( void )
 import Options.Applicative
-import Data.Semigroup ((<>))
+    ( Parser,
+      helper,
+      Alternative(many),
+      (<**>),
+      flag',
+      fullDesc,
+      header,
+      help,
+      info,
+      long,
+      metavar,
+      progDesc,
+      short,
+      showDefault,
+      strOption,
+      value,
+      execParser )
+import Data.Semigroup ()
 
 argParser :: Parser ServerArgs
 argParser = ServerArgs

@@ -15,7 +15,7 @@ module IOT.Server.Types where
 import Colog.Core.Action
 import Colog.Core.Class (HasLog(..))
 import Colog.Message (Message(..))
-import Control.Lens ((%~), (&), (.~), (^.), makeLenses)
+import Control.Lens (view, (%~), (&), (.~), (^.), makeLenses)
 import Control.Monad.Catch
 import Control.Monad.IO.Class
 import Control.Monad.Reader.Class
@@ -25,6 +25,7 @@ import Control.Monad.Trans.Reader hiding (reader)
 import GHC.IO.Handle.Types (Handle)
 import Data.Aeson.TH
 import qualified Data.ByteString.Lazy as BL
+import qualified Data.ByteString.UTF8 as BU 
 import Data.IORef (IORef)
 import qualified Data.Text as T
 import Data.Time.Clock (UTCTime)
@@ -34,7 +35,7 @@ import Database.InfluxDB
    , Measurement(..)
    , WriteParams(..)
    )
-import Database.MySQL.Base (MySQLConn(..))
+import Database.MySQL.Base
 import Network.AMQP (Connection, Envelope(..))
 
 $(deriveJSON defaultOptions ''Measurement)
@@ -69,6 +70,15 @@ data ServerConf =
 
 makeLenses ''ServerConf
 $(deriveJSON defaultOptions {fieldLabelModifier = drop 1} ''ServerConf)
+
+mysqlConfig :: ServerConf -> ConnectInfo
+mysqlConfig conf = do
+   defaultConnectInfo
+      { ciHost = conf ^. mysqlHost
+      , ciUser = BU.fromString $ view mysqlUser conf
+      , ciPassword = BU.fromString $ view mysqlPass conf
+      , ciDatabase = BU.fromString $ view mysqlDb conf
+      }
 
 data AppEnv (m :: * -> *) =
    AppEnv
