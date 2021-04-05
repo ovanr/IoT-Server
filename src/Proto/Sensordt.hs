@@ -1,10 +1,10 @@
-{- This file was auto-generated from sensorDt.proto by the proto-lens-protoc program. -}
+{- This file was auto-generated from sensordt.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings, DerivingStrategies#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
-module Proto.SensorDt (
-        Output(), Output'Output(..), _Output'Cpu, _Output'Cam, SensorOut()
+module Proto.Sensordt (
+        Output(), Output'Output(..), _Output'Cpu, _Output'Cam, Sensorout()
     ) where
 import qualified Data.ProtoLens.Runtime.Control.DeepSeq as Control.DeepSeq
 import qualified Data.ProtoLens.Runtime.Data.ProtoLens.Prism as Data.ProtoLens.Prism
@@ -31,16 +31,15 @@ import qualified Data.ProtoLens.Runtime.Data.Vector as Data.Vector
 import qualified Data.ProtoLens.Runtime.Data.Vector.Generic as Data.Vector.Generic
 import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unboxed
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
-import qualified Proto.Google.Protobuf.Timestamp
-import qualified Proto.Sensors.CpuDt
-import qualified Proto.Sensors.RaspCamDt
+import qualified Proto.Sensors.Cpudt
+import qualified Proto.Sensors.Raspcamdt
 {- | Fields :
      
-         * 'Proto.SensorDt_Fields.maybe'output' @:: Lens' Output (Prelude.Maybe Output'Output)@
-         * 'Proto.SensorDt_Fields.maybe'cpu' @:: Lens' Output (Prelude.Maybe Proto.Sensors.CpuDt.CpuOut)@
-         * 'Proto.SensorDt_Fields.cpu' @:: Lens' Output Proto.Sensors.CpuDt.CpuOut@
-         * 'Proto.SensorDt_Fields.maybe'cam' @:: Lens' Output (Prelude.Maybe Proto.Sensors.RaspCamDt.RaspCamOut)@
-         * 'Proto.SensorDt_Fields.cam' @:: Lens' Output Proto.Sensors.RaspCamDt.RaspCamOut@ -}
+         * 'Proto.Sensordt_Fields.maybe'output' @:: Lens' Output (Prelude.Maybe Output'Output)@
+         * 'Proto.Sensordt_Fields.maybe'cpu' @:: Lens' Output (Prelude.Maybe Proto.Sensors.Cpudt.Cpuout)@
+         * 'Proto.Sensordt_Fields.cpu' @:: Lens' Output Proto.Sensors.Cpudt.Cpuout@
+         * 'Proto.Sensordt_Fields.maybe'cam' @:: Lens' Output (Prelude.Maybe Proto.Sensors.Raspcamdt.Raspcamout)@
+         * 'Proto.Sensordt_Fields.cam' @:: Lens' Output Proto.Sensors.Raspcamdt.Raspcamout@ -}
 data Output
   = Output'_constructor {_Output'output :: !(Prelude.Maybe Output'Output),
                          _Output'_unknownFields :: !Data.ProtoLens.FieldSet}
@@ -52,8 +51,8 @@ instance Prelude.Show Output where
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
 data Output'Output
-  = Output'Cpu !Proto.Sensors.CpuDt.CpuOut |
-    Output'Cam !Proto.Sensors.RaspCamDt.RaspCamOut
+  = Output'Cpu !Proto.Sensors.Cpudt.Cpuout |
+    Output'Cam !Proto.Sensors.Raspcamdt.Raspcamout
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.Field.HasField Output "maybe'output" (Prelude.Maybe Output'Output) where
   fieldOf _
@@ -61,7 +60,7 @@ instance Data.ProtoLens.Field.HasField Output "maybe'output" (Prelude.Maybe Outp
         (Lens.Family2.Unchecked.lens
            _Output'output (\ x__ y__ -> x__ {_Output'output = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField Output "maybe'cpu" (Prelude.Maybe Proto.Sensors.CpuDt.CpuOut) where
+instance Data.ProtoLens.Field.HasField Output "maybe'cpu" (Prelude.Maybe Proto.Sensors.Cpudt.Cpuout) where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
@@ -72,7 +71,7 @@ instance Data.ProtoLens.Field.HasField Output "maybe'cpu" (Prelude.Maybe Proto.S
                    (Prelude.Just (Output'Cpu x__val)) -> Prelude.Just x__val
                    _otherwise -> Prelude.Nothing)
            (\ _ y__ -> Prelude.fmap Output'Cpu y__))
-instance Data.ProtoLens.Field.HasField Output "cpu" Proto.Sensors.CpuDt.CpuOut where
+instance Data.ProtoLens.Field.HasField Output "cpu" Proto.Sensors.Cpudt.Cpuout where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
@@ -85,7 +84,7 @@ instance Data.ProtoLens.Field.HasField Output "cpu" Proto.Sensors.CpuDt.CpuOut w
                       _otherwise -> Prelude.Nothing)
               (\ _ y__ -> Prelude.fmap Output'Cpu y__))
            (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage))
-instance Data.ProtoLens.Field.HasField Output "maybe'cam" (Prelude.Maybe Proto.Sensors.RaspCamDt.RaspCamOut) where
+instance Data.ProtoLens.Field.HasField Output "maybe'cam" (Prelude.Maybe Proto.Sensors.Raspcamdt.Raspcamout) where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
@@ -96,7 +95,7 @@ instance Data.ProtoLens.Field.HasField Output "maybe'cam" (Prelude.Maybe Proto.S
                    (Prelude.Just (Output'Cam x__val)) -> Prelude.Just x__val
                    _otherwise -> Prelude.Nothing)
            (\ _ y__ -> Prelude.fmap Output'Cam y__))
-instance Data.ProtoLens.Field.HasField Output "cam" Proto.Sensors.RaspCamDt.RaspCamOut where
+instance Data.ProtoLens.Field.HasField Output "cam" Proto.Sensors.Raspcamdt.Raspcamout where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
@@ -110,12 +109,12 @@ instance Data.ProtoLens.Field.HasField Output "cam" Proto.Sensors.RaspCamDt.Rasp
               (\ _ y__ -> Prelude.fmap Output'Cam y__))
            (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage))
 instance Data.ProtoLens.Message Output where
-  messageName _ = Data.Text.pack "sensorDt.Output"
+  messageName _ = Data.Text.pack "sensordt.Output"
   packedMessageDescriptor _
     = "\n\
       \\ACKOutput\DC2)\n\
-      \\ETXcpu\CAN\SOH \SOH(\v2\NAK.sensors.cpuDt.CpuOutH\NULR\ETXcpu\DC21\n\
-      \\ETXcam\CAN\STX \SOH(\v2\GS.sensors.raspCamDt.RaspCamOutH\NULR\ETXcamB\b\n\
+      \\ETXcpu\CAN\SOH \SOH(\v2\NAK.sensors.cpudt.CpuoutH\NULR\ETXcpu\DC21\n\
+      \\ETXcam\CAN\STX \SOH(\v2\GS.sensors.raspcamdt.RaspcamoutH\NULR\ETXcamB\b\n\
       \\ACKoutput"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
@@ -124,7 +123,7 @@ instance Data.ProtoLens.Message Output where
           = Data.ProtoLens.FieldDescriptor
               "cpu"
               (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
-                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.CpuDt.CpuOut)
+                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.Cpudt.Cpuout)
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'cpu")) ::
               Data.ProtoLens.FieldDescriptor Output
@@ -132,7 +131,7 @@ instance Data.ProtoLens.Message Output where
           = Data.ProtoLens.FieldDescriptor
               "cam"
               (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
-                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.RaspCamDt.RaspCamOut)
+                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.Raspcamdt.Raspcamout)
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'cam")) ::
               Data.ProtoLens.FieldDescriptor Output
@@ -230,7 +229,7 @@ instance Control.DeepSeq.NFData Output'Output where
   rnf (Output'Cpu x__) = Control.DeepSeq.rnf x__
   rnf (Output'Cam x__) = Control.DeepSeq.rnf x__
 _Output'Cpu ::
-  Data.ProtoLens.Prism.Prism' Output'Output Proto.Sensors.CpuDt.CpuOut
+  Data.ProtoLens.Prism.Prism' Output'Output Proto.Sensors.Cpudt.Cpuout
 _Output'Cpu
   = Data.ProtoLens.Prism.prism'
       Output'Cpu
@@ -239,7 +238,7 @@ _Output'Cpu
               (Output'Cpu p__val) -> Prelude.Just p__val
               _otherwise -> Prelude.Nothing)
 _Output'Cam ::
-  Data.ProtoLens.Prism.Prism' Output'Output Proto.Sensors.RaspCamDt.RaspCamOut
+  Data.ProtoLens.Prism.Prism' Output'Output Proto.Sensors.Raspcamdt.Raspcamout
 _Output'Cam
   = Data.ProtoLens.Prism.prism'
       Output'Cam
@@ -249,67 +248,41 @@ _Output'Cam
               _otherwise -> Prelude.Nothing)
 {- | Fields :
      
-         * 'Proto.SensorDt_Fields.timestamp' @:: Lens' SensorOut Proto.Google.Protobuf.Timestamp.Timestamp@
-         * 'Proto.SensorDt_Fields.maybe'timestamp' @:: Lens' SensorOut (Prelude.Maybe Proto.Google.Protobuf.Timestamp.Timestamp)@
-         * 'Proto.SensorDt_Fields.outputs' @:: Lens' SensorOut [Output]@
-         * 'Proto.SensorDt_Fields.vec'outputs' @:: Lens' SensorOut (Data.Vector.Vector Output)@ -}
-data SensorOut
-  = SensorOut'_constructor {_SensorOut'timestamp :: !(Prelude.Maybe Proto.Google.Protobuf.Timestamp.Timestamp),
-                            _SensorOut'outputs :: !(Data.Vector.Vector Output),
-                            _SensorOut'_unknownFields :: !Data.ProtoLens.FieldSet}
+         * 'Proto.Sensordt_Fields.outputs' @:: Lens' Sensorout [Output]@
+         * 'Proto.Sensordt_Fields.vec'outputs' @:: Lens' Sensorout (Data.Vector.Vector Output)@ -}
+data Sensorout
+  = Sensorout'_constructor {_Sensorout'outputs :: !(Data.Vector.Vector Output),
+                            _Sensorout'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
-instance Prelude.Show SensorOut where
+instance Prelude.Show Sensorout where
   showsPrec _ __x __s
     = Prelude.showChar
         '{'
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
-instance Data.ProtoLens.Field.HasField SensorOut "timestamp" Proto.Google.Protobuf.Timestamp.Timestamp where
+instance Data.ProtoLens.Field.HasField Sensorout "outputs" [Output] where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _SensorOut'timestamp
-           (\ x__ y__ -> x__ {_SensorOut'timestamp = y__}))
-        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Data.ProtoLens.Field.HasField SensorOut "maybe'timestamp" (Prelude.Maybe Proto.Google.Protobuf.Timestamp.Timestamp) where
-  fieldOf _
-    = (Prelude..)
-        (Lens.Family2.Unchecked.lens
-           _SensorOut'timestamp
-           (\ x__ y__ -> x__ {_SensorOut'timestamp = y__}))
-        Prelude.id
-instance Data.ProtoLens.Field.HasField SensorOut "outputs" [Output] where
-  fieldOf _
-    = (Prelude..)
-        (Lens.Family2.Unchecked.lens
-           _SensorOut'outputs (\ x__ y__ -> x__ {_SensorOut'outputs = y__}))
+           _Sensorout'outputs (\ x__ y__ -> x__ {_Sensorout'outputs = y__}))
         (Lens.Family2.Unchecked.lens
            Data.Vector.Generic.toList
            (\ _ y__ -> Data.Vector.Generic.fromList y__))
-instance Data.ProtoLens.Field.HasField SensorOut "vec'outputs" (Data.Vector.Vector Output) where
+instance Data.ProtoLens.Field.HasField Sensorout "vec'outputs" (Data.Vector.Vector Output) where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _SensorOut'outputs (\ x__ y__ -> x__ {_SensorOut'outputs = y__}))
+           _Sensorout'outputs (\ x__ y__ -> x__ {_Sensorout'outputs = y__}))
         Prelude.id
-instance Data.ProtoLens.Message SensorOut where
-  messageName _ = Data.Text.pack "sensorDt.SensorOut"
+instance Data.ProtoLens.Message Sensorout where
+  messageName _ = Data.Text.pack "sensordt.Sensorout"
   packedMessageDescriptor _
     = "\n\
-      \\tSensorOut\DC28\n\
-      \\ttimestamp\CAN\SOH \SOH(\v2\SUB.google.protobuf.TimestampR\ttimestamp\DC2*\n\
-      \\aoutputs\CAN\STX \ETX(\v2\DLE.sensorDt.OutputR\aoutputs"
+      \\tSensorout\DC2*\n\
+      \\aoutputs\CAN\STX \ETX(\v2\DLE.sensordt.OutputR\aoutputs"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
-        timestamp__field_descriptor
-          = Data.ProtoLens.FieldDescriptor
-              "timestamp"
-              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
-                 Data.ProtoLens.FieldTypeDescriptor Proto.Google.Protobuf.Timestamp.Timestamp)
-              (Data.ProtoLens.OptionalField
-                 (Data.ProtoLens.Field.field @"maybe'timestamp")) ::
-              Data.ProtoLens.FieldDescriptor SensorOut
         outputs__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "outputs"
@@ -317,26 +290,24 @@ instance Data.ProtoLens.Message SensorOut where
                  Data.ProtoLens.FieldTypeDescriptor Output)
               (Data.ProtoLens.RepeatedField
                  Data.ProtoLens.Unpacked (Data.ProtoLens.Field.field @"outputs")) ::
-              Data.ProtoLens.FieldDescriptor SensorOut
+              Data.ProtoLens.FieldDescriptor Sensorout
       in
         Data.Map.fromList
-          [(Data.ProtoLens.Tag 1, timestamp__field_descriptor),
-           (Data.ProtoLens.Tag 2, outputs__field_descriptor)]
+          [(Data.ProtoLens.Tag 2, outputs__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
-        _SensorOut'_unknownFields
-        (\ x__ y__ -> x__ {_SensorOut'_unknownFields = y__})
+        _Sensorout'_unknownFields
+        (\ x__ y__ -> x__ {_Sensorout'_unknownFields = y__})
   defMessage
-    = SensorOut'_constructor
-        {_SensorOut'timestamp = Prelude.Nothing,
-         _SensorOut'outputs = Data.Vector.Generic.empty,
-         _SensorOut'_unknownFields = []}
+    = Sensorout'_constructor
+        {_Sensorout'outputs = Data.Vector.Generic.empty,
+         _Sensorout'_unknownFields = []}
   parseMessage
     = let
         loop ::
-          SensorOut
+          Sensorout
           -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld Output
-             -> Data.ProtoLens.Encoding.Bytes.Parser SensorOut
+             -> Data.ProtoLens.Encoding.Bytes.Parser Sensorout
         loop x mutable'outputs
           = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                if end then
@@ -360,15 +331,6 @@ instance Data.ProtoLens.Message SensorOut where
                else
                    do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                       case tag of
-                        10
-                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                           Data.ProtoLens.Encoding.Bytes.isolate
-                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
-                                       "timestamp"
-                                loop
-                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"timestamp") y x)
-                                  mutable'outputs
                         18
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
                                         (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -391,119 +353,92 @@ instance Data.ProtoLens.Message SensorOut where
           (do mutable'outputs <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                    Data.ProtoLens.Encoding.Growing.new
               loop Data.ProtoLens.defMessage mutable'outputs)
-          "SensorOut"
+          "Sensorout"
   buildMessage
     = \ _x
         -> (Data.Monoid.<>)
-             (case
-                  Lens.Family2.view
-                    (Data.ProtoLens.Field.field @"maybe'timestamp") _x
-              of
-                Prelude.Nothing -> Data.Monoid.mempty
-                (Prelude.Just _v)
-                  -> (Data.Monoid.<>)
-                       (Data.ProtoLens.Encoding.Bytes.putVarInt 10)
-                       ((Prelude..)
-                          (\ bs
-                             -> (Data.Monoid.<>)
-                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                  (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                          Data.ProtoLens.encodeMessage _v))
-             ((Data.Monoid.<>)
-                (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                   (\ _v
-                      -> (Data.Monoid.<>)
-                           (Data.ProtoLens.Encoding.Bytes.putVarInt 18)
-                           ((Prelude..)
-                              (\ bs
-                                 -> (Data.Monoid.<>)
-                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                      (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                              Data.ProtoLens.encodeMessage _v))
-                   (Lens.Family2.view (Data.ProtoLens.Field.field @"vec'outputs") _x))
-                (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                   (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
-instance Control.DeepSeq.NFData SensorOut where
+             (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                (\ _v
+                   -> (Data.Monoid.<>)
+                        (Data.ProtoLens.Encoding.Bytes.putVarInt 18)
+                        ((Prelude..)
+                           (\ bs
+                              -> (Data.Monoid.<>)
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                   (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                           Data.ProtoLens.encodeMessage _v))
+                (Lens.Family2.view (Data.ProtoLens.Field.field @"vec'outputs") _x))
+             (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                (Lens.Family2.view Data.ProtoLens.unknownFields _x))
+instance Control.DeepSeq.NFData Sensorout where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
-             (_SensorOut'_unknownFields x__)
-             (Control.DeepSeq.deepseq
-                (_SensorOut'timestamp x__)
-                (Control.DeepSeq.deepseq (_SensorOut'outputs x__) ()))
+             (_Sensorout'_unknownFields x__)
+             (Control.DeepSeq.deepseq (_Sensorout'outputs x__) ())
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \\SOsensorDt.proto\DC2\bsensorDt\SUB\ETBsensors/raspCamDt.proto\SUB\DC3sensors/cpuDt.proto\SUB\USgoogle/protobuf/timestamp.proto\"p\n\
+    \\SOsensordt.proto\DC2\bsensordt\SUB\ETBsensors/raspcamdt.proto\SUB\DC3sensors/cpudt.proto\"p\n\
     \\ACKOutput\DC2)\n\
-    \\ETXcpu\CAN\SOH \SOH(\v2\NAK.sensors.cpuDt.CpuOutH\NULR\ETXcpu\DC21\n\
-    \\ETXcam\CAN\STX \SOH(\v2\GS.sensors.raspCamDt.RaspCamOutH\NULR\ETXcamB\b\n\
-    \\ACKoutput\"q\n\
-    \\tSensorOut\DC28\n\
-    \\ttimestamp\CAN\SOH \SOH(\v2\SUB.google.protobuf.TimestampR\ttimestamp\DC2*\n\
-    \\aoutputs\CAN\STX \ETX(\v2\DLE.sensorDt.OutputR\aoutputsJ\243\STX\n\
-    \\ACK\DC2\EOT\SOH\NUL\DC3\SOH\n\
+    \\ETXcpu\CAN\SOH \SOH(\v2\NAK.sensors.cpudt.CpuoutH\NULR\ETXcpu\DC21\n\
+    \\ETXcam\CAN\STX \SOH(\v2\GS.sensors.raspcamdt.RaspcamoutH\NULR\ETXcamB\b\n\
+    \\ACKoutput\"7\n\
+    \\tSensorout\DC2*\n\
+    \\aoutputs\CAN\STX \ETX(\v2\DLE.sensordt.OutputR\aoutputsJ\177\STX\n\
+    \\ACK\DC2\EOT\SOH\NUL\DC1\SOH\n\
     \\b\n\
     \\SOH\f\DC2\ETX\SOH\NUL\DC2\n\
     \\t\n\
     \\STX\ETX\NUL\DC2\ETX\ETX\NUL!\n\
     \\t\n\
     \\STX\ETX\SOH\DC2\ETX\EOT\NUL\GS\n\
-    \\t\n\
-    \\STX\ETX\STX\DC2\ETX\ENQ\NUL)\n\
     \\b\n\
-    \\SOH\STX\DC2\ETX\a\NUL\DC1\n\
+    \\SOH\STX\DC2\ETX\ACK\NUL\DC1\n\
     \\n\
     \\n\
-    \\STX\EOT\NUL\DC2\EOT\t\NUL\SO\SOH\n\
+    \\STX\EOT\NUL\DC2\EOT\b\NUL\r\SOH\n\
     \\n\
     \\n\
-    \\ETX\EOT\NUL\SOH\DC2\ETX\t\b\SO\n\
+    \\ETX\EOT\NUL\SOH\DC2\ETX\b\b\SO\n\
     \\f\n\
-    \\EOT\EOT\NUL\b\NUL\DC2\EOT\n\
-    \\ETX\r\EOT\n\
+    \\EOT\EOT\NUL\b\NUL\DC2\EOT\t\ETX\f\EOT\n\
     \\f\n\
-    \\ENQ\EOT\NUL\b\NUL\SOH\DC2\ETX\n\
-    \\t\SI\n\
+    \\ENQ\EOT\NUL\b\NUL\SOH\DC2\ETX\t\t\SI\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\NUL\DC2\ETX\v\ACK#\n\
+    \\EOT\EOT\NUL\STX\NUL\DC2\ETX\n\
+    \\ACK#\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ACK\DC2\ETX\v\ACK\SUB\n\
+    \\ENQ\EOT\NUL\STX\NUL\ACK\DC2\ETX\n\
+    \\ACK\SUB\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX\v\ESC\RS\n\
+    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX\n\
+    \\ESC\RS\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX\v!\"\n\
+    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX\n\
+    \!\"\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\SOH\DC2\ETX\f\ACK+\n\
+    \\EOT\EOT\NUL\STX\SOH\DC2\ETX\v\ACK+\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ACK\DC2\ETX\f\ACK\"\n\
+    \\ENQ\EOT\NUL\STX\SOH\ACK\DC2\ETX\v\ACK\"\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX\f#&\n\
+    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX\v#&\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX\f)*\n\
+    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX\v)*\n\
     \\n\
     \\n\
-    \\STX\EOT\SOH\DC2\EOT\DLE\NUL\DC3\SOH\n\
+    \\STX\EOT\SOH\DC2\EOT\SI\NUL\DC1\SOH\n\
     \\n\
     \\n\
-    \\ETX\EOT\SOH\SOH\DC2\ETX\DLE\b\DC1\n\
+    \\ETX\EOT\SOH\SOH\DC2\ETX\SI\b\DC1\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\NUL\DC2\ETX\DC1\ETX+\n\
+    \\EOT\EOT\SOH\STX\NUL\DC2\ETX\DLE\ETX\US\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ACK\DC2\ETX\DC1\ETX\FS\n\
+    \\ENQ\EOT\SOH\STX\NUL\EOT\DC2\ETX\DLE\ETX\v\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETX\DC1\GS&\n\
+    \\ENQ\EOT\SOH\STX\NUL\ACK\DC2\ETX\DLE\f\DC2\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETX\DC1)*\n\
-    \\v\n\
-    \\EOT\EOT\SOH\STX\SOH\DC2\ETX\DC2\ETX\US\n\
+    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETX\DLE\DC3\SUB\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\EOT\DC2\ETX\DC2\ETX\v\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ACK\DC2\ETX\DC2\f\DC2\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETX\DC2\DC3\SUB\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETX\DC2\GS\RSb\ACKproto3"
+    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETX\DLE\GS\RSb\ACKproto3"

@@ -56,6 +56,7 @@ dependencies:
 - vector
 - network-uri
 - proto-lens
+- proto-lens-jsonpb
 - proto-lens-runtime
 - proto-lens-protobuf-types
 

@@ -1,10 +1,10 @@
-{- This file was auto-generated from configDt.proto by the proto-lens-protoc program. -}
+{- This file was auto-generated from configdt.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings, DerivingStrategies#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
-module Proto.ConfigDt (
-        DeviceConf(), ModuleConf(), Time()
+module Proto.Configdt (
+        Devconf(), Modconf(), Time()
     ) where
 import qualified Data.ProtoLens.Runtime.Control.DeepSeq as Control.DeepSeq
 import qualified Data.ProtoLens.Runtime.Data.ProtoLens.Prism as Data.ProtoLens.Prism
@@ -31,198 +31,188 @@ import qualified Data.ProtoLens.Runtime.Data.Vector as Data.Vector
 import qualified Data.ProtoLens.Runtime.Data.Vector.Generic as Data.Vector.Generic
 import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unboxed
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
-import qualified Proto.Sensors.CpuDt
-import qualified Proto.Sensors.RaspCamDt
+import qualified Proto.Sensors.Cpudt
+import qualified Proto.Sensors.Raspcamdt
 {- | Fields :
      
-         * 'Proto.ConfigDt_Fields.mqttHost' @:: Lens' DeviceConf Data.Text.Text@
-         * 'Proto.ConfigDt_Fields.mqttPort' @:: Lens' DeviceConf Data.Int.Int32@
-         * 'Proto.ConfigDt_Fields.mqttUser' @:: Lens' DeviceConf Data.Text.Text@
-         * 'Proto.ConfigDt_Fields.mqttPass' @:: Lens' DeviceConf Data.Text.Text@
-         * 'Proto.ConfigDt_Fields.burstInterval' @:: Lens' DeviceConf Data.Int.Int32@
-         * 'Proto.ConfigDt_Fields.burstCount' @:: Lens' DeviceConf Data.Int.Int32@
-         * 'Proto.ConfigDt_Fields.wakeOn' @:: Lens' DeviceConf [Time]@
-         * 'Proto.ConfigDt_Fields.vec'wakeOn' @:: Lens' DeviceConf (Data.Vector.Vector Time)@
-         * 'Proto.ConfigDt_Fields.sensorConf' @:: Lens' DeviceConf ModuleConf@
-         * 'Proto.ConfigDt_Fields.maybe'sensorConf' @:: Lens' DeviceConf (Prelude.Maybe ModuleConf)@ -}
-data DeviceConf
-  = DeviceConf'_constructor {_DeviceConf'mqttHost :: !Data.Text.Text,
-                             _DeviceConf'mqttPort :: !Data.Int.Int32,
-                             _DeviceConf'mqttUser :: !Data.Text.Text,
-                             _DeviceConf'mqttPass :: !Data.Text.Text,
-                             _DeviceConf'burstInterval :: !Data.Int.Int32,
-                             _DeviceConf'burstCount :: !Data.Int.Int32,
-                             _DeviceConf'wakeOn :: !(Data.Vector.Vector Time),
-                             _DeviceConf'sensorConf :: !(Prelude.Maybe ModuleConf),
-                             _DeviceConf'_unknownFields :: !Data.ProtoLens.FieldSet}
+         * 'Proto.Configdt_Fields.mqttHost' @:: Lens' Devconf Data.Text.Text@
+         * 'Proto.Configdt_Fields.mqttPort' @:: Lens' Devconf Data.Int.Int32@
+         * 'Proto.Configdt_Fields.mqttUser' @:: Lens' Devconf Data.Text.Text@
+         * 'Proto.Configdt_Fields.mqttPass' @:: Lens' Devconf Data.Text.Text@
+         * 'Proto.Configdt_Fields.burstInterval' @:: Lens' Devconf Data.Int.Int32@
+         * 'Proto.Configdt_Fields.burstCount' @:: Lens' Devconf Data.Int.Int32@
+         * 'Proto.Configdt_Fields.wakeOn' @:: Lens' Devconf [Time]@
+         * 'Proto.Configdt_Fields.vec'wakeOn' @:: Lens' Devconf (Data.Vector.Vector Time)@
+         * 'Proto.Configdt_Fields.sensorConf' @:: Lens' Devconf Modconf@
+         * 'Proto.Configdt_Fields.maybe'sensorConf' @:: Lens' Devconf (Prelude.Maybe Modconf)@ -}
+data Devconf
+  = Devconf'_constructor {_Devconf'mqttHost :: !Data.Text.Text,
+                          _Devconf'mqttPort :: !Data.Int.Int32,
+                          _Devconf'mqttUser :: !Data.Text.Text,
+                          _Devconf'mqttPass :: !Data.Text.Text,
+                          _Devconf'burstInterval :: !Data.Int.Int32,
+                          _Devconf'burstCount :: !Data.Int.Int32,
+                          _Devconf'wakeOn :: !(Data.Vector.Vector Time),
+                          _Devconf'sensorConf :: !(Prelude.Maybe Modconf),
+                          _Devconf'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
-instance Prelude.Show DeviceConf where
+instance Prelude.Show Devconf where
   showsPrec _ __x __s
     = Prelude.showChar
         '{'
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
-instance Data.ProtoLens.Field.HasField DeviceConf "mqttHost" Data.Text.Text where
+instance Data.ProtoLens.Field.HasField Devconf "mqttHost" Data.Text.Text where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'mqttHost
-           (\ x__ y__ -> x__ {_DeviceConf'mqttHost = y__}))
+           _Devconf'mqttHost (\ x__ y__ -> x__ {_Devconf'mqttHost = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField DeviceConf "mqttPort" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Devconf "mqttPort" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'mqttPort
-           (\ x__ y__ -> x__ {_DeviceConf'mqttPort = y__}))
+           _Devconf'mqttPort (\ x__ y__ -> x__ {_Devconf'mqttPort = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField DeviceConf "mqttUser" Data.Text.Text where
+instance Data.ProtoLens.Field.HasField Devconf "mqttUser" Data.Text.Text where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'mqttUser
-           (\ x__ y__ -> x__ {_DeviceConf'mqttUser = y__}))
+           _Devconf'mqttUser (\ x__ y__ -> x__ {_Devconf'mqttUser = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField DeviceConf "mqttPass" Data.Text.Text where
+instance Data.ProtoLens.Field.HasField Devconf "mqttPass" Data.Text.Text where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'mqttPass
-           (\ x__ y__ -> x__ {_DeviceConf'mqttPass = y__}))
+           _Devconf'mqttPass (\ x__ y__ -> x__ {_Devconf'mqttPass = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField DeviceConf "burstInterval" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Devconf "burstInterval" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'burstInterval
-           (\ x__ y__ -> x__ {_DeviceConf'burstInterval = y__}))
+           _Devconf'burstInterval
+           (\ x__ y__ -> x__ {_Devconf'burstInterval = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField DeviceConf "burstCount" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Devconf "burstCount" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'burstCount
-           (\ x__ y__ -> x__ {_DeviceConf'burstCount = y__}))
+           _Devconf'burstCount (\ x__ y__ -> x__ {_Devconf'burstCount = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField DeviceConf "wakeOn" [Time] where
+instance Data.ProtoLens.Field.HasField Devconf "wakeOn" [Time] where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'wakeOn (\ x__ y__ -> x__ {_DeviceConf'wakeOn = y__}))
+           _Devconf'wakeOn (\ x__ y__ -> x__ {_Devconf'wakeOn = y__}))
         (Lens.Family2.Unchecked.lens
            Data.Vector.Generic.toList
            (\ _ y__ -> Data.Vector.Generic.fromList y__))
-instance Data.ProtoLens.Field.HasField DeviceConf "vec'wakeOn" (Data.Vector.Vector Time) where
+instance Data.ProtoLens.Field.HasField Devconf "vec'wakeOn" (Data.Vector.Vector Time) where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'wakeOn (\ x__ y__ -> x__ {_DeviceConf'wakeOn = y__}))
+           _Devconf'wakeOn (\ x__ y__ -> x__ {_Devconf'wakeOn = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField DeviceConf "sensorConf" ModuleConf where
+instance Data.ProtoLens.Field.HasField Devconf "sensorConf" Modconf where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'sensorConf
-           (\ x__ y__ -> x__ {_DeviceConf'sensorConf = y__}))
+           _Devconf'sensorConf (\ x__ y__ -> x__ {_Devconf'sensorConf = y__}))
         (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Data.ProtoLens.Field.HasField DeviceConf "maybe'sensorConf" (Prelude.Maybe ModuleConf) where
+instance Data.ProtoLens.Field.HasField Devconf "maybe'sensorConf" (Prelude.Maybe Modconf) where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _DeviceConf'sensorConf
-           (\ x__ y__ -> x__ {_DeviceConf'sensorConf = y__}))
+           _Devconf'sensorConf (\ x__ y__ -> x__ {_Devconf'sensorConf = y__}))
         Prelude.id
-instance Data.ProtoLens.Message DeviceConf where
-  messageName _ = Data.Text.pack "configDt.DeviceConf"
+instance Data.ProtoLens.Message Devconf where
+  messageName _ = Data.Text.pack "configdt.Devconf"
   packedMessageDescriptor _
     = "\n\
-      \\n\
-      \DeviceConf\DC2\SUB\n\
-      \\bmqttHost\CAN\SOH \SOH(\tR\bmqttHost\DC2\SUB\n\
-      \\bmqttPort\CAN\STX \SOH(\ENQR\bmqttPort\DC2\SUB\n\
-      \\bmqttUser\CAN\ETX \SOH(\tR\bmqttUser\DC2\SUB\n\
-      \\bmqttPass\CAN\EOT \SOH(\tR\bmqttPass\DC2$\n\
-      \\rburstInterval\CAN\ENQ \SOH(\ENQR\rburstInterval\DC2\RS\n\
-      \\n\
-      \burstCount\CAN\ACK \SOH(\ENQR\n\
-      \burstCount\DC2&\n\
-      \\ACKwakeOn\CAN\a \ETX(\v2\SO.configDt.TimeR\ACKwakeOn\DC24\n\
-      \\n\
-      \sensorConf\CAN\b \SOH(\v2\DC4.configDt.ModuleConfR\n\
+      \\aDevconf\DC2\ESC\n\
+      \\tmqtt_host\CAN\SOH \SOH(\tR\bmqttHost\DC2\ESC\n\
+      \\tmqtt_port\CAN\STX \SOH(\ENQR\bmqttPort\DC2\ESC\n\
+      \\tmqtt_user\CAN\ETX \SOH(\tR\bmqttUser\DC2\ESC\n\
+      \\tmqtt_pass\CAN\EOT \SOH(\tR\bmqttPass\DC2%\n\
+      \\SOburst_interval\CAN\ENQ \SOH(\ENQR\rburstInterval\DC2\US\n\
+      \\vburst_count\CAN\ACK \SOH(\ENQR\n\
+      \burstCount\DC2'\n\
+      \\awake_on\CAN\a \ETX(\v2\SO.configdt.TimeR\ACKwakeOn\DC22\n\
+      \\vsensor_conf\CAN\b \SOH(\v2\DC1.configdt.ModconfR\n\
       \sensorConf"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
         mqttHost__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "mqttHost"
+              "mqtt_host"
               (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                  Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"mqttHost")) ::
-              Data.ProtoLens.FieldDescriptor DeviceConf
+              Data.ProtoLens.FieldDescriptor Devconf
         mqttPort__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "mqttPort"
+              "mqtt_port"
               (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                  Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"mqttPort")) ::
-              Data.ProtoLens.FieldDescriptor DeviceConf
+              Data.ProtoLens.FieldDescriptor Devconf
         mqttUser__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "mqttUser"
+              "mqtt_user"
               (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                  Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"mqttUser")) ::
-              Data.ProtoLens.FieldDescriptor DeviceConf
+              Data.ProtoLens.FieldDescriptor Devconf
         mqttPass__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "mqttPass"
+              "mqtt_pass"
               (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                  Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"mqttPass")) ::
-              Data.ProtoLens.FieldDescriptor DeviceConf
+              Data.ProtoLens.FieldDescriptor Devconf
         burstInterval__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "burstInterval"
+              "burst_interval"
               (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                  Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"burstInterval")) ::
-              Data.ProtoLens.FieldDescriptor DeviceConf
+              Data.ProtoLens.FieldDescriptor Devconf
         burstCount__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "burstCount"
+              "burst_count"
               (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                  Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"burstCount")) ::
-              Data.ProtoLens.FieldDescriptor DeviceConf
+              Data.ProtoLens.FieldDescriptor Devconf
         wakeOn__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "wakeOn"
+              "wake_on"
               (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                  Data.ProtoLens.FieldTypeDescriptor Time)
               (Data.ProtoLens.RepeatedField
                  Data.ProtoLens.Unpacked (Data.ProtoLens.Field.field @"wakeOn")) ::
-              Data.ProtoLens.FieldDescriptor DeviceConf
+              Data.ProtoLens.FieldDescriptor Devconf
         sensorConf__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "sensorConf"
+              "sensor_conf"
               (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
-                 Data.ProtoLens.FieldTypeDescriptor ModuleConf)
+                 Data.ProtoLens.FieldTypeDescriptor Modconf)
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'sensorConf")) ::
-              Data.ProtoLens.FieldDescriptor DeviceConf
+              Data.ProtoLens.FieldDescriptor Devconf
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, mqttHost__field_descriptor),
@@ -235,25 +225,25 @@ instance Data.ProtoLens.Message DeviceConf where
            (Data.ProtoLens.Tag 8, sensorConf__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
-        _DeviceConf'_unknownFields
-        (\ x__ y__ -> x__ {_DeviceConf'_unknownFields = y__})
+        _Devconf'_unknownFields
+        (\ x__ y__ -> x__ {_Devconf'_unknownFields = y__})
   defMessage
-    = DeviceConf'_constructor
-        {_DeviceConf'mqttHost = Data.ProtoLens.fieldDefault,
-         _DeviceConf'mqttPort = Data.ProtoLens.fieldDefault,
-         _DeviceConf'mqttUser = Data.ProtoLens.fieldDefault,
-         _DeviceConf'mqttPass = Data.ProtoLens.fieldDefault,
-         _DeviceConf'burstInterval = Data.ProtoLens.fieldDefault,
-         _DeviceConf'burstCount = Data.ProtoLens.fieldDefault,
-         _DeviceConf'wakeOn = Data.Vector.Generic.empty,
-         _DeviceConf'sensorConf = Prelude.Nothing,
-         _DeviceConf'_unknownFields = []}
+    = Devconf'_constructor
+        {_Devconf'mqttHost = Data.ProtoLens.fieldDefault,
+         _Devconf'mqttPort = Data.ProtoLens.fieldDefault,
+         _Devconf'mqttUser = Data.ProtoLens.fieldDefault,
+         _Devconf'mqttPass = Data.ProtoLens.fieldDefault,
+         _Devconf'burstInterval = Data.ProtoLens.fieldDefault,
+         _Devconf'burstCount = Data.ProtoLens.fieldDefault,
+         _Devconf'wakeOn = Data.Vector.Generic.empty,
+         _Devconf'sensorConf = Prelude.Nothing,
+         _Devconf'_unknownFields = []}
   parseMessage
     = let
         loop ::
-          DeviceConf
+          Devconf
           -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld Time
-             -> Data.ProtoLens.Encoding.Bytes.Parser DeviceConf
+             -> Data.ProtoLens.Encoding.Bytes.Parser Devconf
         loop x mutable'wakeOn
           = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                if end then
@@ -287,7 +277,7 @@ instance Data.ProtoLens.Message DeviceConf where
                                                 (Prelude.Left err)
                                                   -> Prelude.Left (Prelude.show err)
                                                 (Prelude.Right r) -> Prelude.Right r))
-                                       "mqttHost"
+                                       "mqtt_host"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"mqttHost") y x)
                                   mutable'wakeOn
@@ -296,7 +286,7 @@ instance Data.ProtoLens.Message DeviceConf where
                                        (Prelude.fmap
                                           Prelude.fromIntegral
                                           Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                       "mqttPort"
+                                       "mqtt_port"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"mqttPort") y x)
                                   mutable'wakeOn
@@ -310,7 +300,7 @@ instance Data.ProtoLens.Message DeviceConf where
                                                 (Prelude.Left err)
                                                   -> Prelude.Left (Prelude.show err)
                                                 (Prelude.Right r) -> Prelude.Right r))
-                                       "mqttUser"
+                                       "mqtt_user"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"mqttUser") y x)
                                   mutable'wakeOn
@@ -324,7 +314,7 @@ instance Data.ProtoLens.Message DeviceConf where
                                                 (Prelude.Left err)
                                                   -> Prelude.Left (Prelude.show err)
                                                 (Prelude.Right r) -> Prelude.Right r))
-                                       "mqttPass"
+                                       "mqtt_pass"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"mqttPass") y x)
                                   mutable'wakeOn
@@ -333,7 +323,7 @@ instance Data.ProtoLens.Message DeviceConf where
                                        (Prelude.fmap
                                           Prelude.fromIntegral
                                           Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                       "burstInterval"
+                                       "burst_interval"
                                 loop
                                   (Lens.Family2.set
                                      (Data.ProtoLens.Field.field @"burstInterval") y x)
@@ -343,7 +333,7 @@ instance Data.ProtoLens.Message DeviceConf where
                                        (Prelude.fmap
                                           Prelude.fromIntegral
                                           Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                       "burstCount"
+                                       "burst_count"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"burstCount") y x)
                                   mutable'wakeOn
@@ -353,7 +343,7 @@ instance Data.ProtoLens.Message DeviceConf where
                                             Data.ProtoLens.Encoding.Bytes.isolate
                                               (Prelude.fromIntegral len)
                                               Data.ProtoLens.parseMessage)
-                                        "wakeOn"
+                                        "wake_on"
                                 v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                        (Data.ProtoLens.Encoding.Growing.append mutable'wakeOn y)
                                 loop x v
@@ -362,7 +352,7 @@ instance Data.ProtoLens.Message DeviceConf where
                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                            Data.ProtoLens.Encoding.Bytes.isolate
                                              (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
-                                       "sensorConf"
+                                       "sensor_conf"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"sensorConf") y x)
                                   mutable'wakeOn
@@ -378,7 +368,7 @@ instance Data.ProtoLens.Message DeviceConf where
           (do mutable'wakeOn <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                   Data.ProtoLens.Encoding.Growing.new
               loop Data.ProtoLens.defMessage mutable'wakeOn)
-          "DeviceConf"
+          "Devconf"
   buildMessage
     = \ _x
         -> (Data.Monoid.<>)
@@ -500,110 +490,108 @@ instance Data.ProtoLens.Message DeviceConf where
                                                Data.ProtoLens.encodeMessage _v))
                                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
                                      (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))))))
-instance Control.DeepSeq.NFData DeviceConf where
+instance Control.DeepSeq.NFData Devconf where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
-             (_DeviceConf'_unknownFields x__)
+             (_Devconf'_unknownFields x__)
              (Control.DeepSeq.deepseq
-                (_DeviceConf'mqttHost x__)
+                (_Devconf'mqttHost x__)
                 (Control.DeepSeq.deepseq
-                   (_DeviceConf'mqttPort x__)
+                   (_Devconf'mqttPort x__)
                    (Control.DeepSeq.deepseq
-                      (_DeviceConf'mqttUser x__)
+                      (_Devconf'mqttUser x__)
                       (Control.DeepSeq.deepseq
-                         (_DeviceConf'mqttPass x__)
+                         (_Devconf'mqttPass x__)
                          (Control.DeepSeq.deepseq
-                            (_DeviceConf'burstInterval x__)
+                            (_Devconf'burstInterval x__)
                             (Control.DeepSeq.deepseq
-                               (_DeviceConf'burstCount x__)
+                               (_Devconf'burstCount x__)
                                (Control.DeepSeq.deepseq
-                                  (_DeviceConf'wakeOn x__)
-                                  (Control.DeepSeq.deepseq (_DeviceConf'sensorConf x__) ()))))))))
+                                  (_Devconf'wakeOn x__)
+                                  (Control.DeepSeq.deepseq (_Devconf'sensorConf x__) ()))))))))
 {- | Fields :
      
-         * 'Proto.ConfigDt_Fields.raspCam' @:: Lens' ModuleConf Proto.Sensors.RaspCamDt.RaspCamOpt@
-         * 'Proto.ConfigDt_Fields.maybe'raspCam' @:: Lens' ModuleConf (Prelude.Maybe Proto.Sensors.RaspCamDt.RaspCamOpt)@
-         * 'Proto.ConfigDt_Fields.cpu' @:: Lens' ModuleConf Proto.Sensors.CpuDt.CpuOpt@
-         * 'Proto.ConfigDt_Fields.maybe'cpu' @:: Lens' ModuleConf (Prelude.Maybe Proto.Sensors.CpuDt.CpuOpt)@ -}
-data ModuleConf
-  = ModuleConf'_constructor {_ModuleConf'raspCam :: !(Prelude.Maybe Proto.Sensors.RaspCamDt.RaspCamOpt),
-                             _ModuleConf'cpu :: !(Prelude.Maybe Proto.Sensors.CpuDt.CpuOpt),
-                             _ModuleConf'_unknownFields :: !Data.ProtoLens.FieldSet}
+         * 'Proto.Configdt_Fields.raspCam' @:: Lens' Modconf Proto.Sensors.Raspcamdt.Raspcamopt@
+         * 'Proto.Configdt_Fields.maybe'raspCam' @:: Lens' Modconf (Prelude.Maybe Proto.Sensors.Raspcamdt.Raspcamopt)@
+         * 'Proto.Configdt_Fields.cpu' @:: Lens' Modconf Proto.Sensors.Cpudt.Cpuopt@
+         * 'Proto.Configdt_Fields.maybe'cpu' @:: Lens' Modconf (Prelude.Maybe Proto.Sensors.Cpudt.Cpuopt)@ -}
+data Modconf
+  = Modconf'_constructor {_Modconf'raspCam :: !(Prelude.Maybe Proto.Sensors.Raspcamdt.Raspcamopt),
+                          _Modconf'cpu :: !(Prelude.Maybe Proto.Sensors.Cpudt.Cpuopt),
+                          _Modconf'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
-instance Prelude.Show ModuleConf where
+instance Prelude.Show Modconf where
   showsPrec _ __x __s
     = Prelude.showChar
         '{'
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
-instance Data.ProtoLens.Field.HasField ModuleConf "raspCam" Proto.Sensors.RaspCamDt.RaspCamOpt where
+instance Data.ProtoLens.Field.HasField Modconf "raspCam" Proto.Sensors.Raspcamdt.Raspcamopt where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _ModuleConf'raspCam (\ x__ y__ -> x__ {_ModuleConf'raspCam = y__}))
+           _Modconf'raspCam (\ x__ y__ -> x__ {_Modconf'raspCam = y__}))
         (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Data.ProtoLens.Field.HasField ModuleConf "maybe'raspCam" (Prelude.Maybe Proto.Sensors.RaspCamDt.RaspCamOpt) where
+instance Data.ProtoLens.Field.HasField Modconf "maybe'raspCam" (Prelude.Maybe Proto.Sensors.Raspcamdt.Raspcamopt) where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _ModuleConf'raspCam (\ x__ y__ -> x__ {_ModuleConf'raspCam = y__}))
+           _Modconf'raspCam (\ x__ y__ -> x__ {_Modconf'raspCam = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField ModuleConf "cpu" Proto.Sensors.CpuDt.CpuOpt where
+instance Data.ProtoLens.Field.HasField Modconf "cpu" Proto.Sensors.Cpudt.Cpuopt where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _ModuleConf'cpu (\ x__ y__ -> x__ {_ModuleConf'cpu = y__}))
+           _Modconf'cpu (\ x__ y__ -> x__ {_Modconf'cpu = y__}))
         (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Data.ProtoLens.Field.HasField ModuleConf "maybe'cpu" (Prelude.Maybe Proto.Sensors.CpuDt.CpuOpt) where
+instance Data.ProtoLens.Field.HasField Modconf "maybe'cpu" (Prelude.Maybe Proto.Sensors.Cpudt.Cpuopt) where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _ModuleConf'cpu (\ x__ y__ -> x__ {_ModuleConf'cpu = y__}))
+           _Modconf'cpu (\ x__ y__ -> x__ {_Modconf'cpu = y__}))
         Prelude.id
-instance Data.ProtoLens.Message ModuleConf where
-  messageName _ = Data.Text.pack "configDt.ModuleConf"
+instance Data.ProtoLens.Message Modconf where
+  messageName _ = Data.Text.pack "configdt.Modconf"
   packedMessageDescriptor _
     = "\n\
-      \\n\
-      \ModuleConf\DC27\n\
-      \\araspCam\CAN\SOH \SOH(\v2\GS.sensors.raspCamDt.RaspCamOptR\araspCam\DC2'\n\
-      \\ETXcpu\CAN\STX \SOH(\v2\NAK.sensors.cpuDt.CpuOptR\ETXcpu"
+      \\aModconf\DC28\n\
+      \\brasp_cam\CAN\SOH \SOH(\v2\GS.sensors.raspcamdt.RaspcamoptR\araspCam\DC2'\n\
+      \\ETXcpu\CAN\STX \SOH(\v2\NAK.sensors.cpudt.CpuoptR\ETXcpu"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
         raspCam__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "raspCam"
+              "rasp_cam"
               (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
-                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.RaspCamDt.RaspCamOpt)
+                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.Raspcamdt.Raspcamopt)
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'raspCam")) ::
-              Data.ProtoLens.FieldDescriptor ModuleConf
+              Data.ProtoLens.FieldDescriptor Modconf
         cpu__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "cpu"
               (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
-                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.CpuDt.CpuOpt)
+                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.Cpudt.Cpuopt)
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'cpu")) ::
-              Data.ProtoLens.FieldDescriptor ModuleConf
+              Data.ProtoLens.FieldDescriptor Modconf
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, raspCam__field_descriptor),
            (Data.ProtoLens.Tag 2, cpu__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
-        _ModuleConf'_unknownFields
-        (\ x__ y__ -> x__ {_ModuleConf'_unknownFields = y__})
+        _Modconf'_unknownFields
+        (\ x__ y__ -> x__ {_Modconf'_unknownFields = y__})
   defMessage
-    = ModuleConf'_constructor
-        {_ModuleConf'raspCam = Prelude.Nothing,
-         _ModuleConf'cpu = Prelude.Nothing, _ModuleConf'_unknownFields = []}
+    = Modconf'_constructor
+        {_Modconf'raspCam = Prelude.Nothing,
+         _Modconf'cpu = Prelude.Nothing, _Modconf'_unknownFields = []}
   parseMessage
     = let
-        loop ::
-          ModuleConf -> Data.ProtoLens.Encoding.Bytes.Parser ModuleConf
+        loop :: Modconf -> Data.ProtoLens.Encoding.Bytes.Parser Modconf
         loop x
           = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                if end then
@@ -627,7 +615,7 @@ instance Data.ProtoLens.Message ModuleConf where
                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                            Data.ProtoLens.Encoding.Bytes.isolate
                                              (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
-                                       "raspCam"
+                                       "rasp_cam"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"raspCam") y x)
                         18
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -644,7 +632,7 @@ instance Data.ProtoLens.Message ModuleConf where
                                      Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
       in
         (Data.ProtoLens.Encoding.Bytes.<?>)
-          (do loop Data.ProtoLens.defMessage) "ModuleConf"
+          (do loop Data.ProtoLens.defMessage) "Modconf"
   buildMessage
     = \ _x
         -> (Data.Monoid.<>)
@@ -679,18 +667,18 @@ instance Data.ProtoLens.Message ModuleConf where
                              Data.ProtoLens.encodeMessage _v))
                 (Data.ProtoLens.Encoding.Wire.buildFieldSet
                    (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
-instance Control.DeepSeq.NFData ModuleConf where
+instance Control.DeepSeq.NFData Modconf where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
-             (_ModuleConf'_unknownFields x__)
+             (_Modconf'_unknownFields x__)
              (Control.DeepSeq.deepseq
-                (_ModuleConf'raspCam x__)
-                (Control.DeepSeq.deepseq (_ModuleConf'cpu x__) ()))
+                (_Modconf'raspCam x__)
+                (Control.DeepSeq.deepseq (_Modconf'cpu x__) ()))
 {- | Fields :
      
-         * 'Proto.ConfigDt_Fields.hour' @:: Lens' Time Data.Int.Int32@
-         * 'Proto.ConfigDt_Fields.minute' @:: Lens' Time Data.Int.Int32@ -}
+         * 'Proto.Configdt_Fields.hour' @:: Lens' Time Data.Int.Int32@
+         * 'Proto.Configdt_Fields.minute' @:: Lens' Time Data.Int.Int32@ -}
 data Time
   = Time'_constructor {_Time'hour :: !Data.Int.Int32,
                        _Time'minute :: !Data.Int.Int32,
@@ -715,7 +703,7 @@ instance Data.ProtoLens.Field.HasField Time "minute" Data.Int.Int32 where
            _Time'minute (\ x__ y__ -> x__ {_Time'minute = y__}))
         Prelude.id
 instance Data.ProtoLens.Message Time where
-  messageName _ = Data.Text.pack "configDt.Time"
+  messageName _ = Data.Text.pack "configdt.Time"
   packedMessageDescriptor _
     = "\n\
       \\EOTTime\DC2\DC2\n\
@@ -831,27 +819,23 @@ instance Control.DeepSeq.NFData Time where
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \\SOconfigDt.proto\DC2\bconfigDt\SUB\ETBsensors/raspCamDt.proto\SUB\DC3sensors/cpuDt.proto\"2\n\
+    \\SOconfigdt.proto\DC2\bconfigdt\SUB\ETBsensors/raspcamdt.proto\SUB\DC3sensors/cpudt.proto\"2\n\
     \\EOTTime\DC2\DC2\n\
     \\EOThour\CAN\SOH \SOH(\ENQR\EOThour\DC2\SYN\n\
-    \\ACKminute\CAN\STX \SOH(\ENQR\ACKminute\"n\n\
-    \\n\
-    \ModuleConf\DC27\n\
-    \\araspCam\CAN\SOH \SOH(\v2\GS.sensors.raspCamDt.RaspCamOptR\araspCam\DC2'\n\
-    \\ETXcpu\CAN\STX \SOH(\v2\NAK.sensors.cpuDt.CpuOptR\ETXcpu\"\160\STX\n\
-    \\n\
-    \DeviceConf\DC2\SUB\n\
-    \\bmqttHost\CAN\SOH \SOH(\tR\bmqttHost\DC2\SUB\n\
-    \\bmqttPort\CAN\STX \SOH(\ENQR\bmqttPort\DC2\SUB\n\
-    \\bmqttUser\CAN\ETX \SOH(\tR\bmqttUser\DC2\SUB\n\
-    \\bmqttPass\CAN\EOT \SOH(\tR\bmqttPass\DC2$\n\
-    \\rburstInterval\CAN\ENQ \SOH(\ENQR\rburstInterval\DC2\RS\n\
-    \\n\
-    \burstCount\CAN\ACK \SOH(\ENQR\n\
-    \burstCount\DC2&\n\
-    \\ACKwakeOn\CAN\a \ETX(\v2\SO.configDt.TimeR\ACKwakeOn\DC24\n\
-    \\n\
-    \sensorConf\CAN\b \SOH(\v2\DC4.configDt.ModuleConfR\n\
+    \\ACKminute\CAN\STX \SOH(\ENQR\ACKminute\"l\n\
+    \\aModconf\DC28\n\
+    \\brasp_cam\CAN\SOH \SOH(\v2\GS.sensors.raspcamdt.RaspcamoptR\araspCam\DC2'\n\
+    \\ETXcpu\CAN\STX \SOH(\v2\NAK.sensors.cpudt.CpuoptR\ETXcpu\"\162\STX\n\
+    \\aDevconf\DC2\ESC\n\
+    \\tmqtt_host\CAN\SOH \SOH(\tR\bmqttHost\DC2\ESC\n\
+    \\tmqtt_port\CAN\STX \SOH(\ENQR\bmqttPort\DC2\ESC\n\
+    \\tmqtt_user\CAN\ETX \SOH(\tR\bmqttUser\DC2\ESC\n\
+    \\tmqtt_pass\CAN\EOT \SOH(\tR\bmqttPass\DC2%\n\
+    \\SOburst_interval\CAN\ENQ \SOH(\ENQR\rburstInterval\DC2\US\n\
+    \\vburst_count\CAN\ACK \SOH(\ENQR\n\
+    \burstCount\DC2'\n\
+    \\awake_on\CAN\a \ETX(\v2\SO.configdt.TimeR\ACKwakeOn\DC22\n\
+    \\vsensor_conf\CAN\b \SOH(\v2\DC1.configdt.ModconfR\n\
     \sensorConfJ\156\ACK\n\
     \\ACK\DC2\EOT\NUL\NUL\SUB\SOH\n\
     \\b\n\
@@ -890,15 +874,15 @@ packedFileDescriptor
     \\STX\EOT\SOH\DC2\EOT\f\NUL\SI\SOH\n\
     \\n\
     \\n\
-    \\ETX\EOT\SOH\SOH\DC2\ETX\f\b\DC2\n\
+    \\ETX\EOT\SOH\SOH\DC2\ETX\f\b\SI\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\NUL\DC2\ETX\r\ETX,\n\
+    \\EOT\EOT\SOH\STX\NUL\DC2\ETX\r\ETX-\n\
     \\f\n\
     \\ENQ\EOT\SOH\STX\NUL\ACK\DC2\ETX\r\ETX\US\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETX\r '\n\
+    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETX\r (\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETX\r*+\n\
+    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETX\r+,\n\
     \\v\n\
     \\EOT\EOT\SOH\STX\SOH\DC2\ETX\SO\ETX \n\
     \\f\n\
@@ -912,73 +896,74 @@ packedFileDescriptor
     \\STX\EOT\STX\DC2\EOT\DC1\NUL\SUB\SOH\n\
     \\n\
     \\n\
-    \\ETX\EOT\STX\SOH\DC2\ETX\DC1\b\DC2\n\
+    \\ETX\EOT\STX\SOH\DC2\ETX\DC1\b\SI\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\NUL\DC2\ETX\DC2\ETX\ETB\n\
+    \\EOT\EOT\STX\STX\NUL\DC2\ETX\DC2\ETX\CAN\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\ETX\DC2\ETX\t\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\NUL\SOH\DC2\ETX\DC2\n\
-    \\DC2\n\
+    \\DC3\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\ETX\DC2\NAK\SYN\n\
+    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\ETX\DC2\SYN\ETB\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\SOH\DC2\ETX\DC3\ETX\SYN\n\
+    \\EOT\EOT\STX\STX\SOH\DC2\ETX\DC3\ETX\ETB\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\SOH\ENQ\DC2\ETX\DC3\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\ETX\DC3\t\DC1\n\
+    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\ETX\DC3\t\DC2\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\ETX\DC3\DC4\NAK\n\
+    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\ETX\DC3\NAK\SYN\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\STX\DC2\ETX\DC4\ETX\ETB\n\
+    \\EOT\EOT\STX\STX\STX\DC2\ETX\DC4\ETX\CAN\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\STX\ENQ\DC2\ETX\DC4\ETX\t\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\STX\SOH\DC2\ETX\DC4\n\
-    \\DC2\n\
+    \\DC3\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\STX\ETX\DC2\ETX\DC4\NAK\SYN\n\
+    \\ENQ\EOT\STX\STX\STX\ETX\DC2\ETX\DC4\SYN\ETB\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\ETX\DC2\ETX\NAK\ETX\ETB\n\
+    \\EOT\EOT\STX\STX\ETX\DC2\ETX\NAK\ETX\CAN\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\ETX\ENQ\DC2\ETX\NAK\ETX\t\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\ETX\SOH\DC2\ETX\NAK\n\
-    \\DC2\n\
+    \\DC3\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\ETX\NAK\NAK\SYN\n\
+    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\ETX\NAK\SYN\ETB\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\EOT\DC2\ETX\SYN\ETX\ESC\n\
+    \\EOT\EOT\STX\STX\EOT\DC2\ETX\SYN\ETX\FS\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\EOT\ENQ\DC2\ETX\SYN\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\ETX\SYN\t\SYN\n\
+    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\ETX\SYN\t\ETB\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\ETX\SYN\EM\SUB\n\
+    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\ETX\SYN\SUB\ESC\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\ENQ\DC2\ETX\ETB\ETX\CAN\n\
+    \\EOT\EOT\STX\STX\ENQ\DC2\ETX\ETB\ETX\EM\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\ENQ\ENQ\DC2\ETX\ETB\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\ETX\ETB\t\DC3\n\
+    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\ETX\ETB\t\DC4\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\ETX\ETB\SYN\ETB\n\
+    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\ETX\ETB\ETB\CAN\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\ACK\DC2\ETX\CAN\ETX\FS\n\
+    \\EOT\EOT\STX\STX\ACK\DC2\ETX\CAN\ETX\GS\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\ACK\EOT\DC2\ETX\CAN\ETX\v\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\ACK\ACK\DC2\ETX\CAN\f\DLE\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\ETX\CAN\DC1\ETB\n\
+    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\ETX\CAN\DC1\CAN\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\ETX\CAN\SUB\ESC\n\
+    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\ETX\CAN\ESC\FS\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\a\DC2\ETX\EM\ETX\GS\n\
+    \\EOT\EOT\STX\STX\a\DC2\ETX\EM\ETX\ESC\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\ACK\DC2\ETX\EM\ETX\r\n\
+    \\ENQ\EOT\STX\STX\a\ACK\DC2\ETX\EM\ETX\n\
+    \\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\SOH\DC2\ETX\EM\SO\CAN\n\
+    \\ENQ\EOT\STX\STX\a\SOH\DC2\ETX\EM\v\SYN\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\ETX\DC2\ETX\EM\ESC\FSb\ACKproto3"
+    \\ENQ\EOT\STX\STX\a\ETX\DC2\ETX\EM\EM\SUBb\ACKproto3"

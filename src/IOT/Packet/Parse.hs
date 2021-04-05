@@ -10,17 +10,17 @@ import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text as T
 import Network.AMQP
 import Control.Monad.Reader.Class
-import Proto.PacketDt
-import Proto.PacketDt_Fields
-import Proto.SensorDt
-import Proto.SensorDt_Fields
 import IOT.Server.Types
 import IOT.Server.Queue (queueSensorImage, queueSensorData)
 import IOT.Packet.Format
-import IOT.Packet.Types()
+import IOT.Packet.Types
+import Proto.Packetdt
+import Proto.Packetdt_Fields
+import Proto.Sensordt
+import Proto.Sensordt_Fields
+import Proto.Sensors.Raspcamdt
+import Proto.Sensors.Raspcamdt_Fields
 import IOT.Misc (gzipDecompress)
-import Proto.Sensors.RaspCamDt
-import Proto.Sensors.RaspCamDt_Fields
 import Control.Exception
 import Control.Lens
 import Data.ProtoLens hiding (Message)
@@ -42,7 +42,7 @@ imgParse b pktUid = do
           defMessage &
           maybe'output ?~
           Output'Cam (defMessage & encoding .~ enc & bin .~ BL.toStrict b)
-   let sensorOut = defMessage & outputs .~ [out] :: SensorOut
+   let sensorOut = defMessage & outputs .~ [out] :: Sensorout
    Right $ defMessage & uid .~ pktUid & maybe'type' ?~ Packet'Out sensorOut
 
 parseBody :: Message -> T.Text -> Either String Packet

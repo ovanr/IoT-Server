@@ -1,9 +1,9 @@
-{- This file was auto-generated from sensors/raspCamDt.proto by the proto-lens-protoc program. -}
+{- This file was auto-generated from sensordt.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings, DerivingStrategies#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
-module Proto.Sensors.RaspCamDt_Fields where
+module Proto.Sensordt_Fields where
 import qualified Data.ProtoLens.Runtime.Prelude as Prelude
 import qualified Data.ProtoLens.Runtime.Data.Int as Data.Int
 import qualified Data.ProtoLens.Runtime.Data.Monoid as Data.Monoid
@@ -27,75 +27,44 @@ import qualified Data.ProtoLens.Runtime.Data.Vector as Data.Vector
 import qualified Data.ProtoLens.Runtime.Data.Vector.Generic as Data.Vector.Generic
 import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unboxed
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
-awb ::
+import qualified Proto.Sensors.Cpudt
+import qualified Proto.Sensors.Raspcamdt
+cam ::
   forall f s a.
-  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "awb" a) =>
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "cam" a) =>
   Lens.Family2.LensLike' f s a
-awb = Data.ProtoLens.Field.field @"awb"
-bin ::
+cam = Data.ProtoLens.Field.field @"cam"
+cpu ::
   forall f s a.
-  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "bin" a) =>
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "cpu" a) =>
   Lens.Family2.LensLike' f s a
-bin = Data.ProtoLens.Field.field @"bin"
-brightness ::
-  forall f s a.
-  (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "brightness" a) =>
-  Lens.Family2.LensLike' f s a
-brightness = Data.ProtoLens.Field.field @"brightness"
-contrast ::
+cpu = Data.ProtoLens.Field.field @"cpu"
+maybe'cam ::
   forall f s a.
   (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "contrast" a) =>
+   Data.ProtoLens.Field.HasField s "maybe'cam" a) =>
   Lens.Family2.LensLike' f s a
-contrast = Data.ProtoLens.Field.field @"contrast"
-encoding ::
+maybe'cam = Data.ProtoLens.Field.field @"maybe'cam"
+maybe'cpu ::
   forall f s a.
   (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "encoding" a) =>
+   Data.ProtoLens.Field.HasField s "maybe'cpu" a) =>
   Lens.Family2.LensLike' f s a
-encoding = Data.ProtoLens.Field.field @"encoding"
-exposure ::
+maybe'cpu = Data.ProtoLens.Field.field @"maybe'cpu"
+maybe'output ::
   forall f s a.
   (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "exposure" a) =>
+   Data.ProtoLens.Field.HasField s "maybe'output" a) =>
   Lens.Family2.LensLike' f s a
-exposure = Data.ProtoLens.Field.field @"exposure"
-hflip ::
+maybe'output = Data.ProtoLens.Field.field @"maybe'output"
+outputs ::
   forall f s a.
-  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "hflip" a) =>
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "outputs" a) =>
   Lens.Family2.LensLike' f s a
-hflip = Data.ProtoLens.Field.field @"hflip"
-imxfx ::
-  forall f s a.
-  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "imxfx" a) =>
-  Lens.Family2.LensLike' f s a
-imxfx = Data.ProtoLens.Field.field @"imxfx"
-quality ::
-  forall f s a.
-  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "quality" a) =>
-  Lens.Family2.LensLike' f s a
-quality = Data.ProtoLens.Field.field @"quality"
-rotation ::
+outputs = Data.ProtoLens.Field.field @"outputs"
+vec'outputs ::
   forall f s a.
   (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "rotation" a) =>
+   Data.ProtoLens.Field.HasField s "vec'outputs" a) =>
   Lens.Family2.LensLike' f s a
-rotation = Data.ProtoLens.Field.field @"rotation"
-saturation ::
-  forall f s a.
-  (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "saturation" a) =>
-  Lens.Family2.LensLike' f s a
-saturation = Data.ProtoLens.Field.field @"saturation"
-sharpness ::
-  forall f s a.
-  (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "sharpness" a) =>
-  Lens.Family2.LensLike' f s a
-sharpness = Data.ProtoLens.Field.field @"sharpness"
-vflip ::
-  forall f s a.
-  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "vflip" a) =>
-  Lens.Family2.LensLike' f s a
-vflip = Data.ProtoLens.Field.field @"vflip"
+vec'outputs = Data.ProtoLens.Field.field @"vec'outputs"

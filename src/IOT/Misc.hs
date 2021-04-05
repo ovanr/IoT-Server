@@ -131,8 +131,10 @@ gzipDecompress b =
 
 genSecureString :: MonadIO m => Int -> m (Maybe T.Text)
 genSecureString len =
-   liftIO . runMaybeT $
-   T.take len . TE.decodeUtf8 . Base64.encode <$> randomBytes
+   liftIO . runMaybeT $ do
+      str <- T.take len . TE.decodeUtf8 . Base64.encode <$> randomBytes
+      guard (T.length str == len)
+      pure str
   where
     readBytes :: IO B.ByteString
     readBytes = withFile "/dev/urandom" ReadMode (`B.hGetSome` len)

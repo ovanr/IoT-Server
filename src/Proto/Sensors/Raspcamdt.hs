@@ -1,13 +1,13 @@
-{- This file was auto-generated from sensors/raspCamDt.proto by the proto-lens-protoc program. -}
+{- This file was auto-generated from sensors/raspcamdt.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings, DerivingStrategies#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
-module Proto.Sensors.RaspCamDt (
+module Proto.Sensors.Raspcamdt (
         Awb(..), Awb(), Awb'UnrecognizedValue, Encoding(..), Encoding(),
         Encoding'UnrecognizedValue, Exposure(..), Exposure(),
         Exposure'UnrecognizedValue, Imxfx(..), Imxfx(),
-        Imxfx'UnrecognizedValue, RaspCamOpt(), RaspCamOut()
+        Imxfx'UnrecognizedValue, Raspcamopt(), Raspcamout()
     ) where
 import qualified Data.ProtoLens.Runtime.Control.DeepSeq as Control.DeepSeq
 import qualified Data.ProtoLens.Runtime.Data.ProtoLens.Prism as Data.ProtoLens.Prism
@@ -38,64 +38,64 @@ newtype Awb'UnrecognizedValue
   = Awb'UnrecognizedValue Data.Int.Int32
   deriving stock (Prelude.Eq, Prelude.Ord, Prelude.Show)
 data Awb
-  = Awb_OFF |
-    Awb_AUTO |
-    Awb_SUN |
-    Awb_CLOUD |
-    Awb_SHADE |
-    Awb_TUNGSTEN |
-    Awb_FLUORESCENT |
-    Awb_INCANDESCENT |
-    Awb_FLASH |
-    Awb_HORIZON |
-    Awb_GREYWORLD |
+  = AWB_OFF |
+    AWB_AUTO |
+    AWB_SUN |
+    AWB_CLOUD |
+    AWB_SHADE |
+    AWB_TUNGSTEN |
+    AWB_FLUORESCENT |
+    AWB_INCANDESCENT |
+    AWB_FLASH |
+    AWB_HORIZON |
+    AWB_GREYWORLD |
     Awb'Unrecognized !Awb'UnrecognizedValue
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum Awb where
-  maybeToEnum 0 = Prelude.Just Awb_OFF
-  maybeToEnum 1 = Prelude.Just Awb_AUTO
-  maybeToEnum 2 = Prelude.Just Awb_SUN
-  maybeToEnum 3 = Prelude.Just Awb_CLOUD
-  maybeToEnum 4 = Prelude.Just Awb_SHADE
-  maybeToEnum 5 = Prelude.Just Awb_TUNGSTEN
-  maybeToEnum 6 = Prelude.Just Awb_FLUORESCENT
-  maybeToEnum 7 = Prelude.Just Awb_INCANDESCENT
-  maybeToEnum 8 = Prelude.Just Awb_FLASH
-  maybeToEnum 9 = Prelude.Just Awb_HORIZON
-  maybeToEnum 10 = Prelude.Just Awb_GREYWORLD
+  maybeToEnum 0 = Prelude.Just AWB_OFF
+  maybeToEnum 1 = Prelude.Just AWB_AUTO
+  maybeToEnum 2 = Prelude.Just AWB_SUN
+  maybeToEnum 3 = Prelude.Just AWB_CLOUD
+  maybeToEnum 4 = Prelude.Just AWB_SHADE
+  maybeToEnum 5 = Prelude.Just AWB_TUNGSTEN
+  maybeToEnum 6 = Prelude.Just AWB_FLUORESCENT
+  maybeToEnum 7 = Prelude.Just AWB_INCANDESCENT
+  maybeToEnum 8 = Prelude.Just AWB_FLASH
+  maybeToEnum 9 = Prelude.Just AWB_HORIZON
+  maybeToEnum 10 = Prelude.Just AWB_GREYWORLD
   maybeToEnum k
     = Prelude.Just
         (Awb'Unrecognized (Awb'UnrecognizedValue (Prelude.fromIntegral k)))
-  showEnum Awb_OFF = "Awb_OFF"
-  showEnum Awb_AUTO = "Awb_AUTO"
-  showEnum Awb_SUN = "Awb_SUN"
-  showEnum Awb_CLOUD = "Awb_CLOUD"
-  showEnum Awb_SHADE = "Awb_SHADE"
-  showEnum Awb_TUNGSTEN = "Awb_TUNGSTEN"
-  showEnum Awb_FLUORESCENT = "Awb_FLUORESCENT"
-  showEnum Awb_INCANDESCENT = "Awb_INCANDESCENT"
-  showEnum Awb_FLASH = "Awb_FLASH"
-  showEnum Awb_HORIZON = "Awb_HORIZON"
-  showEnum Awb_GREYWORLD = "Awb_GREYWORLD"
+  showEnum AWB_OFF = "AWB_OFF"
+  showEnum AWB_AUTO = "AWB_AUTO"
+  showEnum AWB_SUN = "AWB_SUN"
+  showEnum AWB_CLOUD = "AWB_CLOUD"
+  showEnum AWB_SHADE = "AWB_SHADE"
+  showEnum AWB_TUNGSTEN = "AWB_TUNGSTEN"
+  showEnum AWB_FLUORESCENT = "AWB_FLUORESCENT"
+  showEnum AWB_INCANDESCENT = "AWB_INCANDESCENT"
+  showEnum AWB_FLASH = "AWB_FLASH"
+  showEnum AWB_HORIZON = "AWB_HORIZON"
+  showEnum AWB_GREYWORLD = "AWB_GREYWORLD"
   showEnum (Awb'Unrecognized (Awb'UnrecognizedValue k))
     = Prelude.show k
   readEnum k
-    | (Prelude.==) k "Awb_OFF" = Prelude.Just Awb_OFF
-    | (Prelude.==) k "Awb_AUTO" = Prelude.Just Awb_AUTO
-    | (Prelude.==) k "Awb_SUN" = Prelude.Just Awb_SUN
-    | (Prelude.==) k "Awb_CLOUD" = Prelude.Just Awb_CLOUD
-    | (Prelude.==) k "Awb_SHADE" = Prelude.Just Awb_SHADE
-    | (Prelude.==) k "Awb_TUNGSTEN" = Prelude.Just Awb_TUNGSTEN
-    | (Prelude.==) k "Awb_FLUORESCENT" = Prelude.Just Awb_FLUORESCENT
-    | (Prelude.==) k "Awb_INCANDESCENT" = Prelude.Just Awb_INCANDESCENT
-    | (Prelude.==) k "Awb_FLASH" = Prelude.Just Awb_FLASH
-    | (Prelude.==) k "Awb_HORIZON" = Prelude.Just Awb_HORIZON
-    | (Prelude.==) k "Awb_GREYWORLD" = Prelude.Just Awb_GREYWORLD
+    | (Prelude.==) k "AWB_OFF" = Prelude.Just AWB_OFF
+    | (Prelude.==) k "AWB_AUTO" = Prelude.Just AWB_AUTO
+    | (Prelude.==) k "AWB_SUN" = Prelude.Just AWB_SUN
+    | (Prelude.==) k "AWB_CLOUD" = Prelude.Just AWB_CLOUD
+    | (Prelude.==) k "AWB_SHADE" = Prelude.Just AWB_SHADE
+    | (Prelude.==) k "AWB_TUNGSTEN" = Prelude.Just AWB_TUNGSTEN
+    | (Prelude.==) k "AWB_FLUORESCENT" = Prelude.Just AWB_FLUORESCENT
+    | (Prelude.==) k "AWB_INCANDESCENT" = Prelude.Just AWB_INCANDESCENT
+    | (Prelude.==) k "AWB_FLASH" = Prelude.Just AWB_FLASH
+    | (Prelude.==) k "AWB_HORIZON" = Prelude.Just AWB_HORIZON
+    | (Prelude.==) k "AWB_GREYWORLD" = Prelude.Just AWB_GREYWORLD
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
 instance Prelude.Bounded Awb where
-  minBound = Awb_OFF
-  maxBound = Awb_GREYWORLD
+  minBound = AWB_OFF
+  maxBound = AWB_GREYWORLD
 instance Prelude.Enum Awb where
   toEnum k__
     = Prelude.maybe
@@ -103,47 +103,47 @@ instance Prelude.Enum Awb where
            ((Prelude.++)
               "toEnum: unknown value for enum Awb: " (Prelude.show k__)))
         Prelude.id (Data.ProtoLens.maybeToEnum k__)
-  fromEnum Awb_OFF = 0
-  fromEnum Awb_AUTO = 1
-  fromEnum Awb_SUN = 2
-  fromEnum Awb_CLOUD = 3
-  fromEnum Awb_SHADE = 4
-  fromEnum Awb_TUNGSTEN = 5
-  fromEnum Awb_FLUORESCENT = 6
-  fromEnum Awb_INCANDESCENT = 7
-  fromEnum Awb_FLASH = 8
-  fromEnum Awb_HORIZON = 9
-  fromEnum Awb_GREYWORLD = 10
+  fromEnum AWB_OFF = 0
+  fromEnum AWB_AUTO = 1
+  fromEnum AWB_SUN = 2
+  fromEnum AWB_CLOUD = 3
+  fromEnum AWB_SHADE = 4
+  fromEnum AWB_TUNGSTEN = 5
+  fromEnum AWB_FLUORESCENT = 6
+  fromEnum AWB_INCANDESCENT = 7
+  fromEnum AWB_FLASH = 8
+  fromEnum AWB_HORIZON = 9
+  fromEnum AWB_GREYWORLD = 10
   fromEnum (Awb'Unrecognized (Awb'UnrecognizedValue k))
     = Prelude.fromIntegral k
-  succ Awb_GREYWORLD
+  succ AWB_GREYWORLD
     = Prelude.error
-        "Awb.succ: bad argument Awb_GREYWORLD. This value would be out of bounds."
-  succ Awb_OFF = Awb_AUTO
-  succ Awb_AUTO = Awb_SUN
-  succ Awb_SUN = Awb_CLOUD
-  succ Awb_CLOUD = Awb_SHADE
-  succ Awb_SHADE = Awb_TUNGSTEN
-  succ Awb_TUNGSTEN = Awb_FLUORESCENT
-  succ Awb_FLUORESCENT = Awb_INCANDESCENT
-  succ Awb_INCANDESCENT = Awb_FLASH
-  succ Awb_FLASH = Awb_HORIZON
-  succ Awb_HORIZON = Awb_GREYWORLD
+        "Awb.succ: bad argument AWB_GREYWORLD. This value would be out of bounds."
+  succ AWB_OFF = AWB_AUTO
+  succ AWB_AUTO = AWB_SUN
+  succ AWB_SUN = AWB_CLOUD
+  succ AWB_CLOUD = AWB_SHADE
+  succ AWB_SHADE = AWB_TUNGSTEN
+  succ AWB_TUNGSTEN = AWB_FLUORESCENT
+  succ AWB_FLUORESCENT = AWB_INCANDESCENT
+  succ AWB_INCANDESCENT = AWB_FLASH
+  succ AWB_FLASH = AWB_HORIZON
+  succ AWB_HORIZON = AWB_GREYWORLD
   succ (Awb'Unrecognized _)
     = Prelude.error "Awb.succ: bad argument: unrecognized value"
-  pred Awb_OFF
+  pred AWB_OFF
     = Prelude.error
-        "Awb.pred: bad argument Awb_OFF. This value would be out of bounds."
-  pred Awb_AUTO = Awb_OFF
-  pred Awb_SUN = Awb_AUTO
-  pred Awb_CLOUD = Awb_SUN
-  pred Awb_SHADE = Awb_CLOUD
-  pred Awb_TUNGSTEN = Awb_SHADE
-  pred Awb_FLUORESCENT = Awb_TUNGSTEN
-  pred Awb_INCANDESCENT = Awb_FLUORESCENT
-  pred Awb_FLASH = Awb_INCANDESCENT
-  pred Awb_HORIZON = Awb_FLASH
-  pred Awb_GREYWORLD = Awb_HORIZON
+        "Awb.pred: bad argument AWB_OFF. This value would be out of bounds."
+  pred AWB_AUTO = AWB_OFF
+  pred AWB_SUN = AWB_AUTO
+  pred AWB_CLOUD = AWB_SUN
+  pred AWB_SHADE = AWB_CLOUD
+  pred AWB_TUNGSTEN = AWB_SHADE
+  pred AWB_FLUORESCENT = AWB_TUNGSTEN
+  pred AWB_INCANDESCENT = AWB_FLUORESCENT
+  pred AWB_FLASH = AWB_INCANDESCENT
+  pred AWB_HORIZON = AWB_FLASH
+  pred AWB_GREYWORLD = AWB_HORIZON
   pred (Awb'Unrecognized _)
     = Prelude.error "Awb.pred: bad argument: unrecognized value"
   enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
@@ -151,7 +151,7 @@ instance Prelude.Enum Awb where
   enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
   enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
 instance Data.ProtoLens.FieldDefault Awb where
-  fieldDefault = Awb_OFF
+  fieldDefault = AWB_OFF
 instance Control.DeepSeq.NFData Awb where
   rnf x__ = Prelude.seq x__ ()
 newtype Encoding'UnrecognizedValue
@@ -230,73 +230,73 @@ newtype Exposure'UnrecognizedValue
   = Exposure'UnrecognizedValue Data.Int.Int32
   deriving stock (Prelude.Eq, Prelude.Ord, Prelude.Show)
 data Exposure
-  = Exp_OFF |
-    Exp_AUTO |
-    Exp_NIGHT |
-    Exp_NIGHTPREVIEW |
-    Exp_BACKLIGHT |
-    Exp_SPOTLIGHT |
-    Exp_SPORTS |
-    Exp_SNOW |
-    Exp_BEACH |
-    Exp_VERYLONG |
-    Exp_FIXEDFPS |
-    Exp_ANTISHAKE |
-    Exp_FIREWORKS |
+  = EXP_OFF |
+    EXP_AUTO |
+    EXP_NIGHT |
+    EXP_NIGHTPREVIEW |
+    EXP_BACKLIGHT |
+    EXP_SPOTLIGHT |
+    EXP_SPORTS |
+    EXP_SNOW |
+    EXP_BEACH |
+    EXP_VERYLONG |
+    EXP_FIXEDFPS |
+    EXP_ANTISHAKE |
+    EXP_FIREWORKS |
     Exposure'Unrecognized !Exposure'UnrecognizedValue
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum Exposure where
-  maybeToEnum 0 = Prelude.Just Exp_OFF
-  maybeToEnum 1 = Prelude.Just Exp_AUTO
-  maybeToEnum 2 = Prelude.Just Exp_NIGHT
-  maybeToEnum 3 = Prelude.Just Exp_NIGHTPREVIEW
-  maybeToEnum 4 = Prelude.Just Exp_BACKLIGHT
-  maybeToEnum 5 = Prelude.Just Exp_SPOTLIGHT
-  maybeToEnum 6 = Prelude.Just Exp_SPORTS
-  maybeToEnum 7 = Prelude.Just Exp_SNOW
-  maybeToEnum 8 = Prelude.Just Exp_BEACH
-  maybeToEnum 9 = Prelude.Just Exp_VERYLONG
-  maybeToEnum 10 = Prelude.Just Exp_FIXEDFPS
-  maybeToEnum 11 = Prelude.Just Exp_ANTISHAKE
-  maybeToEnum 12 = Prelude.Just Exp_FIREWORKS
+  maybeToEnum 0 = Prelude.Just EXP_OFF
+  maybeToEnum 1 = Prelude.Just EXP_AUTO
+  maybeToEnum 2 = Prelude.Just EXP_NIGHT
+  maybeToEnum 3 = Prelude.Just EXP_NIGHTPREVIEW
+  maybeToEnum 4 = Prelude.Just EXP_BACKLIGHT
+  maybeToEnum 5 = Prelude.Just EXP_SPOTLIGHT
+  maybeToEnum 6 = Prelude.Just EXP_SPORTS
+  maybeToEnum 7 = Prelude.Just EXP_SNOW
+  maybeToEnum 8 = Prelude.Just EXP_BEACH
+  maybeToEnum 9 = Prelude.Just EXP_VERYLONG
+  maybeToEnum 10 = Prelude.Just EXP_FIXEDFPS
+  maybeToEnum 11 = Prelude.Just EXP_ANTISHAKE
+  maybeToEnum 12 = Prelude.Just EXP_FIREWORKS
   maybeToEnum k
     = Prelude.Just
         (Exposure'Unrecognized
            (Exposure'UnrecognizedValue (Prelude.fromIntegral k)))
-  showEnum Exp_OFF = "Exp_OFF"
-  showEnum Exp_AUTO = "Exp_AUTO"
-  showEnum Exp_NIGHT = "Exp_NIGHT"
-  showEnum Exp_NIGHTPREVIEW = "Exp_NIGHTPREVIEW"
-  showEnum Exp_BACKLIGHT = "Exp_BACKLIGHT"
-  showEnum Exp_SPOTLIGHT = "Exp_SPOTLIGHT"
-  showEnum Exp_SPORTS = "Exp_SPORTS"
-  showEnum Exp_SNOW = "Exp_SNOW"
-  showEnum Exp_BEACH = "Exp_BEACH"
-  showEnum Exp_VERYLONG = "Exp_VERYLONG"
-  showEnum Exp_FIXEDFPS = "Exp_FIXEDFPS"
-  showEnum Exp_ANTISHAKE = "Exp_ANTISHAKE"
-  showEnum Exp_FIREWORKS = "Exp_FIREWORKS"
+  showEnum EXP_OFF = "EXP_OFF"
+  showEnum EXP_AUTO = "EXP_AUTO"
+  showEnum EXP_NIGHT = "EXP_NIGHT"
+  showEnum EXP_NIGHTPREVIEW = "EXP_NIGHTPREVIEW"
+  showEnum EXP_BACKLIGHT = "EXP_BACKLIGHT"
+  showEnum EXP_SPOTLIGHT = "EXP_SPOTLIGHT"
+  showEnum EXP_SPORTS = "EXP_SPORTS"
+  showEnum EXP_SNOW = "EXP_SNOW"
+  showEnum EXP_BEACH = "EXP_BEACH"
+  showEnum EXP_VERYLONG = "EXP_VERYLONG"
+  showEnum EXP_FIXEDFPS = "EXP_FIXEDFPS"
+  showEnum EXP_ANTISHAKE = "EXP_ANTISHAKE"
+  showEnum EXP_FIREWORKS = "EXP_FIREWORKS"
   showEnum (Exposure'Unrecognized (Exposure'UnrecognizedValue k))
     = Prelude.show k
   readEnum k
-    | (Prelude.==) k "Exp_OFF" = Prelude.Just Exp_OFF
-    | (Prelude.==) k "Exp_AUTO" = Prelude.Just Exp_AUTO
-    | (Prelude.==) k "Exp_NIGHT" = Prelude.Just Exp_NIGHT
-    | (Prelude.==) k "Exp_NIGHTPREVIEW" = Prelude.Just Exp_NIGHTPREVIEW
-    | (Prelude.==) k "Exp_BACKLIGHT" = Prelude.Just Exp_BACKLIGHT
-    | (Prelude.==) k "Exp_SPOTLIGHT" = Prelude.Just Exp_SPOTLIGHT
-    | (Prelude.==) k "Exp_SPORTS" = Prelude.Just Exp_SPORTS
-    | (Prelude.==) k "Exp_SNOW" = Prelude.Just Exp_SNOW
-    | (Prelude.==) k "Exp_BEACH" = Prelude.Just Exp_BEACH
-    | (Prelude.==) k "Exp_VERYLONG" = Prelude.Just Exp_VERYLONG
-    | (Prelude.==) k "Exp_FIXEDFPS" = Prelude.Just Exp_FIXEDFPS
-    | (Prelude.==) k "Exp_ANTISHAKE" = Prelude.Just Exp_ANTISHAKE
-    | (Prelude.==) k "Exp_FIREWORKS" = Prelude.Just Exp_FIREWORKS
+    | (Prelude.==) k "EXP_OFF" = Prelude.Just EXP_OFF
+    | (Prelude.==) k "EXP_AUTO" = Prelude.Just EXP_AUTO
+    | (Prelude.==) k "EXP_NIGHT" = Prelude.Just EXP_NIGHT
+    | (Prelude.==) k "EXP_NIGHTPREVIEW" = Prelude.Just EXP_NIGHTPREVIEW
+    | (Prelude.==) k "EXP_BACKLIGHT" = Prelude.Just EXP_BACKLIGHT
+    | (Prelude.==) k "EXP_SPOTLIGHT" = Prelude.Just EXP_SPOTLIGHT
+    | (Prelude.==) k "EXP_SPORTS" = Prelude.Just EXP_SPORTS
+    | (Prelude.==) k "EXP_SNOW" = Prelude.Just EXP_SNOW
+    | (Prelude.==) k "EXP_BEACH" = Prelude.Just EXP_BEACH
+    | (Prelude.==) k "EXP_VERYLONG" = Prelude.Just EXP_VERYLONG
+    | (Prelude.==) k "EXP_FIXEDFPS" = Prelude.Just EXP_FIXEDFPS
+    | (Prelude.==) k "EXP_ANTISHAKE" = Prelude.Just EXP_ANTISHAKE
+    | (Prelude.==) k "EXP_FIREWORKS" = Prelude.Just EXP_FIREWORKS
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
 instance Prelude.Bounded Exposure where
-  minBound = Exp_OFF
-  maxBound = Exp_FIREWORKS
+  minBound = EXP_OFF
+  maxBound = EXP_FIREWORKS
 instance Prelude.Enum Exposure where
   toEnum k__
     = Prelude.maybe
@@ -304,53 +304,53 @@ instance Prelude.Enum Exposure where
            ((Prelude.++)
               "toEnum: unknown value for enum Exposure: " (Prelude.show k__)))
         Prelude.id (Data.ProtoLens.maybeToEnum k__)
-  fromEnum Exp_OFF = 0
-  fromEnum Exp_AUTO = 1
-  fromEnum Exp_NIGHT = 2
-  fromEnum Exp_NIGHTPREVIEW = 3
-  fromEnum Exp_BACKLIGHT = 4
-  fromEnum Exp_SPOTLIGHT = 5
-  fromEnum Exp_SPORTS = 6
-  fromEnum Exp_SNOW = 7
-  fromEnum Exp_BEACH = 8
-  fromEnum Exp_VERYLONG = 9
-  fromEnum Exp_FIXEDFPS = 10
-  fromEnum Exp_ANTISHAKE = 11
-  fromEnum Exp_FIREWORKS = 12
+  fromEnum EXP_OFF = 0
+  fromEnum EXP_AUTO = 1
+  fromEnum EXP_NIGHT = 2
+  fromEnum EXP_NIGHTPREVIEW = 3
+  fromEnum EXP_BACKLIGHT = 4
+  fromEnum EXP_SPOTLIGHT = 5
+  fromEnum EXP_SPORTS = 6
+  fromEnum EXP_SNOW = 7
+  fromEnum EXP_BEACH = 8
+  fromEnum EXP_VERYLONG = 9
+  fromEnum EXP_FIXEDFPS = 10
+  fromEnum EXP_ANTISHAKE = 11
+  fromEnum EXP_FIREWORKS = 12
   fromEnum (Exposure'Unrecognized (Exposure'UnrecognizedValue k))
     = Prelude.fromIntegral k
-  succ Exp_FIREWORKS
+  succ EXP_FIREWORKS
     = Prelude.error
-        "Exposure.succ: bad argument Exp_FIREWORKS. This value would be out of bounds."
-  succ Exp_OFF = Exp_AUTO
-  succ Exp_AUTO = Exp_NIGHT
-  succ Exp_NIGHT = Exp_NIGHTPREVIEW
-  succ Exp_NIGHTPREVIEW = Exp_BACKLIGHT
-  succ Exp_BACKLIGHT = Exp_SPOTLIGHT
-  succ Exp_SPOTLIGHT = Exp_SPORTS
-  succ Exp_SPORTS = Exp_SNOW
-  succ Exp_SNOW = Exp_BEACH
-  succ Exp_BEACH = Exp_VERYLONG
-  succ Exp_VERYLONG = Exp_FIXEDFPS
-  succ Exp_FIXEDFPS = Exp_ANTISHAKE
-  succ Exp_ANTISHAKE = Exp_FIREWORKS
+        "Exposure.succ: bad argument EXP_FIREWORKS. This value would be out of bounds."
+  succ EXP_OFF = EXP_AUTO
+  succ EXP_AUTO = EXP_NIGHT
+  succ EXP_NIGHT = EXP_NIGHTPREVIEW
+  succ EXP_NIGHTPREVIEW = EXP_BACKLIGHT
+  succ EXP_BACKLIGHT = EXP_SPOTLIGHT
+  succ EXP_SPOTLIGHT = EXP_SPORTS
+  succ EXP_SPORTS = EXP_SNOW
+  succ EXP_SNOW = EXP_BEACH
+  succ EXP_BEACH = EXP_VERYLONG
+  succ EXP_VERYLONG = EXP_FIXEDFPS
+  succ EXP_FIXEDFPS = EXP_ANTISHAKE
+  succ EXP_ANTISHAKE = EXP_FIREWORKS
   succ (Exposure'Unrecognized _)
     = Prelude.error "Exposure.succ: bad argument: unrecognized value"
-  pred Exp_OFF
+  pred EXP_OFF
     = Prelude.error
-        "Exposure.pred: bad argument Exp_OFF. This value would be out of bounds."
-  pred Exp_AUTO = Exp_OFF
-  pred Exp_NIGHT = Exp_AUTO
-  pred Exp_NIGHTPREVIEW = Exp_NIGHT
-  pred Exp_BACKLIGHT = Exp_NIGHTPREVIEW
-  pred Exp_SPOTLIGHT = Exp_BACKLIGHT
-  pred Exp_SPORTS = Exp_SPOTLIGHT
-  pred Exp_SNOW = Exp_SPORTS
-  pred Exp_BEACH = Exp_SNOW
-  pred Exp_VERYLONG = Exp_BEACH
-  pred Exp_FIXEDFPS = Exp_VERYLONG
-  pred Exp_ANTISHAKE = Exp_FIXEDFPS
-  pred Exp_FIREWORKS = Exp_ANTISHAKE
+        "Exposure.pred: bad argument EXP_OFF. This value would be out of bounds."
+  pred EXP_AUTO = EXP_OFF
+  pred EXP_NIGHT = EXP_AUTO
+  pred EXP_NIGHTPREVIEW = EXP_NIGHT
+  pred EXP_BACKLIGHT = EXP_NIGHTPREVIEW
+  pred EXP_SPOTLIGHT = EXP_BACKLIGHT
+  pred EXP_SPORTS = EXP_SPOTLIGHT
+  pred EXP_SNOW = EXP_SPORTS
+  pred EXP_BEACH = EXP_SNOW
+  pred EXP_VERYLONG = EXP_BEACH
+  pred EXP_FIXEDFPS = EXP_VERYLONG
+  pred EXP_ANTISHAKE = EXP_FIXEDFPS
+  pred EXP_FIREWORKS = EXP_ANTISHAKE
   pred (Exposure'Unrecognized _)
     = Prelude.error "Exposure.pred: bad argument: unrecognized value"
   enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
@@ -358,111 +358,111 @@ instance Prelude.Enum Exposure where
   enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
   enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
 instance Data.ProtoLens.FieldDefault Exposure where
-  fieldDefault = Exp_OFF
+  fieldDefault = EXP_OFF
 instance Control.DeepSeq.NFData Exposure where
   rnf x__ = Prelude.seq x__ ()
 newtype Imxfx'UnrecognizedValue
   = Imxfx'UnrecognizedValue Data.Int.Int32
   deriving stock (Prelude.Eq, Prelude.Ord, Prelude.Show)
 data Imxfx
-  = Imxfx_NONE |
-    Imxfx_NEGATIVE |
-    Imxfx_SOLARISE |
-    Imxfx_SKETCH |
-    Imxfx_DENOISE |
-    Imxfx_EMBOSS |
-    Imxfx_OILPAINT |
-    Imxfx_HATCH |
-    Imxfx_GPEN |
-    Imxfx_PASTEL |
-    Imxfx_WATERCOLOUR |
-    Imxfx_FILM |
-    Imxfx_BLUR |
-    Imxfx_SATURATION |
-    Imxfx_COLOURSWAP |
-    Imxfx_WASHEDOUT |
-    Imxfx_POSTERISE |
-    Imxfx_COLOURPOINT |
-    Imxfx_COLOURBALANCE |
-    Imxfx_CARTOON |
+  = IMXFX_NONE |
+    IMXFX_NEGATIVE |
+    IMXFX_SOLARISE |
+    IMXFX_SKETCH |
+    IMXFX_DENOISE |
+    IMXFX_EMBOSS |
+    IMXFX_OILPAINT |
+    IMXFX_HATCH |
+    IMXFX_GPEN |
+    IMXFX_PASTEL |
+    IMXFX_WATERCOLOUR |
+    IMXFX_FILM |
+    IMXFX_BLUR |
+    IMXFX_SATURATION |
+    IMXFX_COLOURSWAP |
+    IMXFX_WASHEDOUT |
+    IMXFX_POSTERISE |
+    IMXFX_COLOURPOINT |
+    IMXFX_COLOURBALANCE |
+    IMXFX_CARTOON |
     Imxfx'Unrecognized !Imxfx'UnrecognizedValue
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum Imxfx where
-  maybeToEnum 0 = Prelude.Just Imxfx_NONE
-  maybeToEnum 1 = Prelude.Just Imxfx_NEGATIVE
-  maybeToEnum 2 = Prelude.Just Imxfx_SOLARISE
-  maybeToEnum 3 = Prelude.Just Imxfx_SKETCH
-  maybeToEnum 4 = Prelude.Just Imxfx_DENOISE
-  maybeToEnum 5 = Prelude.Just Imxfx_EMBOSS
-  maybeToEnum 6 = Prelude.Just Imxfx_OILPAINT
-  maybeToEnum 7 = Prelude.Just Imxfx_HATCH
-  maybeToEnum 8 = Prelude.Just Imxfx_GPEN
-  maybeToEnum 9 = Prelude.Just Imxfx_PASTEL
-  maybeToEnum 10 = Prelude.Just Imxfx_WATERCOLOUR
-  maybeToEnum 11 = Prelude.Just Imxfx_FILM
-  maybeToEnum 12 = Prelude.Just Imxfx_BLUR
-  maybeToEnum 13 = Prelude.Just Imxfx_SATURATION
-  maybeToEnum 14 = Prelude.Just Imxfx_COLOURSWAP
-  maybeToEnum 15 = Prelude.Just Imxfx_WASHEDOUT
-  maybeToEnum 16 = Prelude.Just Imxfx_POSTERISE
-  maybeToEnum 17 = Prelude.Just Imxfx_COLOURPOINT
-  maybeToEnum 18 = Prelude.Just Imxfx_COLOURBALANCE
-  maybeToEnum 19 = Prelude.Just Imxfx_CARTOON
+  maybeToEnum 0 = Prelude.Just IMXFX_NONE
+  maybeToEnum 1 = Prelude.Just IMXFX_NEGATIVE
+  maybeToEnum 2 = Prelude.Just IMXFX_SOLARISE
+  maybeToEnum 3 = Prelude.Just IMXFX_SKETCH
+  maybeToEnum 4 = Prelude.Just IMXFX_DENOISE
+  maybeToEnum 5 = Prelude.Just IMXFX_EMBOSS
+  maybeToEnum 6 = Prelude.Just IMXFX_OILPAINT
+  maybeToEnum 7 = Prelude.Just IMXFX_HATCH
+  maybeToEnum 8 = Prelude.Just IMXFX_GPEN
+  maybeToEnum 9 = Prelude.Just IMXFX_PASTEL
+  maybeToEnum 10 = Prelude.Just IMXFX_WATERCOLOUR
+  maybeToEnum 11 = Prelude.Just IMXFX_FILM
+  maybeToEnum 12 = Prelude.Just IMXFX_BLUR
+  maybeToEnum 13 = Prelude.Just IMXFX_SATURATION
+  maybeToEnum 14 = Prelude.Just IMXFX_COLOURSWAP
+  maybeToEnum 15 = Prelude.Just IMXFX_WASHEDOUT
+  maybeToEnum 16 = Prelude.Just IMXFX_POSTERISE
+  maybeToEnum 17 = Prelude.Just IMXFX_COLOURPOINT
+  maybeToEnum 18 = Prelude.Just IMXFX_COLOURBALANCE
+  maybeToEnum 19 = Prelude.Just IMXFX_CARTOON
   maybeToEnum k
     = Prelude.Just
         (Imxfx'Unrecognized
            (Imxfx'UnrecognizedValue (Prelude.fromIntegral k)))
-  showEnum Imxfx_NONE = "Imxfx_NONE"
-  showEnum Imxfx_NEGATIVE = "Imxfx_NEGATIVE"
-  showEnum Imxfx_SOLARISE = "Imxfx_SOLARISE"
-  showEnum Imxfx_SKETCH = "Imxfx_SKETCH"
-  showEnum Imxfx_DENOISE = "Imxfx_DENOISE"
-  showEnum Imxfx_EMBOSS = "Imxfx_EMBOSS"
-  showEnum Imxfx_OILPAINT = "Imxfx_OILPAINT"
-  showEnum Imxfx_HATCH = "Imxfx_HATCH"
-  showEnum Imxfx_GPEN = "Imxfx_GPEN"
-  showEnum Imxfx_PASTEL = "Imxfx_PASTEL"
-  showEnum Imxfx_WATERCOLOUR = "Imxfx_WATERCOLOUR"
-  showEnum Imxfx_FILM = "Imxfx_FILM"
-  showEnum Imxfx_BLUR = "Imxfx_BLUR"
-  showEnum Imxfx_SATURATION = "Imxfx_SATURATION"
-  showEnum Imxfx_COLOURSWAP = "Imxfx_COLOURSWAP"
-  showEnum Imxfx_WASHEDOUT = "Imxfx_WASHEDOUT"
-  showEnum Imxfx_POSTERISE = "Imxfx_POSTERISE"
-  showEnum Imxfx_COLOURPOINT = "Imxfx_COLOURPOINT"
-  showEnum Imxfx_COLOURBALANCE = "Imxfx_COLOURBALANCE"
-  showEnum Imxfx_CARTOON = "Imxfx_CARTOON"
+  showEnum IMXFX_NONE = "IMXFX_NONE"
+  showEnum IMXFX_NEGATIVE = "IMXFX_NEGATIVE"
+  showEnum IMXFX_SOLARISE = "IMXFX_SOLARISE"
+  showEnum IMXFX_SKETCH = "IMXFX_SKETCH"
+  showEnum IMXFX_DENOISE = "IMXFX_DENOISE"
+  showEnum IMXFX_EMBOSS = "IMXFX_EMBOSS"
+  showEnum IMXFX_OILPAINT = "IMXFX_OILPAINT"
+  showEnum IMXFX_HATCH = "IMXFX_HATCH"
+  showEnum IMXFX_GPEN = "IMXFX_GPEN"
+  showEnum IMXFX_PASTEL = "IMXFX_PASTEL"
+  showEnum IMXFX_WATERCOLOUR = "IMXFX_WATERCOLOUR"
+  showEnum IMXFX_FILM = "IMXFX_FILM"
+  showEnum IMXFX_BLUR = "IMXFX_BLUR"
+  showEnum IMXFX_SATURATION = "IMXFX_SATURATION"
+  showEnum IMXFX_COLOURSWAP = "IMXFX_COLOURSWAP"
+  showEnum IMXFX_WASHEDOUT = "IMXFX_WASHEDOUT"
+  showEnum IMXFX_POSTERISE = "IMXFX_POSTERISE"
+  showEnum IMXFX_COLOURPOINT = "IMXFX_COLOURPOINT"
+  showEnum IMXFX_COLOURBALANCE = "IMXFX_COLOURBALANCE"
+  showEnum IMXFX_CARTOON = "IMXFX_CARTOON"
   showEnum (Imxfx'Unrecognized (Imxfx'UnrecognizedValue k))
     = Prelude.show k
   readEnum k
-    | (Prelude.==) k "Imxfx_NONE" = Prelude.Just Imxfx_NONE
-    | (Prelude.==) k "Imxfx_NEGATIVE" = Prelude.Just Imxfx_NEGATIVE
-    | (Prelude.==) k "Imxfx_SOLARISE" = Prelude.Just Imxfx_SOLARISE
-    | (Prelude.==) k "Imxfx_SKETCH" = Prelude.Just Imxfx_SKETCH
-    | (Prelude.==) k "Imxfx_DENOISE" = Prelude.Just Imxfx_DENOISE
-    | (Prelude.==) k "Imxfx_EMBOSS" = Prelude.Just Imxfx_EMBOSS
-    | (Prelude.==) k "Imxfx_OILPAINT" = Prelude.Just Imxfx_OILPAINT
-    | (Prelude.==) k "Imxfx_HATCH" = Prelude.Just Imxfx_HATCH
-    | (Prelude.==) k "Imxfx_GPEN" = Prelude.Just Imxfx_GPEN
-    | (Prelude.==) k "Imxfx_PASTEL" = Prelude.Just Imxfx_PASTEL
-    | (Prelude.==) k "Imxfx_WATERCOLOUR"
-    = Prelude.Just Imxfx_WATERCOLOUR
-    | (Prelude.==) k "Imxfx_FILM" = Prelude.Just Imxfx_FILM
-    | (Prelude.==) k "Imxfx_BLUR" = Prelude.Just Imxfx_BLUR
-    | (Prelude.==) k "Imxfx_SATURATION" = Prelude.Just Imxfx_SATURATION
-    | (Prelude.==) k "Imxfx_COLOURSWAP" = Prelude.Just Imxfx_COLOURSWAP
-    | (Prelude.==) k "Imxfx_WASHEDOUT" = Prelude.Just Imxfx_WASHEDOUT
-    | (Prelude.==) k "Imxfx_POSTERISE" = Prelude.Just Imxfx_POSTERISE
-    | (Prelude.==) k "Imxfx_COLOURPOINT"
-    = Prelude.Just Imxfx_COLOURPOINT
-    | (Prelude.==) k "Imxfx_COLOURBALANCE"
-    = Prelude.Just Imxfx_COLOURBALANCE
-    | (Prelude.==) k "Imxfx_CARTOON" = Prelude.Just Imxfx_CARTOON
+    | (Prelude.==) k "IMXFX_NONE" = Prelude.Just IMXFX_NONE
+    | (Prelude.==) k "IMXFX_NEGATIVE" = Prelude.Just IMXFX_NEGATIVE
+    | (Prelude.==) k "IMXFX_SOLARISE" = Prelude.Just IMXFX_SOLARISE
+    | (Prelude.==) k "IMXFX_SKETCH" = Prelude.Just IMXFX_SKETCH
+    | (Prelude.==) k "IMXFX_DENOISE" = Prelude.Just IMXFX_DENOISE
+    | (Prelude.==) k "IMXFX_EMBOSS" = Prelude.Just IMXFX_EMBOSS
+    | (Prelude.==) k "IMXFX_OILPAINT" = Prelude.Just IMXFX_OILPAINT
+    | (Prelude.==) k "IMXFX_HATCH" = Prelude.Just IMXFX_HATCH
+    | (Prelude.==) k "IMXFX_GPEN" = Prelude.Just IMXFX_GPEN
+    | (Prelude.==) k "IMXFX_PASTEL" = Prelude.Just IMXFX_PASTEL
+    | (Prelude.==) k "IMXFX_WATERCOLOUR"
+    = Prelude.Just IMXFX_WATERCOLOUR
+    | (Prelude.==) k "IMXFX_FILM" = Prelude.Just IMXFX_FILM
+    | (Prelude.==) k "IMXFX_BLUR" = Prelude.Just IMXFX_BLUR
+    | (Prelude.==) k "IMXFX_SATURATION" = Prelude.Just IMXFX_SATURATION
+    | (Prelude.==) k "IMXFX_COLOURSWAP" = Prelude.Just IMXFX_COLOURSWAP
+    | (Prelude.==) k "IMXFX_WASHEDOUT" = Prelude.Just IMXFX_WASHEDOUT
+    | (Prelude.==) k "IMXFX_POSTERISE" = Prelude.Just IMXFX_POSTERISE
+    | (Prelude.==) k "IMXFX_COLOURPOINT"
+    = Prelude.Just IMXFX_COLOURPOINT
+    | (Prelude.==) k "IMXFX_COLOURBALANCE"
+    = Prelude.Just IMXFX_COLOURBALANCE
+    | (Prelude.==) k "IMXFX_CARTOON" = Prelude.Just IMXFX_CARTOON
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
 instance Prelude.Bounded Imxfx where
-  minBound = Imxfx_NONE
-  maxBound = Imxfx_CARTOON
+  minBound = IMXFX_NONE
+  maxBound = IMXFX_CARTOON
 instance Prelude.Enum Imxfx where
   toEnum k__
     = Prelude.maybe
@@ -470,74 +470,74 @@ instance Prelude.Enum Imxfx where
            ((Prelude.++)
               "toEnum: unknown value for enum Imxfx: " (Prelude.show k__)))
         Prelude.id (Data.ProtoLens.maybeToEnum k__)
-  fromEnum Imxfx_NONE = 0
-  fromEnum Imxfx_NEGATIVE = 1
-  fromEnum Imxfx_SOLARISE = 2
-  fromEnum Imxfx_SKETCH = 3
-  fromEnum Imxfx_DENOISE = 4
-  fromEnum Imxfx_EMBOSS = 5
-  fromEnum Imxfx_OILPAINT = 6
-  fromEnum Imxfx_HATCH = 7
-  fromEnum Imxfx_GPEN = 8
-  fromEnum Imxfx_PASTEL = 9
-  fromEnum Imxfx_WATERCOLOUR = 10
-  fromEnum Imxfx_FILM = 11
-  fromEnum Imxfx_BLUR = 12
-  fromEnum Imxfx_SATURATION = 13
-  fromEnum Imxfx_COLOURSWAP = 14
-  fromEnum Imxfx_WASHEDOUT = 15
-  fromEnum Imxfx_POSTERISE = 16
-  fromEnum Imxfx_COLOURPOINT = 17
-  fromEnum Imxfx_COLOURBALANCE = 18
-  fromEnum Imxfx_CARTOON = 19
+  fromEnum IMXFX_NONE = 0
+  fromEnum IMXFX_NEGATIVE = 1
+  fromEnum IMXFX_SOLARISE = 2
+  fromEnum IMXFX_SKETCH = 3
+  fromEnum IMXFX_DENOISE = 4
+  fromEnum IMXFX_EMBOSS = 5
+  fromEnum IMXFX_OILPAINT = 6
+  fromEnum IMXFX_HATCH = 7
+  fromEnum IMXFX_GPEN = 8
+  fromEnum IMXFX_PASTEL = 9
+  fromEnum IMXFX_WATERCOLOUR = 10
+  fromEnum IMXFX_FILM = 11
+  fromEnum IMXFX_BLUR = 12
+  fromEnum IMXFX_SATURATION = 13
+  fromEnum IMXFX_COLOURSWAP = 14
+  fromEnum IMXFX_WASHEDOUT = 15
+  fromEnum IMXFX_POSTERISE = 16
+  fromEnum IMXFX_COLOURPOINT = 17
+  fromEnum IMXFX_COLOURBALANCE = 18
+  fromEnum IMXFX_CARTOON = 19
   fromEnum (Imxfx'Unrecognized (Imxfx'UnrecognizedValue k))
     = Prelude.fromIntegral k
-  succ Imxfx_CARTOON
+  succ IMXFX_CARTOON
     = Prelude.error
-        "Imxfx.succ: bad argument Imxfx_CARTOON. This value would be out of bounds."
-  succ Imxfx_NONE = Imxfx_NEGATIVE
-  succ Imxfx_NEGATIVE = Imxfx_SOLARISE
-  succ Imxfx_SOLARISE = Imxfx_SKETCH
-  succ Imxfx_SKETCH = Imxfx_DENOISE
-  succ Imxfx_DENOISE = Imxfx_EMBOSS
-  succ Imxfx_EMBOSS = Imxfx_OILPAINT
-  succ Imxfx_OILPAINT = Imxfx_HATCH
-  succ Imxfx_HATCH = Imxfx_GPEN
-  succ Imxfx_GPEN = Imxfx_PASTEL
-  succ Imxfx_PASTEL = Imxfx_WATERCOLOUR
-  succ Imxfx_WATERCOLOUR = Imxfx_FILM
-  succ Imxfx_FILM = Imxfx_BLUR
-  succ Imxfx_BLUR = Imxfx_SATURATION
-  succ Imxfx_SATURATION = Imxfx_COLOURSWAP
-  succ Imxfx_COLOURSWAP = Imxfx_WASHEDOUT
-  succ Imxfx_WASHEDOUT = Imxfx_POSTERISE
-  succ Imxfx_POSTERISE = Imxfx_COLOURPOINT
-  succ Imxfx_COLOURPOINT = Imxfx_COLOURBALANCE
-  succ Imxfx_COLOURBALANCE = Imxfx_CARTOON
+        "Imxfx.succ: bad argument IMXFX_CARTOON. This value would be out of bounds."
+  succ IMXFX_NONE = IMXFX_NEGATIVE
+  succ IMXFX_NEGATIVE = IMXFX_SOLARISE
+  succ IMXFX_SOLARISE = IMXFX_SKETCH
+  succ IMXFX_SKETCH = IMXFX_DENOISE
+  succ IMXFX_DENOISE = IMXFX_EMBOSS
+  succ IMXFX_EMBOSS = IMXFX_OILPAINT
+  succ IMXFX_OILPAINT = IMXFX_HATCH
+  succ IMXFX_HATCH = IMXFX_GPEN
+  succ IMXFX_GPEN = IMXFX_PASTEL
+  succ IMXFX_PASTEL = IMXFX_WATERCOLOUR
+  succ IMXFX_WATERCOLOUR = IMXFX_FILM
+  succ IMXFX_FILM = IMXFX_BLUR
+  succ IMXFX_BLUR = IMXFX_SATURATION
+  succ IMXFX_SATURATION = IMXFX_COLOURSWAP
+  succ IMXFX_COLOURSWAP = IMXFX_WASHEDOUT
+  succ IMXFX_WASHEDOUT = IMXFX_POSTERISE
+  succ IMXFX_POSTERISE = IMXFX_COLOURPOINT
+  succ IMXFX_COLOURPOINT = IMXFX_COLOURBALANCE
+  succ IMXFX_COLOURBALANCE = IMXFX_CARTOON
   succ (Imxfx'Unrecognized _)
     = Prelude.error "Imxfx.succ: bad argument: unrecognized value"
-  pred Imxfx_NONE
+  pred IMXFX_NONE
     = Prelude.error
-        "Imxfx.pred: bad argument Imxfx_NONE. This value would be out of bounds."
-  pred Imxfx_NEGATIVE = Imxfx_NONE
-  pred Imxfx_SOLARISE = Imxfx_NEGATIVE
-  pred Imxfx_SKETCH = Imxfx_SOLARISE
-  pred Imxfx_DENOISE = Imxfx_SKETCH
-  pred Imxfx_EMBOSS = Imxfx_DENOISE
-  pred Imxfx_OILPAINT = Imxfx_EMBOSS
-  pred Imxfx_HATCH = Imxfx_OILPAINT
-  pred Imxfx_GPEN = Imxfx_HATCH
-  pred Imxfx_PASTEL = Imxfx_GPEN
-  pred Imxfx_WATERCOLOUR = Imxfx_PASTEL
-  pred Imxfx_FILM = Imxfx_WATERCOLOUR
-  pred Imxfx_BLUR = Imxfx_FILM
-  pred Imxfx_SATURATION = Imxfx_BLUR
-  pred Imxfx_COLOURSWAP = Imxfx_SATURATION
-  pred Imxfx_WASHEDOUT = Imxfx_COLOURSWAP
-  pred Imxfx_POSTERISE = Imxfx_WASHEDOUT
-  pred Imxfx_COLOURPOINT = Imxfx_POSTERISE
-  pred Imxfx_COLOURBALANCE = Imxfx_COLOURPOINT
-  pred Imxfx_CARTOON = Imxfx_COLOURBALANCE
+        "Imxfx.pred: bad argument IMXFX_NONE. This value would be out of bounds."
+  pred IMXFX_NEGATIVE = IMXFX_NONE
+  pred IMXFX_SOLARISE = IMXFX_NEGATIVE
+  pred IMXFX_SKETCH = IMXFX_SOLARISE
+  pred IMXFX_DENOISE = IMXFX_SKETCH
+  pred IMXFX_EMBOSS = IMXFX_DENOISE
+  pred IMXFX_OILPAINT = IMXFX_EMBOSS
+  pred IMXFX_HATCH = IMXFX_OILPAINT
+  pred IMXFX_GPEN = IMXFX_HATCH
+  pred IMXFX_PASTEL = IMXFX_GPEN
+  pred IMXFX_WATERCOLOUR = IMXFX_PASTEL
+  pred IMXFX_FILM = IMXFX_WATERCOLOUR
+  pred IMXFX_BLUR = IMXFX_FILM
+  pred IMXFX_SATURATION = IMXFX_BLUR
+  pred IMXFX_COLOURSWAP = IMXFX_SATURATION
+  pred IMXFX_WASHEDOUT = IMXFX_COLOURSWAP
+  pred IMXFX_POSTERISE = IMXFX_WASHEDOUT
+  pred IMXFX_COLOURPOINT = IMXFX_POSTERISE
+  pred IMXFX_COLOURBALANCE = IMXFX_COLOURPOINT
+  pred IMXFX_CARTOON = IMXFX_COLOURBALANCE
   pred (Imxfx'Unrecognized _)
     = Prelude.error "Imxfx.pred: bad argument: unrecognized value"
   enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
@@ -545,134 +545,134 @@ instance Prelude.Enum Imxfx where
   enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
   enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
 instance Data.ProtoLens.FieldDefault Imxfx where
-  fieldDefault = Imxfx_NONE
+  fieldDefault = IMXFX_NONE
 instance Control.DeepSeq.NFData Imxfx where
   rnf x__ = Prelude.seq x__ ()
 {- | Fields :
      
-         * 'Proto.Sensors.RaspCamDt_Fields.vflip' @:: Lens' RaspCamOpt Prelude.Bool@
-         * 'Proto.Sensors.RaspCamDt_Fields.hflip' @:: Lens' RaspCamOpt Prelude.Bool@
-         * 'Proto.Sensors.RaspCamDt_Fields.rotation' @:: Lens' RaspCamOpt Data.Int.Int32@
-         * 'Proto.Sensors.RaspCamDt_Fields.quality' @:: Lens' RaspCamOpt Data.Int.Int32@
-         * 'Proto.Sensors.RaspCamDt_Fields.encoding' @:: Lens' RaspCamOpt Encoding@
-         * 'Proto.Sensors.RaspCamDt_Fields.sharpness' @:: Lens' RaspCamOpt Data.Int.Int32@
-         * 'Proto.Sensors.RaspCamDt_Fields.contrast' @:: Lens' RaspCamOpt Data.Int.Int32@
-         * 'Proto.Sensors.RaspCamDt_Fields.brightness' @:: Lens' RaspCamOpt Data.Int.Int32@
-         * 'Proto.Sensors.RaspCamDt_Fields.saturation' @:: Lens' RaspCamOpt Data.Int.Int32@
-         * 'Proto.Sensors.RaspCamDt_Fields.exposure' @:: Lens' RaspCamOpt Exposure@
-         * 'Proto.Sensors.RaspCamDt_Fields.awb' @:: Lens' RaspCamOpt Awb@
-         * 'Proto.Sensors.RaspCamDt_Fields.imxfx' @:: Lens' RaspCamOpt Imxfx@ -}
-data RaspCamOpt
-  = RaspCamOpt'_constructor {_RaspCamOpt'vflip :: !Prelude.Bool,
-                             _RaspCamOpt'hflip :: !Prelude.Bool,
-                             _RaspCamOpt'rotation :: !Data.Int.Int32,
-                             _RaspCamOpt'quality :: !Data.Int.Int32,
-                             _RaspCamOpt'encoding :: !Encoding,
-                             _RaspCamOpt'sharpness :: !Data.Int.Int32,
-                             _RaspCamOpt'contrast :: !Data.Int.Int32,
-                             _RaspCamOpt'brightness :: !Data.Int.Int32,
-                             _RaspCamOpt'saturation :: !Data.Int.Int32,
-                             _RaspCamOpt'exposure :: !Exposure,
-                             _RaspCamOpt'awb :: !Awb,
-                             _RaspCamOpt'imxfx :: !Imxfx,
-                             _RaspCamOpt'_unknownFields :: !Data.ProtoLens.FieldSet}
+         * 'Proto.Sensors.Raspcamdt_Fields.vflip' @:: Lens' Raspcamopt Prelude.Bool@
+         * 'Proto.Sensors.Raspcamdt_Fields.hflip' @:: Lens' Raspcamopt Prelude.Bool@
+         * 'Proto.Sensors.Raspcamdt_Fields.rotation' @:: Lens' Raspcamopt Data.Int.Int32@
+         * 'Proto.Sensors.Raspcamdt_Fields.quality' @:: Lens' Raspcamopt Data.Int.Int32@
+         * 'Proto.Sensors.Raspcamdt_Fields.encoding' @:: Lens' Raspcamopt Encoding@
+         * 'Proto.Sensors.Raspcamdt_Fields.sharpness' @:: Lens' Raspcamopt Data.Int.Int32@
+         * 'Proto.Sensors.Raspcamdt_Fields.contrast' @:: Lens' Raspcamopt Data.Int.Int32@
+         * 'Proto.Sensors.Raspcamdt_Fields.brightness' @:: Lens' Raspcamopt Data.Int.Int32@
+         * 'Proto.Sensors.Raspcamdt_Fields.saturation' @:: Lens' Raspcamopt Data.Int.Int32@
+         * 'Proto.Sensors.Raspcamdt_Fields.exposure' @:: Lens' Raspcamopt Exposure@
+         * 'Proto.Sensors.Raspcamdt_Fields.awb' @:: Lens' Raspcamopt Awb@
+         * 'Proto.Sensors.Raspcamdt_Fields.imxfx' @:: Lens' Raspcamopt Imxfx@ -}
+data Raspcamopt
+  = Raspcamopt'_constructor {_Raspcamopt'vflip :: !Prelude.Bool,
+                             _Raspcamopt'hflip :: !Prelude.Bool,
+                             _Raspcamopt'rotation :: !Data.Int.Int32,
+                             _Raspcamopt'quality :: !Data.Int.Int32,
+                             _Raspcamopt'encoding :: !Encoding,
+                             _Raspcamopt'sharpness :: !Data.Int.Int32,
+                             _Raspcamopt'contrast :: !Data.Int.Int32,
+                             _Raspcamopt'brightness :: !Data.Int.Int32,
+                             _Raspcamopt'saturation :: !Data.Int.Int32,
+                             _Raspcamopt'exposure :: !Exposure,
+                             _Raspcamopt'awb :: !Awb,
+                             _Raspcamopt'imxfx :: !Imxfx,
+                             _Raspcamopt'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
-instance Prelude.Show RaspCamOpt where
+instance Prelude.Show Raspcamopt where
   showsPrec _ __x __s
     = Prelude.showChar
         '{'
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
-instance Data.ProtoLens.Field.HasField RaspCamOpt "vflip" Prelude.Bool where
+instance Data.ProtoLens.Field.HasField Raspcamopt "vflip" Prelude.Bool where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'vflip (\ x__ y__ -> x__ {_RaspCamOpt'vflip = y__}))
+           _Raspcamopt'vflip (\ x__ y__ -> x__ {_Raspcamopt'vflip = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "hflip" Prelude.Bool where
+instance Data.ProtoLens.Field.HasField Raspcamopt "hflip" Prelude.Bool where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'hflip (\ x__ y__ -> x__ {_RaspCamOpt'hflip = y__}))
+           _Raspcamopt'hflip (\ x__ y__ -> x__ {_Raspcamopt'hflip = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "rotation" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Raspcamopt "rotation" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'rotation
-           (\ x__ y__ -> x__ {_RaspCamOpt'rotation = y__}))
+           _Raspcamopt'rotation
+           (\ x__ y__ -> x__ {_Raspcamopt'rotation = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "quality" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Raspcamopt "quality" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'quality (\ x__ y__ -> x__ {_RaspCamOpt'quality = y__}))
+           _Raspcamopt'quality (\ x__ y__ -> x__ {_Raspcamopt'quality = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "encoding" Encoding where
+instance Data.ProtoLens.Field.HasField Raspcamopt "encoding" Encoding where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'encoding
-           (\ x__ y__ -> x__ {_RaspCamOpt'encoding = y__}))
+           _Raspcamopt'encoding
+           (\ x__ y__ -> x__ {_Raspcamopt'encoding = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "sharpness" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Raspcamopt "sharpness" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'sharpness
-           (\ x__ y__ -> x__ {_RaspCamOpt'sharpness = y__}))
+           _Raspcamopt'sharpness
+           (\ x__ y__ -> x__ {_Raspcamopt'sharpness = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "contrast" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Raspcamopt "contrast" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'contrast
-           (\ x__ y__ -> x__ {_RaspCamOpt'contrast = y__}))
+           _Raspcamopt'contrast
+           (\ x__ y__ -> x__ {_Raspcamopt'contrast = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "brightness" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Raspcamopt "brightness" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'brightness
-           (\ x__ y__ -> x__ {_RaspCamOpt'brightness = y__}))
+           _Raspcamopt'brightness
+           (\ x__ y__ -> x__ {_Raspcamopt'brightness = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "saturation" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Raspcamopt "saturation" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'saturation
-           (\ x__ y__ -> x__ {_RaspCamOpt'saturation = y__}))
+           _Raspcamopt'saturation
+           (\ x__ y__ -> x__ {_Raspcamopt'saturation = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "exposure" Exposure where
+instance Data.ProtoLens.Field.HasField Raspcamopt "exposure" Exposure where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'exposure
-           (\ x__ y__ -> x__ {_RaspCamOpt'exposure = y__}))
+           _Raspcamopt'exposure
+           (\ x__ y__ -> x__ {_Raspcamopt'exposure = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "awb" Awb where
+instance Data.ProtoLens.Field.HasField Raspcamopt "awb" Awb where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'awb (\ x__ y__ -> x__ {_RaspCamOpt'awb = y__}))
+           _Raspcamopt'awb (\ x__ y__ -> x__ {_Raspcamopt'awb = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOpt "imxfx" Imxfx where
+instance Data.ProtoLens.Field.HasField Raspcamopt "imxfx" Imxfx where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOpt'imxfx (\ x__ y__ -> x__ {_RaspCamOpt'imxfx = y__}))
+           _Raspcamopt'imxfx (\ x__ y__ -> x__ {_Raspcamopt'imxfx = y__}))
         Prelude.id
-instance Data.ProtoLens.Message RaspCamOpt where
-  messageName _ = Data.Text.pack "sensors.raspCamDt.RaspCamOpt"
+instance Data.ProtoLens.Message Raspcamopt where
+  messageName _ = Data.Text.pack "sensors.raspcamdt.Raspcamopt"
   packedMessageDescriptor _
     = "\n\
       \\n\
-      \RaspCamOpt\DC2\DC4\n\
+      \Raspcamopt\DC2\DC4\n\
       \\ENQvflip\CAN\SOH \SOH(\bR\ENQvflip\DC2\DC4\n\
       \\ENQhflip\CAN\STX \SOH(\bR\ENQhflip\DC2\SUB\n\
       \\brotation\CAN\ETX \SOH(\ENQR\brotation\DC2\CAN\n\
       \\aquality\CAN\EOT \SOH(\ENQR\aquality\DC27\n\
-      \\bencoding\CAN\ENQ \SOH(\SO2\ESC.sensors.raspCamDt.EncodingR\bencoding\DC2\FS\n\
+      \\bencoding\CAN\ENQ \SOH(\SO2\ESC.sensors.raspcamdt.EncodingR\bencoding\DC2\FS\n\
       \\tsharpness\CAN\ACK \SOH(\ENQR\tsharpness\DC2\SUB\n\
       \\bcontrast\CAN\a \SOH(\ENQR\bcontrast\DC2\RS\n\
       \\n\
@@ -682,9 +682,9 @@ instance Data.ProtoLens.Message RaspCamOpt where
       \saturation\CAN\t \SOH(\ENQR\n\
       \saturation\DC27\n\
       \\bexposure\CAN\n\
-      \ \SOH(\SO2\ESC.sensors.raspCamDt.ExposureR\bexposure\DC2(\n\
-      \\ETXawb\CAN\v \SOH(\SO2\SYN.sensors.raspCamDt.AwbR\ETXawb\DC2.\n\
-      \\ENQimxfx\CAN\f \SOH(\SO2\CAN.sensors.raspCamDt.ImxfxR\ENQimxfx"
+      \ \SOH(\SO2\ESC.sensors.raspcamdt.ExposureR\bexposure\DC2(\n\
+      \\ETXawb\CAN\v \SOH(\SO2\SYN.sensors.raspcamdt.AwbR\ETXawb\DC2.\n\
+      \\ENQimxfx\CAN\f \SOH(\SO2\CAN.sensors.raspcamdt.ImxfxR\ENQimxfx"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -695,7 +695,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
                  Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"vflip")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         hflip__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "hflip"
@@ -703,7 +703,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
                  Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"hflip")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         rotation__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "rotation"
@@ -712,7 +712,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"rotation")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         quality__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "quality"
@@ -720,7 +720,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
                  Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"quality")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         encoding__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "encoding"
@@ -729,7 +729,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"encoding")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         sharpness__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "sharpness"
@@ -738,7 +738,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"sharpness")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         contrast__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "contrast"
@@ -747,7 +747,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"contrast")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         brightness__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "brightness"
@@ -756,7 +756,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"brightness")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         saturation__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "saturation"
@@ -765,7 +765,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"saturation")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         exposure__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "exposure"
@@ -774,7 +774,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"exposure")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         awb__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "awb"
@@ -782,7 +782,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
                  Data.ProtoLens.FieldTypeDescriptor Awb)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"awb")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
         imxfx__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "imxfx"
@@ -790,7 +790,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
                  Data.ProtoLens.FieldTypeDescriptor Imxfx)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"imxfx")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOpt
+              Data.ProtoLens.FieldDescriptor Raspcamopt
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, vflip__field_descriptor),
@@ -807,27 +807,27 @@ instance Data.ProtoLens.Message RaspCamOpt where
            (Data.ProtoLens.Tag 12, imxfx__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
-        _RaspCamOpt'_unknownFields
-        (\ x__ y__ -> x__ {_RaspCamOpt'_unknownFields = y__})
+        _Raspcamopt'_unknownFields
+        (\ x__ y__ -> x__ {_Raspcamopt'_unknownFields = y__})
   defMessage
-    = RaspCamOpt'_constructor
-        {_RaspCamOpt'vflip = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'hflip = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'rotation = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'quality = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'encoding = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'sharpness = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'contrast = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'brightness = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'saturation = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'exposure = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'awb = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'imxfx = Data.ProtoLens.fieldDefault,
-         _RaspCamOpt'_unknownFields = []}
+    = Raspcamopt'_constructor
+        {_Raspcamopt'vflip = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'hflip = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'rotation = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'quality = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'encoding = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'sharpness = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'contrast = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'brightness = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'saturation = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'exposure = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'awb = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'imxfx = Data.ProtoLens.fieldDefault,
+         _Raspcamopt'_unknownFields = []}
   parseMessage
     = let
         loop ::
-          RaspCamOpt -> Data.ProtoLens.Encoding.Bytes.Parser RaspCamOpt
+          Raspcamopt -> Data.ProtoLens.Encoding.Bytes.Parser Raspcamopt
         loop x
           = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                if end then
@@ -950,7 +950,7 @@ instance Data.ProtoLens.Message RaspCamOpt where
                                      Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
       in
         (Data.ProtoLens.Encoding.Bytes.<?>)
-          (do loop Data.ProtoLens.defMessage) "RaspCamOpt"
+          (do loop Data.ProtoLens.defMessage) "Raspcamopt"
   buildMessage
     = \ _x
         -> (Data.Monoid.<>)
@@ -1116,70 +1116,70 @@ instance Data.ProtoLens.Message RaspCamOpt where
                                               (Data.ProtoLens.Encoding.Wire.buildFieldSet
                                                  (Lens.Family2.view
                                                     Data.ProtoLens.unknownFields _x)))))))))))))
-instance Control.DeepSeq.NFData RaspCamOpt where
+instance Control.DeepSeq.NFData Raspcamopt where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
-             (_RaspCamOpt'_unknownFields x__)
+             (_Raspcamopt'_unknownFields x__)
              (Control.DeepSeq.deepseq
-                (_RaspCamOpt'vflip x__)
+                (_Raspcamopt'vflip x__)
                 (Control.DeepSeq.deepseq
-                   (_RaspCamOpt'hflip x__)
+                   (_Raspcamopt'hflip x__)
                    (Control.DeepSeq.deepseq
-                      (_RaspCamOpt'rotation x__)
+                      (_Raspcamopt'rotation x__)
                       (Control.DeepSeq.deepseq
-                         (_RaspCamOpt'quality x__)
+                         (_Raspcamopt'quality x__)
                          (Control.DeepSeq.deepseq
-                            (_RaspCamOpt'encoding x__)
+                            (_Raspcamopt'encoding x__)
                             (Control.DeepSeq.deepseq
-                               (_RaspCamOpt'sharpness x__)
+                               (_Raspcamopt'sharpness x__)
                                (Control.DeepSeq.deepseq
-                                  (_RaspCamOpt'contrast x__)
+                                  (_Raspcamopt'contrast x__)
                                   (Control.DeepSeq.deepseq
-                                     (_RaspCamOpt'brightness x__)
+                                     (_Raspcamopt'brightness x__)
                                      (Control.DeepSeq.deepseq
-                                        (_RaspCamOpt'saturation x__)
+                                        (_Raspcamopt'saturation x__)
                                         (Control.DeepSeq.deepseq
-                                           (_RaspCamOpt'exposure x__)
+                                           (_Raspcamopt'exposure x__)
                                            (Control.DeepSeq.deepseq
-                                              (_RaspCamOpt'awb x__)
+                                              (_Raspcamopt'awb x__)
                                               (Control.DeepSeq.deepseq
-                                                 (_RaspCamOpt'imxfx x__) ()))))))))))))
+                                                 (_Raspcamopt'imxfx x__) ()))))))))))))
 {- | Fields :
      
-         * 'Proto.Sensors.RaspCamDt_Fields.encoding' @:: Lens' RaspCamOut Encoding@
-         * 'Proto.Sensors.RaspCamDt_Fields.bin' @:: Lens' RaspCamOut Data.ByteString.ByteString@ -}
-data RaspCamOut
-  = RaspCamOut'_constructor {_RaspCamOut'encoding :: !Encoding,
-                             _RaspCamOut'bin :: !Data.ByteString.ByteString,
-                             _RaspCamOut'_unknownFields :: !Data.ProtoLens.FieldSet}
+         * 'Proto.Sensors.Raspcamdt_Fields.encoding' @:: Lens' Raspcamout Encoding@
+         * 'Proto.Sensors.Raspcamdt_Fields.bin' @:: Lens' Raspcamout Data.ByteString.ByteString@ -}
+data Raspcamout
+  = Raspcamout'_constructor {_Raspcamout'encoding :: !Encoding,
+                             _Raspcamout'bin :: !Data.ByteString.ByteString,
+                             _Raspcamout'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
-instance Prelude.Show RaspCamOut where
+instance Prelude.Show Raspcamout where
   showsPrec _ __x __s
     = Prelude.showChar
         '{'
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
-instance Data.ProtoLens.Field.HasField RaspCamOut "encoding" Encoding where
+instance Data.ProtoLens.Field.HasField Raspcamout "encoding" Encoding where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOut'encoding
-           (\ x__ y__ -> x__ {_RaspCamOut'encoding = y__}))
+           _Raspcamout'encoding
+           (\ x__ y__ -> x__ {_Raspcamout'encoding = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField RaspCamOut "bin" Data.ByteString.ByteString where
+instance Data.ProtoLens.Field.HasField Raspcamout "bin" Data.ByteString.ByteString where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _RaspCamOut'bin (\ x__ y__ -> x__ {_RaspCamOut'bin = y__}))
+           _Raspcamout'bin (\ x__ y__ -> x__ {_Raspcamout'bin = y__}))
         Prelude.id
-instance Data.ProtoLens.Message RaspCamOut where
-  messageName _ = Data.Text.pack "sensors.raspCamDt.RaspCamOut"
+instance Data.ProtoLens.Message Raspcamout where
+  messageName _ = Data.Text.pack "sensors.raspcamdt.Raspcamout"
   packedMessageDescriptor _
     = "\n\
       \\n\
-      \RaspCamOut\DC27\n\
-      \\bencoding\CAN\SOH \SOH(\SO2\ESC.sensors.raspCamDt.EncodingR\bencoding\DC2\DLE\n\
+      \Raspcamout\DC27\n\
+      \\bencoding\CAN\SOH \SOH(\SO2\ESC.sensors.raspcamdt.EncodingR\bencoding\DC2\DLE\n\
       \\ETXbin\CAN\STX \SOH(\fR\ETXbin"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
@@ -1192,7 +1192,7 @@ instance Data.ProtoLens.Message RaspCamOut where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"encoding")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOut
+              Data.ProtoLens.FieldDescriptor Raspcamout
         bin__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "bin"
@@ -1200,24 +1200,24 @@ instance Data.ProtoLens.Message RaspCamOut where
                  Data.ProtoLens.FieldTypeDescriptor Data.ByteString.ByteString)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"bin")) ::
-              Data.ProtoLens.FieldDescriptor RaspCamOut
+              Data.ProtoLens.FieldDescriptor Raspcamout
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, encoding__field_descriptor),
            (Data.ProtoLens.Tag 2, bin__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
-        _RaspCamOut'_unknownFields
-        (\ x__ y__ -> x__ {_RaspCamOut'_unknownFields = y__})
+        _Raspcamout'_unknownFields
+        (\ x__ y__ -> x__ {_Raspcamout'_unknownFields = y__})
   defMessage
-    = RaspCamOut'_constructor
-        {_RaspCamOut'encoding = Data.ProtoLens.fieldDefault,
-         _RaspCamOut'bin = Data.ProtoLens.fieldDefault,
-         _RaspCamOut'_unknownFields = []}
+    = Raspcamout'_constructor
+        {_Raspcamout'encoding = Data.ProtoLens.fieldDefault,
+         _Raspcamout'bin = Data.ProtoLens.fieldDefault,
+         _Raspcamout'_unknownFields = []}
   parseMessage
     = let
         loop ::
-          RaspCamOut -> Data.ProtoLens.Encoding.Bytes.Parser RaspCamOut
+          Raspcamout -> Data.ProtoLens.Encoding.Bytes.Parser Raspcamout
         loop x
           = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                if end then
@@ -1260,7 +1260,7 @@ instance Data.ProtoLens.Message RaspCamOut where
                                      Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
       in
         (Data.ProtoLens.Encoding.Bytes.<?>)
-          (do loop Data.ProtoLens.defMessage) "RaspCamOut"
+          (do loop Data.ProtoLens.defMessage) "Raspcamout"
   buildMessage
     = \ _x
         -> (Data.Monoid.<>)
@@ -1292,29 +1292,29 @@ instance Data.ProtoLens.Message RaspCamOut where
                             _v))
                 (Data.ProtoLens.Encoding.Wire.buildFieldSet
                    (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
-instance Control.DeepSeq.NFData RaspCamOut where
+instance Control.DeepSeq.NFData Raspcamout where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
-             (_RaspCamOut'_unknownFields x__)
+             (_Raspcamout'_unknownFields x__)
              (Control.DeepSeq.deepseq
-                (_RaspCamOut'encoding x__)
-                (Control.DeepSeq.deepseq (_RaspCamOut'bin x__) ()))
+                (_Raspcamout'encoding x__)
+                (Control.DeepSeq.deepseq (_Raspcamout'bin x__) ()))
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \\ETBsensors/raspCamDt.proto\DC2\DC1sensors.raspCamDt\"W\n\
+    \\ETBsensors/raspcamdt.proto\DC2\DC1sensors.raspcamdt\"W\n\
     \\n\
-    \RaspCamOut\DC27\n\
-    \\bencoding\CAN\SOH \SOH(\SO2\ESC.sensors.raspCamDt.EncodingR\bencoding\DC2\DLE\n\
+    \Raspcamout\DC27\n\
+    \\bencoding\CAN\SOH \SOH(\SO2\ESC.sensors.raspcamdt.EncodingR\bencoding\DC2\DLE\n\
     \\ETXbin\CAN\STX \SOH(\fR\ETXbin\"\180\ETX\n\
     \\n\
-    \RaspCamOpt\DC2\DC4\n\
+    \Raspcamopt\DC2\DC4\n\
     \\ENQvflip\CAN\SOH \SOH(\bR\ENQvflip\DC2\DC4\n\
     \\ENQhflip\CAN\STX \SOH(\bR\ENQhflip\DC2\SUB\n\
     \\brotation\CAN\ETX \SOH(\ENQR\brotation\DC2\CAN\n\
     \\aquality\CAN\EOT \SOH(\ENQR\aquality\DC27\n\
-    \\bencoding\CAN\ENQ \SOH(\SO2\ESC.sensors.raspCamDt.EncodingR\bencoding\DC2\FS\n\
+    \\bencoding\CAN\ENQ \SOH(\SO2\ESC.sensors.raspcamdt.EncodingR\bencoding\DC2\FS\n\
     \\tsharpness\CAN\ACK \SOH(\ENQR\tsharpness\DC2\SUB\n\
     \\bcontrast\CAN\a \SOH(\ENQR\bcontrast\DC2\RS\n\
     \\n\
@@ -1324,69 +1324,69 @@ packedFileDescriptor
     \saturation\CAN\t \SOH(\ENQR\n\
     \saturation\DC27\n\
     \\bexposure\CAN\n\
-    \ \SOH(\SO2\ESC.sensors.raspCamDt.ExposureR\bexposure\DC2(\n\
-    \\ETXawb\CAN\v \SOH(\SO2\SYN.sensors.raspCamDt.AwbR\ETXawb\DC2.\n\
-    \\ENQimxfx\CAN\f \SOH(\SO2\CAN.sensors.raspCamDt.ImxfxR\ENQimxfx*/\n\
+    \ \SOH(\SO2\ESC.sensors.raspcamdt.ExposureR\bexposure\DC2(\n\
+    \\ETXawb\CAN\v \SOH(\SO2\SYN.sensors.raspcamdt.AwbR\ETXawb\DC2.\n\
+    \\ENQimxfx\CAN\f \SOH(\SO2\CAN.sensors.raspcamdt.ImxfxR\ENQimxfx*/\n\
     \\bEncoding\DC2\b\n\
     \\EOTJPEG\DLE\NUL\DC2\a\n\
     \\ETXPNG\DLE\SOH\DC2\a\n\
     \\ETXBMP\DLE\STX\DC2\a\n\
     \\ETXGIF\DLE\ETX*\231\SOH\n\
     \\bExposure\DC2\v\n\
-    \\aExp_OFF\DLE\NUL\DC2\f\n\
-    \\bExp_AUTO\DLE\SOH\DC2\r\n\
-    \\tExp_NIGHT\DLE\STX\DC2\DC4\n\
-    \\DLEExp_NIGHTPREVIEW\DLE\ETX\DC2\DC1\n\
-    \\rExp_BACKLIGHT\DLE\EOT\DC2\DC1\n\
-    \\rExp_SPOTLIGHT\DLE\ENQ\DC2\SO\n\
+    \\aEXP_OFF\DLE\NUL\DC2\f\n\
+    \\bEXP_AUTO\DLE\SOH\DC2\r\n\
+    \\tEXP_NIGHT\DLE\STX\DC2\DC4\n\
+    \\DLEEXP_NIGHTPREVIEW\DLE\ETX\DC2\DC1\n\
+    \\rEXP_BACKLIGHT\DLE\EOT\DC2\DC1\n\
+    \\rEXP_SPOTLIGHT\DLE\ENQ\DC2\SO\n\
     \\n\
-    \Exp_SPORTS\DLE\ACK\DC2\f\n\
-    \\bExp_SNOW\DLE\a\DC2\r\n\
-    \\tExp_BEACH\DLE\b\DC2\DLE\n\
-    \\fExp_VERYLONG\DLE\t\DC2\DLE\n\
-    \\fExp_FIXEDFPS\DLE\n\
+    \EXP_SPORTS\DLE\ACK\DC2\f\n\
+    \\bEXP_SNOW\DLE\a\DC2\r\n\
+    \\tEXP_BEACH\DLE\b\DC2\DLE\n\
+    \\fEXP_VERYLONG\DLE\t\DC2\DLE\n\
+    \\fEXP_FIXEDFPS\DLE\n\
     \\DC2\DC1\n\
-    \\rExp_ANTISHAKE\DLE\v\DC2\DC1\n\
-    \\rExp_FIREWORKS\DLE\f*\187\SOH\n\
+    \\rEXP_ANTISHAKE\DLE\v\DC2\DC1\n\
+    \\rEXP_FIREWORKS\DLE\f*\187\SOH\n\
     \\ETXAwb\DC2\v\n\
-    \\aAwb_OFF\DLE\NUL\DC2\f\n\
-    \\bAwb_AUTO\DLE\SOH\DC2\v\n\
-    \\aAwb_SUN\DLE\STX\DC2\r\n\
-    \\tAwb_CLOUD\DLE\ETX\DC2\r\n\
-    \\tAwb_SHADE\DLE\EOT\DC2\DLE\n\
-    \\fAwb_TUNGSTEN\DLE\ENQ\DC2\DC3\n\
-    \\SIAwb_FLUORESCENT\DLE\ACK\DC2\DC4\n\
-    \\DLEAwb_INCANDESCENT\DLE\a\DC2\r\n\
-    \\tAwb_FLASH\DLE\b\DC2\SI\n\
-    \\vAwb_HORIZON\DLE\t\DC2\DC1\n\
-    \\rAwb_GREYWORLD\DLE\n\
+    \\aAWB_OFF\DLE\NUL\DC2\f\n\
+    \\bAWB_AUTO\DLE\SOH\DC2\v\n\
+    \\aAWB_SUN\DLE\STX\DC2\r\n\
+    \\tAWB_CLOUD\DLE\ETX\DC2\r\n\
+    \\tAWB_SHADE\DLE\EOT\DC2\DLE\n\
+    \\fAWB_TUNGSTEN\DLE\ENQ\DC2\DC3\n\
+    \\SIAWB_FLUORESCENT\DLE\ACK\DC2\DC4\n\
+    \\DLEAWB_INCANDESCENT\DLE\a\DC2\r\n\
+    \\tAWB_FLASH\DLE\b\DC2\SI\n\
+    \\vAWB_HORIZON\DLE\t\DC2\DC1\n\
+    \\rAWB_GREYWORLD\DLE\n\
     \*\141\ETX\n\
     \\ENQImxfx\DC2\SO\n\
     \\n\
-    \Imxfx_NONE\DLE\NUL\DC2\DC2\n\
-    \\SOImxfx_NEGATIVE\DLE\SOH\DC2\DC2\n\
-    \\SOImxfx_SOLARISE\DLE\STX\DC2\DLE\n\
-    \\fImxfx_SKETCH\DLE\ETX\DC2\DC1\n\
-    \\rImxfx_DENOISE\DLE\EOT\DC2\DLE\n\
-    \\fImxfx_EMBOSS\DLE\ENQ\DC2\DC2\n\
-    \\SOImxfx_OILPAINT\DLE\ACK\DC2\SI\n\
-    \\vImxfx_HATCH\DLE\a\DC2\SO\n\
+    \IMXFX_NONE\DLE\NUL\DC2\DC2\n\
+    \\SOIMXFX_NEGATIVE\DLE\SOH\DC2\DC2\n\
+    \\SOIMXFX_SOLARISE\DLE\STX\DC2\DLE\n\
+    \\fIMXFX_SKETCH\DLE\ETX\DC2\DC1\n\
+    \\rIMXFX_DENOISE\DLE\EOT\DC2\DLE\n\
+    \\fIMXFX_EMBOSS\DLE\ENQ\DC2\DC2\n\
+    \\SOIMXFX_OILPAINT\DLE\ACK\DC2\SI\n\
+    \\vIMXFX_HATCH\DLE\a\DC2\SO\n\
     \\n\
-    \Imxfx_GPEN\DLE\b\DC2\DLE\n\
-    \\fImxfx_PASTEL\DLE\t\DC2\NAK\n\
-    \\DC1Imxfx_WATERCOLOUR\DLE\n\
+    \IMXFX_GPEN\DLE\b\DC2\DLE\n\
+    \\fIMXFX_PASTEL\DLE\t\DC2\NAK\n\
+    \\DC1IMXFX_WATERCOLOUR\DLE\n\
     \\DC2\SO\n\
     \\n\
-    \Imxfx_FILM\DLE\v\DC2\SO\n\
+    \IMXFX_FILM\DLE\v\DC2\SO\n\
     \\n\
-    \Imxfx_BLUR\DLE\f\DC2\DC4\n\
-    \\DLEImxfx_SATURATION\DLE\r\DC2\DC4\n\
-    \\DLEImxfx_COLOURSWAP\DLE\SO\DC2\DC3\n\
-    \\SIImxfx_WASHEDOUT\DLE\SI\DC2\DC3\n\
-    \\SIImxfx_POSTERISE\DLE\DLE\DC2\NAK\n\
-    \\DC1Imxfx_COLOURPOINT\DLE\DC1\DC2\ETB\n\
-    \\DC3Imxfx_COLOURBALANCE\DLE\DC2\DC2\DC1\n\
-    \\rImxfx_CARTOON\DLE\DC3J\222\SYN\n\
+    \IMXFX_BLUR\DLE\f\DC2\DC4\n\
+    \\DLEIMXFX_SATURATION\DLE\r\DC2\DC4\n\
+    \\DLEIMXFX_COLOURSWAP\DLE\SO\DC2\DC3\n\
+    \\SIIMXFX_WASHEDOUT\DLE\SI\DC2\DC3\n\
+    \\SIIMXFX_POSTERISE\DLE\DLE\DC2\NAK\n\
+    \\DC1IMXFX_COLOURPOINT\DLE\DC1\DC2\ETB\n\
+    \\DC3IMXFX_COLOURBALANCE\DLE\DC2\DC2\DC1\n\
+    \\rIMXFX_CARTOON\DLE\DC3J\222\SYN\n\
     \\ACK\DC2\EOT\SOH\NULS\SOH\n\
     \\b\n\
     \\SOH\f\DC2\ETX\SOH\NUL\DC2\n\

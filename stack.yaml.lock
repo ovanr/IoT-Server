@@ -32,6 +32,13 @@ packages:
       sha256: 3075dfc34bb2986487302b79d3e2f1897d2161171f9c6cc366f60bf226a9f56e
   original:
     hackage: smuggler2-0.3.6.2@sha256:743fb8982f90d8612db86ff01a76eaa008c261a8999c518e8cdb7ed720c38957,3943
+- completed:
+    hackage: proto-lens-jsonpb-0.2.0.2@sha256:a361759d615e54a58a2f92eecd991ec8ad563dfdf0169bef2ea02054cf581da1,2019
+    pantry-tree:
+      size: 353
+      sha256: 01c64e9221112b22f1a0db8383fb115eff949a4cd81bc6f65d28710c8c945edd
+  original:
+    hackage: proto-lens-jsonpb-0.2.0.2@sha256:a361759d615e54a58a2f92eecd991ec8ad563dfdf0169bef2ea02054cf581da1,2019
 snapshots:
 - completed:
     size: 563099

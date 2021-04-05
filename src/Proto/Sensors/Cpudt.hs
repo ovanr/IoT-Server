@@ -1,10 +1,10 @@
-{- This file was auto-generated from sensors/cpuDt.proto by the proto-lens-protoc program. -}
+{- This file was auto-generated from sensors/cpudt.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings, DerivingStrategies#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
-module Proto.Sensors.CpuDt (
-        CpuOpt(), CpuOut()
+module Proto.Sensors.Cpudt (
+        Cpuopt(), Cpuout()
     ) where
 import qualified Data.ProtoLens.Runtime.Control.DeepSeq as Control.DeepSeq
 import qualified Data.ProtoLens.Runtime.Data.ProtoLens.Prism as Data.ProtoLens.Prism
@@ -33,30 +33,30 @@ import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unbox
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
 {- | Fields :
       -}
-data CpuOpt
-  = CpuOpt'_constructor {_CpuOpt'_unknownFields :: !Data.ProtoLens.FieldSet}
+data Cpuopt
+  = Cpuopt'_constructor {_Cpuopt'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
-instance Prelude.Show CpuOpt where
+instance Prelude.Show Cpuopt where
   showsPrec _ __x __s
     = Prelude.showChar
         '{'
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
-instance Data.ProtoLens.Message CpuOpt where
-  messageName _ = Data.Text.pack "sensors.cpuDt.CpuOpt"
+instance Data.ProtoLens.Message Cpuopt where
+  messageName _ = Data.Text.pack "sensors.cpudt.Cpuopt"
   packedMessageDescriptor _
     = "\n\
-      \\ACKCpuOpt"
+      \\ACKCpuopt"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag = let in Data.Map.fromList []
   unknownFields
     = Lens.Family2.Unchecked.lens
-        _CpuOpt'_unknownFields
-        (\ x__ y__ -> x__ {_CpuOpt'_unknownFields = y__})
-  defMessage = CpuOpt'_constructor {_CpuOpt'_unknownFields = []}
+        _Cpuopt'_unknownFields
+        (\ x__ y__ -> x__ {_Cpuopt'_unknownFields = y__})
+  defMessage = Cpuopt'_constructor {_Cpuopt'_unknownFields = []}
   parseMessage
     = let
-        loop :: CpuOpt -> Data.ProtoLens.Encoding.Bytes.Parser CpuOpt
+        loop :: Cpuopt -> Data.ProtoLens.Encoding.Bytes.Parser Cpuopt
         loop x
           = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                if end then
@@ -83,57 +83,57 @@ instance Data.ProtoLens.Message CpuOpt where
                                      Data.ProtoLens.unknownFields (\ !t -> (:) y t) x) }
       in
         (Data.ProtoLens.Encoding.Bytes.<?>)
-          (do loop Data.ProtoLens.defMessage) "CpuOpt"
+          (do loop Data.ProtoLens.defMessage) "Cpuopt"
   buildMessage
     = \ _x
         -> Data.ProtoLens.Encoding.Wire.buildFieldSet
              (Lens.Family2.view Data.ProtoLens.unknownFields _x)
-instance Control.DeepSeq.NFData CpuOpt where
+instance Control.DeepSeq.NFData Cpuopt where
   rnf
-    = \ x__ -> Control.DeepSeq.deepseq (_CpuOpt'_unknownFields x__) ()
+    = \ x__ -> Control.DeepSeq.deepseq (_Cpuopt'_unknownFields x__) ()
 {- | Fields :
      
-         * 'Proto.Sensors.CpuDt_Fields.load' @:: Lens' CpuOut Prelude.Float@
-         * 'Proto.Sensors.CpuDt_Fields.count' @:: Lens' CpuOut Data.Int.Int32@
-         * 'Proto.Sensors.CpuDt_Fields.pkgTemp' @:: Lens' CpuOut Prelude.Float@ -}
-data CpuOut
-  = CpuOut'_constructor {_CpuOut'load :: !Prelude.Float,
-                         _CpuOut'count :: !Data.Int.Int32,
-                         _CpuOut'pkgTemp :: !Prelude.Float,
-                         _CpuOut'_unknownFields :: !Data.ProtoLens.FieldSet}
+         * 'Proto.Sensors.Cpudt_Fields.load' @:: Lens' Cpuout Prelude.Float@
+         * 'Proto.Sensors.Cpudt_Fields.count' @:: Lens' Cpuout Data.Int.Int32@
+         * 'Proto.Sensors.Cpudt_Fields.pkgTemp' @:: Lens' Cpuout Prelude.Float@ -}
+data Cpuout
+  = Cpuout'_constructor {_Cpuout'load :: !Prelude.Float,
+                         _Cpuout'count :: !Data.Int.Int32,
+                         _Cpuout'pkgTemp :: !Prelude.Float,
+                         _Cpuout'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
-instance Prelude.Show CpuOut where
+instance Prelude.Show Cpuout where
   showsPrec _ __x __s
     = Prelude.showChar
         '{'
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
-instance Data.ProtoLens.Field.HasField CpuOut "load" Prelude.Float where
+instance Data.ProtoLens.Field.HasField Cpuout "load" Prelude.Float where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _CpuOut'load (\ x__ y__ -> x__ {_CpuOut'load = y__}))
+           _Cpuout'load (\ x__ y__ -> x__ {_Cpuout'load = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField CpuOut "count" Data.Int.Int32 where
+instance Data.ProtoLens.Field.HasField Cpuout "count" Data.Int.Int32 where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _CpuOut'count (\ x__ y__ -> x__ {_CpuOut'count = y__}))
+           _Cpuout'count (\ x__ y__ -> x__ {_Cpuout'count = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField CpuOut "pkgTemp" Prelude.Float where
+instance Data.ProtoLens.Field.HasField Cpuout "pkgTemp" Prelude.Float where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
-           _CpuOut'pkgTemp (\ x__ y__ -> x__ {_CpuOut'pkgTemp = y__}))
+           _Cpuout'pkgTemp (\ x__ y__ -> x__ {_Cpuout'pkgTemp = y__}))
         Prelude.id
-instance Data.ProtoLens.Message CpuOut where
-  messageName _ = Data.Text.pack "sensors.cpuDt.CpuOut"
+instance Data.ProtoLens.Message Cpuout where
+  messageName _ = Data.Text.pack "sensors.cpudt.Cpuout"
   packedMessageDescriptor _
     = "\n\
-      \\ACKCpuOut\DC2\DC2\n\
+      \\ACKCpuout\DC2\DC2\n\
       \\EOTload\CAN\SOH \SOH(\STXR\EOTload\DC2\DC4\n\
-      \\ENQcount\CAN\STX \SOH(\ENQR\ENQcount\DC2\CAN\n\
-      \\apkgTemp\CAN\ETX \SOH(\STXR\apkgTemp"
+      \\ENQcount\CAN\STX \SOH(\ENQR\ENQcount\DC2\EM\n\
+      \\bpkg_temp\CAN\ETX \SOH(\STXR\apkgTemp"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -144,7 +144,7 @@ instance Data.ProtoLens.Message CpuOut where
                  Data.ProtoLens.FieldTypeDescriptor Prelude.Float)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"load")) ::
-              Data.ProtoLens.FieldDescriptor CpuOut
+              Data.ProtoLens.FieldDescriptor Cpuout
         count__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "count"
@@ -152,15 +152,15 @@ instance Data.ProtoLens.Message CpuOut where
                  Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"count")) ::
-              Data.ProtoLens.FieldDescriptor CpuOut
+              Data.ProtoLens.FieldDescriptor Cpuout
         pkgTemp__field_descriptor
           = Data.ProtoLens.FieldDescriptor
-              "pkgTemp"
+              "pkg_temp"
               (Data.ProtoLens.ScalarField Data.ProtoLens.FloatField ::
                  Data.ProtoLens.FieldTypeDescriptor Prelude.Float)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"pkgTemp")) ::
-              Data.ProtoLens.FieldDescriptor CpuOut
+              Data.ProtoLens.FieldDescriptor Cpuout
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, load__field_descriptor),
@@ -168,17 +168,17 @@ instance Data.ProtoLens.Message CpuOut where
            (Data.ProtoLens.Tag 3, pkgTemp__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
-        _CpuOut'_unknownFields
-        (\ x__ y__ -> x__ {_CpuOut'_unknownFields = y__})
+        _Cpuout'_unknownFields
+        (\ x__ y__ -> x__ {_Cpuout'_unknownFields = y__})
   defMessage
-    = CpuOut'_constructor
-        {_CpuOut'load = Data.ProtoLens.fieldDefault,
-         _CpuOut'count = Data.ProtoLens.fieldDefault,
-         _CpuOut'pkgTemp = Data.ProtoLens.fieldDefault,
-         _CpuOut'_unknownFields = []}
+    = Cpuout'_constructor
+        {_Cpuout'load = Data.ProtoLens.fieldDefault,
+         _Cpuout'count = Data.ProtoLens.fieldDefault,
+         _Cpuout'pkgTemp = Data.ProtoLens.fieldDefault,
+         _Cpuout'_unknownFields = []}
   parseMessage
     = let
-        loop :: CpuOut -> Data.ProtoLens.Encoding.Bytes.Parser CpuOut
+        loop :: Cpuout -> Data.ProtoLens.Encoding.Bytes.Parser Cpuout
         loop x
           = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                if end then
@@ -216,7 +216,7 @@ instance Data.ProtoLens.Message CpuOut where
                                        (Prelude.fmap
                                           Data.ProtoLens.Encoding.Bytes.wordToFloat
                                           Data.ProtoLens.Encoding.Bytes.getFixed32)
-                                       "pkgTemp"
+                                       "pkg_temp"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"pkgTemp") y x)
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
@@ -226,7 +226,7 @@ instance Data.ProtoLens.Message CpuOut where
                                      Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
       in
         (Data.ProtoLens.Encoding.Bytes.<?>)
-          (do loop Data.ProtoLens.defMessage) "CpuOut"
+          (do loop Data.ProtoLens.defMessage) "Cpuout"
   buildMessage
     = \ _x
         -> (Data.Monoid.<>)
@@ -265,25 +265,25 @@ instance Data.ProtoLens.Message CpuOut where
                                Data.ProtoLens.Encoding.Bytes.floatToWord _v))
                    (Data.ProtoLens.Encoding.Wire.buildFieldSet
                       (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
-instance Control.DeepSeq.NFData CpuOut where
+instance Control.DeepSeq.NFData Cpuout where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
-             (_CpuOut'_unknownFields x__)
+             (_Cpuout'_unknownFields x__)
              (Control.DeepSeq.deepseq
-                (_CpuOut'load x__)
+                (_Cpuout'load x__)
                 (Control.DeepSeq.deepseq
-                   (_CpuOut'count x__)
-                   (Control.DeepSeq.deepseq (_CpuOut'pkgTemp x__) ())))
+                   (_Cpuout'count x__)
+                   (Control.DeepSeq.deepseq (_Cpuout'pkgTemp x__) ())))
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \\DC3sensors/cpuDt.proto\DC2\rsensors.cpuDt\"\b\n\
-    \\ACKCpuOpt\"L\n\
-    \\ACKCpuOut\DC2\DC2\n\
+    \\DC3sensors/cpudt.proto\DC2\rsensors.cpudt\"\b\n\
+    \\ACKCpuopt\"M\n\
+    \\ACKCpuout\DC2\DC2\n\
     \\EOTload\CAN\SOH \SOH(\STXR\EOTload\DC2\DC4\n\
-    \\ENQcount\CAN\STX \SOH(\ENQR\ENQcount\DC2\CAN\n\
-    \\apkgTemp\CAN\ETX \SOH(\STXR\apkgTempJ\252\SOH\n\
+    \\ENQcount\CAN\STX \SOH(\ENQR\ENQcount\DC2\EM\n\
+    \\bpkg_temp\CAN\ETX \SOH(\STXR\apkgTempJ\252\SOH\n\
     \\ACK\DC2\EOT\SOH\NUL\r\SOH\n\
     \\b\n\
     \\SOH\f\DC2\ETX\SOH\NUL\DC2\n\
@@ -322,10 +322,10 @@ packedFileDescriptor
     \\f\n\
     \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETX\v\DC1\DC2\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\STX\DC2\ETX\f\ETX\NAK\n\
+    \\EOT\EOT\SOH\STX\STX\DC2\ETX\f\ETX\SYN\n\
     \\f\n\
     \\ENQ\EOT\SOH\STX\STX\ENQ\DC2\ETX\f\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETX\f\t\DLE\n\
+    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETX\f\t\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETX\f\DC3\DC4b\ACKproto3"
+    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETX\f\DC4\NAKb\ACKproto3"

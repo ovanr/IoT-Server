@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 87271814aa9a1ce9290c15468cd6c3140016fe8dc33cba644781d62cb4055cde
+-- hash: d69ad18faa12c66b7d020b9e68759878384326e67cd47780d3b4e6c5665e63b6
 
 name:           iot-server
 version:        0.2.0
@@ -34,16 +34,21 @@ library
       IOT.Server
       IOT.Server.Queue
       IOT.Server.Types
-      Proto.ConfigDt
-      Proto.ConfigDt_Fields
-      Proto.PacketDt
-      Proto.PacketDt_Fields
-      Proto.SensorDt
-      Proto.SensorDt_Fields
-      Proto.Sensors.CpuDt
-      Proto.Sensors.CpuDt_Fields
-      Proto.Sensors.RaspCamDt
-      Proto.Sensors.RaspCamDt_Fields
+      Proto.Configdt
+      Proto.Configdt_Fields
+      Proto.Configdt_JSON
+      Proto.Packetdt
+      Proto.Packetdt_Fields
+      Proto.Packetdt_JSON
+      Proto.Sensordt
+      Proto.Sensordt_Fields
+      Proto.Sensordt_JSON
+      Proto.Sensors.Cpudt
+      Proto.Sensors.Cpudt_Fields
+      Proto.Sensors.Cpudt_JSON
+      Proto.Sensors.Raspcamdt
+      Proto.Sensors.Raspcamdt_Fields
+      Proto.Sensors.Raspcamdt_JSON
   other-modules:
       Paths_iot_server
   hs-source-dirs:
@@ -75,6 +80,7 @@ library
     , optparse-applicative
     , process
     , proto-lens
+    , proto-lens-jsonpb
     , proto-lens-protobuf-types
     , proto-lens-runtime
     , shelly
@@ -122,6 +128,7 @@ executable iot-server
     , optparse-applicative
     , process
     , proto-lens
+    , proto-lens-jsonpb
     , proto-lens-protobuf-types
     , proto-lens-runtime
     , shelly
@@ -170,6 +177,7 @@ test-suite iot-server-test
     , optparse-applicative
     , process
     , proto-lens
+    , proto-lens-jsonpb
     , proto-lens-protobuf-types
     , proto-lens-runtime
     , shelly

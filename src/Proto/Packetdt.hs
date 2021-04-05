@@ -1,9 +1,9 @@
-{- This file was auto-generated from packetDt.proto by the proto-lens-protoc program. -}
+{- This file was auto-generated from packetdt.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings, DerivingStrategies#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
-module Proto.PacketDt (
+module Proto.Packetdt (
         Command(), Packet(), Packet'Type(..), _Packet'Conf, _Packet'Cmd,
         _Packet'Out
     ) where
@@ -32,11 +32,11 @@ import qualified Data.ProtoLens.Runtime.Data.Vector as Data.Vector
 import qualified Data.ProtoLens.Runtime.Data.Vector.Generic as Data.Vector.Generic
 import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unboxed
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
-import qualified Proto.ConfigDt
-import qualified Proto.SensorDt
+import qualified Proto.Configdt
+import qualified Proto.Sensordt
 {- | Fields :
      
-         * 'Proto.PacketDt_Fields.cmd' @:: Lens' Command Data.Text.Text@ -}
+         * 'Proto.Packetdt_Fields.cmd' @:: Lens' Command Data.Text.Text@ -}
 data Command
   = Command'_constructor {_Command'cmd :: !Data.Text.Text,
                           _Command'_unknownFields :: !Data.ProtoLens.FieldSet}
@@ -54,7 +54,7 @@ instance Data.ProtoLens.Field.HasField Command "cmd" Data.Text.Text where
            _Command'cmd (\ x__ y__ -> x__ {_Command'cmd = y__}))
         Prelude.id
 instance Data.ProtoLens.Message Command where
-  messageName _ = Data.Text.pack "packetDt.Command"
+  messageName _ = Data.Text.pack "packetdt.Command"
   packedMessageDescriptor _
     = "\n\
       \\aCommand\DC2\DLE\n\
@@ -149,14 +149,14 @@ instance Control.DeepSeq.NFData Command where
              (Control.DeepSeq.deepseq (_Command'cmd x__) ())
 {- | Fields :
      
-         * 'Proto.PacketDt_Fields.uid' @:: Lens' Packet Data.Text.Text@
-         * 'Proto.PacketDt_Fields.maybe'type'' @:: Lens' Packet (Prelude.Maybe Packet'Type)@
-         * 'Proto.PacketDt_Fields.maybe'conf' @:: Lens' Packet (Prelude.Maybe Proto.ConfigDt.DeviceConf)@
-         * 'Proto.PacketDt_Fields.conf' @:: Lens' Packet Proto.ConfigDt.DeviceConf@
-         * 'Proto.PacketDt_Fields.maybe'cmd' @:: Lens' Packet (Prelude.Maybe Command)@
-         * 'Proto.PacketDt_Fields.cmd' @:: Lens' Packet Command@
-         * 'Proto.PacketDt_Fields.maybe'out' @:: Lens' Packet (Prelude.Maybe Proto.SensorDt.SensorOut)@
-         * 'Proto.PacketDt_Fields.out' @:: Lens' Packet Proto.SensorDt.SensorOut@ -}
+         * 'Proto.Packetdt_Fields.uid' @:: Lens' Packet Data.Text.Text@
+         * 'Proto.Packetdt_Fields.maybe'type'' @:: Lens' Packet (Prelude.Maybe Packet'Type)@
+         * 'Proto.Packetdt_Fields.maybe'conf' @:: Lens' Packet (Prelude.Maybe Proto.Configdt.Devconf)@
+         * 'Proto.Packetdt_Fields.conf' @:: Lens' Packet Proto.Configdt.Devconf@
+         * 'Proto.Packetdt_Fields.maybe'cmd' @:: Lens' Packet (Prelude.Maybe Command)@
+         * 'Proto.Packetdt_Fields.cmd' @:: Lens' Packet Command@
+         * 'Proto.Packetdt_Fields.maybe'out' @:: Lens' Packet (Prelude.Maybe Proto.Sensordt.Sensorout)@
+         * 'Proto.Packetdt_Fields.out' @:: Lens' Packet Proto.Sensordt.Sensorout@ -}
 data Packet
   = Packet'_constructor {_Packet'uid :: !Data.Text.Text,
                          _Packet'type' :: !(Prelude.Maybe Packet'Type),
@@ -169,9 +169,9 @@ instance Prelude.Show Packet where
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
 data Packet'Type
-  = Packet'Conf !Proto.ConfigDt.DeviceConf |
+  = Packet'Conf !Proto.Configdt.Devconf |
     Packet'Cmd !Command |
-    Packet'Out !Proto.SensorDt.SensorOut
+    Packet'Out !Proto.Sensordt.Sensorout
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.Field.HasField Packet "uid" Data.Text.Text where
   fieldOf _
@@ -185,7 +185,7 @@ instance Data.ProtoLens.Field.HasField Packet "maybe'type'" (Prelude.Maybe Packe
         (Lens.Family2.Unchecked.lens
            _Packet'type' (\ x__ y__ -> x__ {_Packet'type' = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField Packet "maybe'conf" (Prelude.Maybe Proto.ConfigDt.DeviceConf) where
+instance Data.ProtoLens.Field.HasField Packet "maybe'conf" (Prelude.Maybe Proto.Configdt.Devconf) where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
@@ -196,7 +196,7 @@ instance Data.ProtoLens.Field.HasField Packet "maybe'conf" (Prelude.Maybe Proto.
                    (Prelude.Just (Packet'Conf x__val)) -> Prelude.Just x__val
                    _otherwise -> Prelude.Nothing)
            (\ _ y__ -> Prelude.fmap Packet'Conf y__))
-instance Data.ProtoLens.Field.HasField Packet "conf" Proto.ConfigDt.DeviceConf where
+instance Data.ProtoLens.Field.HasField Packet "conf" Proto.Configdt.Devconf where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
@@ -233,7 +233,7 @@ instance Data.ProtoLens.Field.HasField Packet "cmd" Command where
                       _otherwise -> Prelude.Nothing)
               (\ _ y__ -> Prelude.fmap Packet'Cmd y__))
            (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage))
-instance Data.ProtoLens.Field.HasField Packet "maybe'out" (Prelude.Maybe Proto.SensorDt.SensorOut) where
+instance Data.ProtoLens.Field.HasField Packet "maybe'out" (Prelude.Maybe Proto.Sensordt.Sensorout) where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
@@ -244,7 +244,7 @@ instance Data.ProtoLens.Field.HasField Packet "maybe'out" (Prelude.Maybe Proto.S
                    (Prelude.Just (Packet'Out x__val)) -> Prelude.Just x__val
                    _otherwise -> Prelude.Nothing)
            (\ _ y__ -> Prelude.fmap Packet'Out y__))
-instance Data.ProtoLens.Field.HasField Packet "out" Proto.SensorDt.SensorOut where
+instance Data.ProtoLens.Field.HasField Packet "out" Proto.Sensordt.Sensorout where
   fieldOf _
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
@@ -258,14 +258,14 @@ instance Data.ProtoLens.Field.HasField Packet "out" Proto.SensorDt.SensorOut whe
               (\ _ y__ -> Prelude.fmap Packet'Out y__))
            (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage))
 instance Data.ProtoLens.Message Packet where
-  messageName _ = Data.Text.pack "packetDt.Packet"
+  messageName _ = Data.Text.pack "packetdt.Packet"
   packedMessageDescriptor _
     = "\n\
       \\ACKPacket\DC2\DLE\n\
-      \\ETXuid\CAN\SOH \SOH(\tR\ETXuid\DC2*\n\
-      \\EOTconf\CAN\STX \SOH(\v2\DC4.configDt.DeviceConfH\NULR\EOTconf\DC2%\n\
-      \\ETXcmd\CAN\ETX \SOH(\v2\DC1.packetDt.CommandH\NULR\ETXcmd\DC2'\n\
-      \\ETXout\CAN\EOT \SOH(\v2\DC3.sensorDt.SensorOutH\NULR\ETXoutB\ACK\n\
+      \\ETXuid\CAN\SOH \SOH(\tR\ETXuid\DC2'\n\
+      \\EOTconf\CAN\STX \SOH(\v2\DC1.configdt.DevconfH\NULR\EOTconf\DC2%\n\
+      \\ETXcmd\CAN\ETX \SOH(\v2\DC1.packetdt.CommandH\NULR\ETXcmd\DC2'\n\
+      \\ETXout\CAN\EOT \SOH(\v2\DC3.sensordt.SensoroutH\NULR\ETXoutB\ACK\n\
       \\EOTtype"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
@@ -282,7 +282,7 @@ instance Data.ProtoLens.Message Packet where
           = Data.ProtoLens.FieldDescriptor
               "conf"
               (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
-                 Data.ProtoLens.FieldTypeDescriptor Proto.ConfigDt.DeviceConf)
+                 Data.ProtoLens.FieldTypeDescriptor Proto.Configdt.Devconf)
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'conf")) ::
               Data.ProtoLens.FieldDescriptor Packet
@@ -298,7 +298,7 @@ instance Data.ProtoLens.Message Packet where
           = Data.ProtoLens.FieldDescriptor
               "out"
               (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
-                 Data.ProtoLens.FieldTypeDescriptor Proto.SensorDt.SensorOut)
+                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensordt.Sensorout)
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'out")) ::
               Data.ProtoLens.FieldDescriptor Packet
@@ -445,7 +445,7 @@ instance Control.DeepSeq.NFData Packet'Type where
   rnf (Packet'Cmd x__) = Control.DeepSeq.rnf x__
   rnf (Packet'Out x__) = Control.DeepSeq.rnf x__
 _Packet'Conf ::
-  Data.ProtoLens.Prism.Prism' Packet'Type Proto.ConfigDt.DeviceConf
+  Data.ProtoLens.Prism.Prism' Packet'Type Proto.Configdt.Devconf
 _Packet'Conf
   = Data.ProtoLens.Prism.prism'
       Packet'Conf
@@ -462,7 +462,7 @@ _Packet'Cmd
               (Packet'Cmd p__val) -> Prelude.Just p__val
               _otherwise -> Prelude.Nothing)
 _Packet'Out ::
-  Data.ProtoLens.Prism.Prism' Packet'Type Proto.SensorDt.SensorOut
+  Data.ProtoLens.Prism.Prism' Packet'Type Proto.Sensordt.Sensorout
 _Packet'Out
   = Data.ProtoLens.Prism.prism'
       Packet'Out
@@ -473,14 +473,14 @@ _Packet'Out
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \\SOpacketDt.proto\DC2\bpacketDt\SUB\SOsensorDt.proto\SUB\SOconfigDt.proto\"\ESC\n\
+    \\SOpacketdt.proto\DC2\bpacketdt\SUB\SOsensordt.proto\SUB\SOconfigdt.proto\"\ESC\n\
     \\aCommand\DC2\DLE\n\
-    \\ETXcmd\CAN\SOH \SOH(\tR\ETXcmd\"\158\SOH\n\
+    \\ETXcmd\CAN\SOH \SOH(\tR\ETXcmd\"\155\SOH\n\
     \\ACKPacket\DC2\DLE\n\
-    \\ETXuid\CAN\SOH \SOH(\tR\ETXuid\DC2*\n\
-    \\EOTconf\CAN\STX \SOH(\v2\DC4.configDt.DeviceConfH\NULR\EOTconf\DC2%\n\
-    \\ETXcmd\CAN\ETX \SOH(\v2\DC1.packetDt.CommandH\NULR\ETXcmd\DC2'\n\
-    \\ETXout\CAN\EOT \SOH(\v2\DC3.sensorDt.SensorOutH\NULR\ETXoutB\ACK\n\
+    \\ETXuid\CAN\SOH \SOH(\tR\ETXuid\DC2'\n\
+    \\EOTconf\CAN\STX \SOH(\v2\DC1.configdt.DevconfH\NULR\EOTconf\DC2%\n\
+    \\ETXcmd\CAN\ETX \SOH(\v2\DC1.packetdt.CommandH\NULR\ETXcmd\DC2'\n\
+    \\ETXout\CAN\EOT \SOH(\v2\DC3.sensordt.SensoroutH\NULR\ETXoutB\ACK\n\
     \\EOTtypeJ\145\ETX\n\
     \\ACK\DC2\EOT\SOH\NUL\DC3\SOH\n\
     \\b\n\
@@ -526,13 +526,13 @@ packedFileDescriptor
     \\f\n\
     \\ENQ\EOT\SOH\b\NUL\SOH\DC2\ETX\SO\b\f\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\SOH\DC2\ETX\SI\ENQ\"\n\
+    \\EOT\EOT\SOH\STX\SOH\DC2\ETX\SI\ENQ\US\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ACK\DC2\ETX\SI\ENQ\CAN\n\
+    \\ENQ\EOT\SOH\STX\SOH\ACK\DC2\ETX\SI\ENQ\NAK\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETX\SI\EM\GS\n\
+    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETX\SI\SYN\SUB\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETX\SI !\n\
+    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETX\SI\GS\RS\n\
     \\v\n\
     \\EOT\EOT\SOH\STX\STX\DC2\ETX\DLE\ENQ\NAK\n\
     \\f\n\
