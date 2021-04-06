@@ -1,6 +1,3 @@
-[submodule "IoT-Client"]
-	path = IoT-Client
-	url = git@github.com:ovanr/IoT-Client.git
 [submodule "proto-lens-jsonpb"]
 	path = proto-lens-jsonpb
 	url = https://github.com/tclem/proto-lens-jsonpb
