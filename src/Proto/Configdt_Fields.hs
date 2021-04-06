@@ -29,6 +29,7 @@ import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unbox
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
 import qualified Proto.Sensors.Cpudt
 import qualified Proto.Sensors.Raspcamdt
+import qualified Proto.Sensors.Systemdt
 burstCount ::
   forall f s a.
   (Prelude.Functor f,
@@ -69,6 +70,12 @@ maybe'sensorConf ::
    Data.ProtoLens.Field.HasField s "maybe'sensorConf" a) =>
   Lens.Family2.LensLike' f s a
 maybe'sensorConf = Data.ProtoLens.Field.field @"maybe'sensorConf"
+maybe'system ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'system" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'system = Data.ProtoLens.Field.field @"maybe'system"
 minute ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "minute" a) =>
@@ -109,6 +116,11 @@ sensorConf ::
    Data.ProtoLens.Field.HasField s "sensorConf" a) =>
   Lens.Family2.LensLike' f s a
 sensorConf = Data.ProtoLens.Field.field @"sensorConf"
+system ::
+  forall f s a.
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "system" a) =>
+  Lens.Family2.LensLike' f s a
+system = Data.ProtoLens.Field.field @"system"
 vec'wakeOn ::
   forall f s a.
   (Prelude.Functor f,

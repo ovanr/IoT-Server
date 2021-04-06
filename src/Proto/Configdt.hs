@@ -33,6 +33,7 @@ import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unbox
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
 import qualified Proto.Sensors.Cpudt
 import qualified Proto.Sensors.Raspcamdt
+import qualified Proto.Sensors.Systemdt
 {- | Fields :
      
          * 'Proto.Configdt_Fields.mqttHost' @:: Lens' Devconf Data.Text.Text@
@@ -515,10 +516,13 @@ instance Control.DeepSeq.NFData Devconf where
          * 'Proto.Configdt_Fields.raspCam' @:: Lens' Modconf Proto.Sensors.Raspcamdt.Raspcamopt@
          * 'Proto.Configdt_Fields.maybe'raspCam' @:: Lens' Modconf (Prelude.Maybe Proto.Sensors.Raspcamdt.Raspcamopt)@
          * 'Proto.Configdt_Fields.cpu' @:: Lens' Modconf Proto.Sensors.Cpudt.Cpuopt@
-         * 'Proto.Configdt_Fields.maybe'cpu' @:: Lens' Modconf (Prelude.Maybe Proto.Sensors.Cpudt.Cpuopt)@ -}
+         * 'Proto.Configdt_Fields.maybe'cpu' @:: Lens' Modconf (Prelude.Maybe Proto.Sensors.Cpudt.Cpuopt)@
+         * 'Proto.Configdt_Fields.system' @:: Lens' Modconf Proto.Sensors.Systemdt.Systemopt@
+         * 'Proto.Configdt_Fields.maybe'system' @:: Lens' Modconf (Prelude.Maybe Proto.Sensors.Systemdt.Systemopt)@ -}
 data Modconf
   = Modconf'_constructor {_Modconf'raspCam :: !(Prelude.Maybe Proto.Sensors.Raspcamdt.Raspcamopt),
                           _Modconf'cpu :: !(Prelude.Maybe Proto.Sensors.Cpudt.Cpuopt),
+                          _Modconf'system :: !(Prelude.Maybe Proto.Sensors.Systemdt.Systemopt),
                           _Modconf'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show Modconf where
@@ -551,13 +555,26 @@ instance Data.ProtoLens.Field.HasField Modconf "maybe'cpu" (Prelude.Maybe Proto.
         (Lens.Family2.Unchecked.lens
            _Modconf'cpu (\ x__ y__ -> x__ {_Modconf'cpu = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField Modconf "system" Proto.Sensors.Systemdt.Systemopt where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _Modconf'system (\ x__ y__ -> x__ {_Modconf'system = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField Modconf "maybe'system" (Prelude.Maybe Proto.Sensors.Systemdt.Systemopt) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _Modconf'system (\ x__ y__ -> x__ {_Modconf'system = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message Modconf where
   messageName _ = Data.Text.pack "configdt.Modconf"
   packedMessageDescriptor _
     = "\n\
       \\aModconf\DC28\n\
       \\brasp_cam\CAN\SOH \SOH(\v2\GS.sensors.raspcamdt.RaspcamoptR\araspCam\DC2'\n\
-      \\ETXcpu\CAN\STX \SOH(\v2\NAK.sensors.cpudt.CpuoptR\ETXcpu"
+      \\ETXcpu\CAN\STX \SOH(\v2\NAK.sensors.cpudt.CpuoptR\ETXcpu\DC23\n\
+      \\ACKsystem\CAN\ETX \SOH(\v2\ESC.sensors.systemdt.SystemoptR\ACKsystem"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -577,10 +594,19 @@ instance Data.ProtoLens.Message Modconf where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'cpu")) ::
               Data.ProtoLens.FieldDescriptor Modconf
+        system__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "system"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.Systemdt.Systemopt)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'system")) ::
+              Data.ProtoLens.FieldDescriptor Modconf
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, raspCam__field_descriptor),
-           (Data.ProtoLens.Tag 2, cpu__field_descriptor)]
+           (Data.ProtoLens.Tag 2, cpu__field_descriptor),
+           (Data.ProtoLens.Tag 3, system__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _Modconf'_unknownFields
@@ -588,7 +614,8 @@ instance Data.ProtoLens.Message Modconf where
   defMessage
     = Modconf'_constructor
         {_Modconf'raspCam = Prelude.Nothing,
-         _Modconf'cpu = Prelude.Nothing, _Modconf'_unknownFields = []}
+         _Modconf'cpu = Prelude.Nothing, _Modconf'system = Prelude.Nothing,
+         _Modconf'_unknownFields = []}
   parseMessage
     = let
         loop :: Modconf -> Data.ProtoLens.Encoding.Bytes.Parser Modconf
@@ -624,6 +651,13 @@ instance Data.ProtoLens.Message Modconf where
                                              (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
                                        "cpu"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"cpu") y x)
+                        26
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "system"
+                                loop (Lens.Family2.set (Data.ProtoLens.Field.field @"system") y x)
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                         wire
@@ -665,8 +699,23 @@ instance Data.ProtoLens.Message Modconf where
                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
                                      (Data.ProtoLens.Encoding.Bytes.putBytes bs))
                              Data.ProtoLens.encodeMessage _v))
-                (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                   (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                ((Data.Monoid.<>)
+                   (case
+                        Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'system") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 26)
+                             ((Prelude..)
+                                (\ bs
+                                   -> (Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Data.ProtoLens.encodeMessage _v))
+                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
 instance Control.DeepSeq.NFData Modconf where
   rnf
     = \ x__
@@ -674,7 +723,9 @@ instance Control.DeepSeq.NFData Modconf where
              (_Modconf'_unknownFields x__)
              (Control.DeepSeq.deepseq
                 (_Modconf'raspCam x__)
-                (Control.DeepSeq.deepseq (_Modconf'cpu x__) ()))
+                (Control.DeepSeq.deepseq
+                   (_Modconf'cpu x__)
+                   (Control.DeepSeq.deepseq (_Modconf'system x__) ())))
 {- | Fields :
      
          * 'Proto.Configdt_Fields.hour' @:: Lens' Time Data.Int.Int32@
@@ -819,13 +870,14 @@ instance Control.DeepSeq.NFData Time where
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \\SOconfigdt.proto\DC2\bconfigdt\SUB\ETBsensors/raspcamdt.proto\SUB\DC3sensors/cpudt.proto\"2\n\
+    \\SOconfigdt.proto\DC2\bconfigdt\SUB\ETBsensors/raspcamdt.proto\SUB\DC3sensors/cpudt.proto\SUB\SYNsensors/systemdt.proto\"2\n\
     \\EOTTime\DC2\DC2\n\
     \\EOThour\CAN\SOH \SOH(\ENQR\EOThour\DC2\SYN\n\
-    \\ACKminute\CAN\STX \SOH(\ENQR\ACKminute\"l\n\
+    \\ACKminute\CAN\STX \SOH(\ENQR\ACKminute\"\161\SOH\n\
     \\aModconf\DC28\n\
     \\brasp_cam\CAN\SOH \SOH(\v2\GS.sensors.raspcamdt.RaspcamoptR\araspCam\DC2'\n\
-    \\ETXcpu\CAN\STX \SOH(\v2\NAK.sensors.cpudt.CpuoptR\ETXcpu\"\162\STX\n\
+    \\ETXcpu\CAN\STX \SOH(\v2\NAK.sensors.cpudt.CpuoptR\ETXcpu\DC23\n\
+    \\ACKsystem\CAN\ETX \SOH(\v2\ESC.sensors.systemdt.SystemoptR\ACKsystem\"\162\STX\n\
     \\aDevconf\DC2\ESC\n\
     \\tmqtt_host\CAN\SOH \SOH(\tR\bmqttHost\DC2\ESC\n\
     \\tmqtt_port\CAN\STX \SOH(\ENQR\bmqttPort\DC2\ESC\n\
@@ -836,134 +888,147 @@ packedFileDescriptor
     \burstCount\DC2'\n\
     \\awake_on\CAN\a \ETX(\v2\SO.configdt.TimeR\ACKwakeOn\DC22\n\
     \\vsensor_conf\CAN\b \SOH(\v2\DC1.configdt.ModconfR\n\
-    \sensorConfJ\156\ACK\n\
-    \\ACK\DC2\EOT\NUL\NUL\SUB\SOH\n\
+    \sensorConfJ\222\ACK\n\
+    \\ACK\DC2\EOT\NUL\NUL\FS\SOH\n\
     \\b\n\
     \\SOH\f\DC2\ETX\NUL\NUL\DC2\n\
     \\t\n\
     \\STX\ETX\NUL\DC2\ETX\STX\NUL!\n\
     \\t\n\
     \\STX\ETX\SOH\DC2\ETX\ETX\NUL\GS\n\
+    \\t\n\
+    \\STX\ETX\STX\DC2\ETX\EOT\NUL \n\
     \\b\n\
-    \\SOH\STX\DC2\ETX\ENQ\NUL\DC1\n\
+    \\SOH\STX\DC2\ETX\ACK\NUL\DC1\n\
     \\n\
     \\n\
-    \\STX\EOT\NUL\DC2\EOT\a\NUL\n\
-    \\SOH\n\
+    \\STX\EOT\NUL\DC2\EOT\b\NUL\v\SOH\n\
     \\n\
     \\n\
-    \\ETX\EOT\NUL\SOH\DC2\ETX\a\b\f\n\
+    \\ETX\EOT\NUL\SOH\DC2\ETX\b\b\f\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\NUL\DC2\ETX\b\ETX\DC2\n\
+    \\EOT\EOT\NUL\STX\NUL\DC2\ETX\t\ETX\DC2\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\ETX\b\ETX\b\n\
+    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\ETX\t\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX\b\t\r\n\
+    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX\t\t\r\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX\b\DLE\DC1\n\
+    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX\t\DLE\DC1\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\SOH\DC2\ETX\t\ETX\DC4\n\
+    \\EOT\EOT\NUL\STX\SOH\DC2\ETX\n\
+    \\ETX\DC4\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\ETX\t\ETX\b\n\
+    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\ETX\n\
+    \\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX\t\t\SI\n\
+    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX\n\
+    \\t\SI\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX\t\DC2\DC3\n\
+    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX\n\
+    \\DC2\DC3\n\
     \\n\
     \\n\
-    \\STX\EOT\SOH\DC2\EOT\f\NUL\SI\SOH\n\
+    \\STX\EOT\SOH\DC2\EOT\r\NUL\DC1\SOH\n\
     \\n\
     \\n\
-    \\ETX\EOT\SOH\SOH\DC2\ETX\f\b\SI\n\
+    \\ETX\EOT\SOH\SOH\DC2\ETX\r\b\SI\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\NUL\DC2\ETX\r\ETX-\n\
+    \\EOT\EOT\SOH\STX\NUL\DC2\ETX\SO\ETX-\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ACK\DC2\ETX\r\ETX\US\n\
+    \\ENQ\EOT\SOH\STX\NUL\ACK\DC2\ETX\SO\ETX\US\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETX\r (\n\
+    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETX\SO (\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETX\r+,\n\
+    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETX\SO+,\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\SOH\DC2\ETX\SO\ETX \n\
+    \\EOT\EOT\SOH\STX\SOH\DC2\ETX\SI\ETX \n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ACK\DC2\ETX\SO\ETX\ETB\n\
+    \\ENQ\EOT\SOH\STX\SOH\ACK\DC2\ETX\SI\ETX\ETB\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETX\SO\CAN\ESC\n\
+    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETX\SI\CAN\ESC\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETX\SO\RS\US\n\
-    \\n\
-    \\n\
-    \\STX\EOT\STX\DC2\EOT\DC1\NUL\SUB\SOH\n\
-    \\n\
-    \\n\
-    \\ETX\EOT\STX\SOH\DC2\ETX\DC1\b\SI\n\
+    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETX\SI\RS\US\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\NUL\DC2\ETX\DC2\ETX\CAN\n\
+    \\EOT\EOT\SOH\STX\STX\DC2\ETX\DLE\ETX)\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\ETX\DC2\ETX\t\n\
+    \\ENQ\EOT\SOH\STX\STX\ACK\DC2\ETX\DLE\ETX\GS\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\ETX\DC2\n\
+    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETX\DLE\RS$\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETX\DLE'(\n\
+    \\n\
+    \\n\
+    \\STX\EOT\STX\DC2\EOT\DC3\NUL\FS\SOH\n\
+    \\n\
+    \\n\
+    \\ETX\EOT\STX\SOH\DC2\ETX\DC3\b\SI\n\
+    \\v\n\
+    \\EOT\EOT\STX\STX\NUL\DC2\ETX\DC4\ETX\CAN\n\
+    \\f\n\
+    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\ETX\DC4\ETX\t\n\
+    \\f\n\
+    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\ETX\DC4\n\
     \\DC3\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\ETX\DC2\SYN\ETB\n\
+    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\ETX\DC4\SYN\ETB\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\SOH\DC2\ETX\DC3\ETX\ETB\n\
+    \\EOT\EOT\STX\STX\SOH\DC2\ETX\NAK\ETX\ETB\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\ENQ\DC2\ETX\DC3\ETX\b\n\
+    \\ENQ\EOT\STX\STX\SOH\ENQ\DC2\ETX\NAK\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\ETX\DC3\t\DC2\n\
+    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\ETX\NAK\t\DC2\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\ETX\DC3\NAK\SYN\n\
+    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\ETX\NAK\NAK\SYN\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\STX\DC2\ETX\DC4\ETX\CAN\n\
+    \\EOT\EOT\STX\STX\STX\DC2\ETX\SYN\ETX\CAN\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\STX\ENQ\DC2\ETX\DC4\ETX\t\n\
+    \\ENQ\EOT\STX\STX\STX\ENQ\DC2\ETX\SYN\ETX\t\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\STX\SOH\DC2\ETX\DC4\n\
+    \\ENQ\EOT\STX\STX\STX\SOH\DC2\ETX\SYN\n\
     \\DC3\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\STX\ETX\DC2\ETX\DC4\SYN\ETB\n\
+    \\ENQ\EOT\STX\STX\STX\ETX\DC2\ETX\SYN\SYN\ETB\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\ETX\DC2\ETX\NAK\ETX\CAN\n\
+    \\EOT\EOT\STX\STX\ETX\DC2\ETX\ETB\ETX\CAN\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\ENQ\DC2\ETX\NAK\ETX\t\n\
+    \\ENQ\EOT\STX\STX\ETX\ENQ\DC2\ETX\ETB\ETX\t\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\ETX\NAK\n\
+    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\ETX\ETB\n\
     \\DC3\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\ETX\NAK\SYN\ETB\n\
+    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\ETX\ETB\SYN\ETB\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\EOT\DC2\ETX\SYN\ETX\FS\n\
+    \\EOT\EOT\STX\STX\EOT\DC2\ETX\CAN\ETX\FS\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\ENQ\DC2\ETX\SYN\ETX\b\n\
+    \\ENQ\EOT\STX\STX\EOT\ENQ\DC2\ETX\CAN\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\ETX\SYN\t\ETB\n\
+    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\ETX\CAN\t\ETB\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\ETX\SYN\SUB\ESC\n\
+    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\ETX\CAN\SUB\ESC\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\ENQ\DC2\ETX\ETB\ETX\EM\n\
+    \\EOT\EOT\STX\STX\ENQ\DC2\ETX\EM\ETX\EM\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\ENQ\DC2\ETX\ETB\ETX\b\n\
+    \\ENQ\EOT\STX\STX\ENQ\ENQ\DC2\ETX\EM\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\ETX\ETB\t\DC4\n\
+    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\ETX\EM\t\DC4\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\ETX\ETB\ETB\CAN\n\
+    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\ETX\EM\ETB\CAN\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\ACK\DC2\ETX\CAN\ETX\GS\n\
+    \\EOT\EOT\STX\STX\ACK\DC2\ETX\SUB\ETX\GS\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\EOT\DC2\ETX\CAN\ETX\v\n\
+    \\ENQ\EOT\STX\STX\ACK\EOT\DC2\ETX\SUB\ETX\v\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\ACK\DC2\ETX\CAN\f\DLE\n\
+    \\ENQ\EOT\STX\STX\ACK\ACK\DC2\ETX\SUB\f\DLE\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\ETX\CAN\DC1\CAN\n\
+    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\ETX\SUB\DC1\CAN\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\ETX\CAN\ESC\FS\n\
+    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\ETX\SUB\ESC\FS\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\a\DC2\ETX\EM\ETX\ESC\n\
+    \\EOT\EOT\STX\STX\a\DC2\ETX\ESC\ETX\ESC\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\ACK\DC2\ETX\EM\ETX\n\
+    \\ENQ\EOT\STX\STX\a\ACK\DC2\ETX\ESC\ETX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\SOH\DC2\ETX\EM\v\SYN\n\
+    \\ENQ\EOT\STX\STX\a\SOH\DC2\ETX\ESC\v\SYN\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\ETX\DC2\ETX\EM\EM\SUBb\ACKproto3"
+    \\ENQ\EOT\STX\STX\a\ETX\DC2\ETX\ESC\EM\SUBb\ACKproto3"
