@@ -457,14 +457,14 @@ packedFileDescriptor
     \\ACK\DC2\EOT\SOH\NUL\DC3\SOH\n\
     \\b\n\
     \\SOH\f\DC2\ETX\SOH\NUL\DC2\n\
-    \\t\n\
-    \\STX\ETX\NUL\DC2\ETX\ETX\NUL\GS\n\
-    \\t\n\
-    \\STX\ETX\SOH\DC2\ETX\EOT\NUL!\n\
-    \\t\n\
-    \\STX\ETX\STX\DC2\ETX\ENQ\NUL \n\
     \\b\n\
-    \\SOH\STX\DC2\ETX\a\NUL\DC1\n\
+    \\SOH\STX\DC2\ETX\ETX\NUL\DC1\n\
+    \\t\n\
+    \\STX\ETX\NUL\DC2\ETX\ENQ\NUL\GS\n\
+    \\t\n\
+    \\STX\ETX\SOH\DC2\ETX\ACK\NUL!\n\
+    \\t\n\
+    \\STX\ETX\STX\DC2\ETX\a\NUL \n\
     \\n\
     \\n\
     \\STX\EOT\NUL\DC2\EOT\t\NUL\SI\SOH\n\

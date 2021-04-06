@@ -93,12 +93,6 @@ mqttPass ::
    Data.ProtoLens.Field.HasField s "mqttPass" a) =>
   Lens.Family2.LensLike' f s a
 mqttPass = Data.ProtoLens.Field.field @"mqttPass"
-mqttPort ::
-  forall f s a.
-  (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "mqttPort" a) =>
-  Lens.Family2.LensLike' f s a
-mqttPort = Data.ProtoLens.Field.field @"mqttPort"
 mqttUser ::
   forall f s a.
   (Prelude.Functor f,

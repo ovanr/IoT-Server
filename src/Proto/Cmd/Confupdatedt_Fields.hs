@@ -1,9 +1,9 @@
-{- This file was auto-generated from packetdt.proto by the proto-lens-protoc program. -}
+{- This file was auto-generated from cmd/confupdatedt.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings, DerivingStrategies#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
-module Proto.Packetdt_Fields where
+module Proto.Cmd.Confupdatedt_Fields where
 import qualified Data.ProtoLens.Runtime.Prelude as Prelude
 import qualified Data.ProtoLens.Runtime.Data.Int as Data.Int
 import qualified Data.ProtoLens.Runtime.Data.Monoid as Data.Monoid
@@ -27,38 +27,20 @@ import qualified Data.ProtoLens.Runtime.Data.Vector as Data.Vector
 import qualified Data.ProtoLens.Runtime.Data.Vector.Generic as Data.Vector.Generic
 import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unboxed
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
-import qualified Proto.Cmddt
-import qualified Proto.Sensordt
-cmds ::
-  forall f s a.
-  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "cmds" a) =>
-  Lens.Family2.LensLike' f s a
-cmds = Data.ProtoLens.Field.field @"cmds"
-maybe'cmds ::
+import qualified Proto.Configdt
+maybe'newConf ::
   forall f s a.
   (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "maybe'cmds" a) =>
+   Data.ProtoLens.Field.HasField s "maybe'newConf" a) =>
   Lens.Family2.LensLike' f s a
-maybe'cmds = Data.ProtoLens.Field.field @"maybe'cmds"
-maybe'out ::
+maybe'newConf = Data.ProtoLens.Field.field @"maybe'newConf"
+newConf ::
   forall f s a.
-  (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "maybe'out" a) =>
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "newConf" a) =>
   Lens.Family2.LensLike' f s a
-maybe'out = Data.ProtoLens.Field.field @"maybe'out"
-maybe'type' ::
+newConf = Data.ProtoLens.Field.field @"newConf"
+perform ::
   forall f s a.
-  (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "maybe'type'" a) =>
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "perform" a) =>
   Lens.Family2.LensLike' f s a
-maybe'type' = Data.ProtoLens.Field.field @"maybe'type'"
-out ::
-  forall f s a.
-  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "out" a) =>
-  Lens.Family2.LensLike' f s a
-out = Data.ProtoLens.Field.field @"out"
-uid ::
-  forall f s a.
-  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "uid" a) =>
-  Lens.Family2.LensLike' f s a
-uid = Data.ProtoLens.Field.field @"uid"
+perform = Data.ProtoLens.Field.field @"perform"

@@ -14,46 +14,22 @@ import qualified Data.Aeson.Encoding as E
 import           Data.ProtoLens.JSONPB as JSONPB
 import qualified Data.Text as T
 
+import           Proto.Cmddt_JSON ()
 import           Proto.Sensordt_JSON ()
-import           Proto.Configdt_JSON ()
 import           Proto.Packetdt as P
 import           Proto.Packetdt_Fields as P
-
-instance FromJSONPB Command where
-  parseJSONPB = withObject "Command" $ \obj -> do
-    cmd' <- obj .: "cmd"
-    pure $ defMessage
-      & P.cmd .~ cmd'
-
-instance ToJSONPB Command where
-  toJSONPB x = object
-    [ "cmd" .= (x^.cmd)
-    ]
-  toEncodingPB x = pairs
-    [ "cmd" .= (x^.cmd)
-    ]
-
-instance FromJSON Command where
-  parseJSON = parseJSONPB
-
-instance ToJSON Command where
-  toJSON = toAesonValue
-  toEncoding = toAesonEncoding
 
 instance FromJSONPB Packet'Type where
   parseJSONPB = A.withObject "Packet'Type" $ \obj -> mconcat
     [
-      Packet'Conf <$> parseField obj "conf"
-    , Packet'Cmd <$> parseField obj "cmd"
+      Packet'Cmds <$> parseField obj "cmds"
     , Packet'Out <$> parseField obj "out"
     ]
 
 instance ToJSONPB Packet'Type where
-  toJSONPB (Packet'Conf x) = object [ "conf" .= Just x ]
-  toJSONPB (Packet'Cmd x) = object [ "cmd" .= Just x ]
+  toJSONPB (Packet'Cmds x) = object [ "cmds" .= Just x ]
   toJSONPB (Packet'Out x) = object [ "out" .= Just x ]
-  toEncodingPB (Packet'Conf x) = pairs [ "conf" .= Just x ]
-  toEncodingPB (Packet'Cmd x) = pairs [ "cmd" .= Just x ]
+  toEncodingPB (Packet'Cmds x) = pairs [ "cmds" .= Just x ]
   toEncodingPB (Packet'Out x) = pairs [ "out" .= Just x ]
 
 instance FromJSON Packet'Type where

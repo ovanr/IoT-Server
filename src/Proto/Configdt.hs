@@ -37,7 +37,6 @@ import qualified Proto.Sensors.Systemdt
 {- | Fields :
      
          * 'Proto.Configdt_Fields.mqttHost' @:: Lens' Devconf Data.Text.Text@
-         * 'Proto.Configdt_Fields.mqttPort' @:: Lens' Devconf Data.Int.Int32@
          * 'Proto.Configdt_Fields.mqttUser' @:: Lens' Devconf Data.Text.Text@
          * 'Proto.Configdt_Fields.mqttPass' @:: Lens' Devconf Data.Text.Text@
          * 'Proto.Configdt_Fields.burstInterval' @:: Lens' Devconf Data.Int.Int32@
@@ -48,7 +47,6 @@ import qualified Proto.Sensors.Systemdt
          * 'Proto.Configdt_Fields.maybe'sensorConf' @:: Lens' Devconf (Prelude.Maybe Modconf)@ -}
 data Devconf
   = Devconf'_constructor {_Devconf'mqttHost :: !Data.Text.Text,
-                          _Devconf'mqttPort :: !Data.Int.Int32,
                           _Devconf'mqttUser :: !Data.Text.Text,
                           _Devconf'mqttPass :: !Data.Text.Text,
                           _Devconf'burstInterval :: !Data.Int.Int32,
@@ -68,12 +66,6 @@ instance Data.ProtoLens.Field.HasField Devconf "mqttHost" Data.Text.Text where
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
            _Devconf'mqttHost (\ x__ y__ -> x__ {_Devconf'mqttHost = y__}))
-        Prelude.id
-instance Data.ProtoLens.Field.HasField Devconf "mqttPort" Data.Int.Int32 where
-  fieldOf _
-    = (Prelude..)
-        (Lens.Family2.Unchecked.lens
-           _Devconf'mqttPort (\ x__ y__ -> x__ {_Devconf'mqttPort = y__}))
         Prelude.id
 instance Data.ProtoLens.Field.HasField Devconf "mqttUser" Data.Text.Text where
   fieldOf _
@@ -132,7 +124,6 @@ instance Data.ProtoLens.Message Devconf where
     = "\n\
       \\aDevconf\DC2\ESC\n\
       \\tmqtt_host\CAN\SOH \SOH(\tR\bmqttHost\DC2\ESC\n\
-      \\tmqtt_port\CAN\STX \SOH(\ENQR\bmqttPort\DC2\ESC\n\
       \\tmqtt_user\CAN\ETX \SOH(\tR\bmqttUser\DC2\ESC\n\
       \\tmqtt_pass\CAN\EOT \SOH(\tR\bmqttPass\DC2%\n\
       \\SOburst_interval\CAN\ENQ \SOH(\ENQR\rburstInterval\DC2\US\n\
@@ -152,15 +143,6 @@ instance Data.ProtoLens.Message Devconf where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional
                  (Data.ProtoLens.Field.field @"mqttHost")) ::
-              Data.ProtoLens.FieldDescriptor Devconf
-        mqttPort__field_descriptor
-          = Data.ProtoLens.FieldDescriptor
-              "mqtt_port"
-              (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
-                 Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
-              (Data.ProtoLens.PlainField
-                 Data.ProtoLens.Optional
-                 (Data.ProtoLens.Field.field @"mqttPort")) ::
               Data.ProtoLens.FieldDescriptor Devconf
         mqttUser__field_descriptor
           = Data.ProtoLens.FieldDescriptor
@@ -217,7 +199,6 @@ instance Data.ProtoLens.Message Devconf where
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, mqttHost__field_descriptor),
-           (Data.ProtoLens.Tag 2, mqttPort__field_descriptor),
            (Data.ProtoLens.Tag 3, mqttUser__field_descriptor),
            (Data.ProtoLens.Tag 4, mqttPass__field_descriptor),
            (Data.ProtoLens.Tag 5, burstInterval__field_descriptor),
@@ -231,7 +212,6 @@ instance Data.ProtoLens.Message Devconf where
   defMessage
     = Devconf'_constructor
         {_Devconf'mqttHost = Data.ProtoLens.fieldDefault,
-         _Devconf'mqttPort = Data.ProtoLens.fieldDefault,
          _Devconf'mqttUser = Data.ProtoLens.fieldDefault,
          _Devconf'mqttPass = Data.ProtoLens.fieldDefault,
          _Devconf'burstInterval = Data.ProtoLens.fieldDefault,
@@ -281,15 +261,6 @@ instance Data.ProtoLens.Message Devconf where
                                        "mqtt_host"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"mqttHost") y x)
-                                  mutable'wakeOn
-                        16
-                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (Prelude.fmap
-                                          Prelude.fromIntegral
-                                          Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                       "mqtt_port"
-                                loop
-                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"mqttPort") y x)
                                   mutable'wakeOn
                         26
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -390,24 +361,29 @@ instance Data.ProtoLens.Message Devconf where
                          Data.Text.Encoding.encodeUtf8 _v))
              ((Data.Monoid.<>)
                 (let
-                   _v = Lens.Family2.view (Data.ProtoLens.Field.field @"mqttPort") _x
+                   _v = Lens.Family2.view (Data.ProtoLens.Field.field @"mqttUser") _x
                  in
                    if (Prelude.==) _v Data.ProtoLens.fieldDefault then
                        Data.Monoid.mempty
                    else
                        (Data.Monoid.<>)
-                         (Data.ProtoLens.Encoding.Bytes.putVarInt 16)
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 26)
                          ((Prelude..)
-                            Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral _v))
+                            (\ bs
+                               -> (Data.Monoid.<>)
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                    (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Data.Text.Encoding.encodeUtf8 _v))
                 ((Data.Monoid.<>)
                    (let
-                      _v = Lens.Family2.view (Data.ProtoLens.Field.field @"mqttUser") _x
+                      _v = Lens.Family2.view (Data.ProtoLens.Field.field @"mqttPass") _x
                     in
                       if (Prelude.==) _v Data.ProtoLens.fieldDefault then
                           Data.Monoid.mempty
                       else
                           (Data.Monoid.<>)
-                            (Data.ProtoLens.Encoding.Bytes.putVarInt 26)
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt 34)
                             ((Prelude..)
                                (\ bs
                                   -> (Data.Monoid.<>)
@@ -417,80 +393,63 @@ instance Data.ProtoLens.Message Devconf where
                                Data.Text.Encoding.encodeUtf8 _v))
                    ((Data.Monoid.<>)
                       (let
-                         _v = Lens.Family2.view (Data.ProtoLens.Field.field @"mqttPass") _x
+                         _v
+                           = Lens.Family2.view
+                               (Data.ProtoLens.Field.field @"burstInterval") _x
                        in
                          if (Prelude.==) _v Data.ProtoLens.fieldDefault then
                              Data.Monoid.mempty
                          else
                              (Data.Monoid.<>)
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt 34)
+                               (Data.ProtoLens.Encoding.Bytes.putVarInt 40)
                                ((Prelude..)
-                                  (\ bs
-                                     -> (Data.Monoid.<>)
-                                          (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                             (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                          (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                  Data.Text.Encoding.encodeUtf8 _v))
+                                  Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral _v))
                       ((Data.Monoid.<>)
                          (let
                             _v
-                              = Lens.Family2.view
-                                  (Data.ProtoLens.Field.field @"burstInterval") _x
+                              = Lens.Family2.view (Data.ProtoLens.Field.field @"burstCount") _x
                           in
                             if (Prelude.==) _v Data.ProtoLens.fieldDefault then
                                 Data.Monoid.mempty
                             else
                                 (Data.Monoid.<>)
-                                  (Data.ProtoLens.Encoding.Bytes.putVarInt 40)
+                                  (Data.ProtoLens.Encoding.Bytes.putVarInt 48)
                                   ((Prelude..)
                                      Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral
                                      _v))
                          ((Data.Monoid.<>)
-                            (let
-                               _v
-                                 = Lens.Family2.view (Data.ProtoLens.Field.field @"burstCount") _x
-                             in
-                               if (Prelude.==) _v Data.ProtoLens.fieldDefault then
-                                   Data.Monoid.mempty
-                               else
-                                   (Data.Monoid.<>)
-                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 48)
-                                     ((Prelude..)
-                                        Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral
-                                        _v))
+                            (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                               (\ _v
+                                  -> (Data.Monoid.<>)
+                                       (Data.ProtoLens.Encoding.Bytes.putVarInt 58)
+                                       ((Prelude..)
+                                          (\ bs
+                                             -> (Data.Monoid.<>)
+                                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                     (Prelude.fromIntegral
+                                                        (Data.ByteString.length bs)))
+                                                  (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                          Data.ProtoLens.encodeMessage _v))
+                               (Lens.Family2.view (Data.ProtoLens.Field.field @"vec'wakeOn") _x))
                             ((Data.Monoid.<>)
-                               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                                  (\ _v
-                                     -> (Data.Monoid.<>)
-                                          (Data.ProtoLens.Encoding.Bytes.putVarInt 58)
-                                          ((Prelude..)
-                                             (\ bs
-                                                -> (Data.Monoid.<>)
-                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                        (Prelude.fromIntegral
-                                                           (Data.ByteString.length bs)))
-                                                     (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                             Data.ProtoLens.encodeMessage _v))
-                                  (Lens.Family2.view (Data.ProtoLens.Field.field @"vec'wakeOn") _x))
-                               ((Data.Monoid.<>)
-                                  (case
-                                       Lens.Family2.view
-                                         (Data.ProtoLens.Field.field @"maybe'sensorConf") _x
-                                   of
-                                     Prelude.Nothing -> Data.Monoid.mempty
-                                     (Prelude.Just _v)
-                                       -> (Data.Monoid.<>)
-                                            (Data.ProtoLens.Encoding.Bytes.putVarInt 66)
-                                            ((Prelude..)
-                                               (\ bs
-                                                  -> (Data.Monoid.<>)
-                                                       (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                          (Prelude.fromIntegral
-                                                             (Data.ByteString.length bs)))
-                                                       (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                               Data.ProtoLens.encodeMessage _v))
-                                  (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                                     (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))))))
+                               (case
+                                    Lens.Family2.view
+                                      (Data.ProtoLens.Field.field @"maybe'sensorConf") _x
+                                of
+                                  Prelude.Nothing -> Data.Monoid.mempty
+                                  (Prelude.Just _v)
+                                    -> (Data.Monoid.<>)
+                                         (Data.ProtoLens.Encoding.Bytes.putVarInt 66)
+                                         ((Prelude..)
+                                            (\ bs
+                                               -> (Data.Monoid.<>)
+                                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                       (Prelude.fromIntegral
+                                                          (Data.ByteString.length bs)))
+                                                    (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                            Data.ProtoLens.encodeMessage _v))
+                               (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                  (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))))
 instance Control.DeepSeq.NFData Devconf where
   rnf
     = \ x__
@@ -499,18 +458,16 @@ instance Control.DeepSeq.NFData Devconf where
              (Control.DeepSeq.deepseq
                 (_Devconf'mqttHost x__)
                 (Control.DeepSeq.deepseq
-                   (_Devconf'mqttPort x__)
+                   (_Devconf'mqttUser x__)
                    (Control.DeepSeq.deepseq
-                      (_Devconf'mqttUser x__)
+                      (_Devconf'mqttPass x__)
                       (Control.DeepSeq.deepseq
-                         (_Devconf'mqttPass x__)
+                         (_Devconf'burstInterval x__)
                          (Control.DeepSeq.deepseq
-                            (_Devconf'burstInterval x__)
+                            (_Devconf'burstCount x__)
                             (Control.DeepSeq.deepseq
-                               (_Devconf'burstCount x__)
-                               (Control.DeepSeq.deepseq
-                                  (_Devconf'wakeOn x__)
-                                  (Control.DeepSeq.deepseq (_Devconf'sensorConf x__) ()))))))))
+                               (_Devconf'wakeOn x__)
+                               (Control.DeepSeq.deepseq (_Devconf'sensorConf x__) ())))))))
 {- | Fields :
      
          * 'Proto.Configdt_Fields.raspCam' @:: Lens' Modconf Proto.Sensors.Raspcamdt.Raspcamopt@
@@ -877,10 +834,9 @@ packedFileDescriptor
     \\aModconf\DC28\n\
     \\brasp_cam\CAN\SOH \SOH(\v2\GS.sensors.raspcamdt.RaspcamoptR\araspCam\DC2'\n\
     \\ETXcpu\CAN\STX \SOH(\v2\NAK.sensors.cpudt.CpuoptR\ETXcpu\DC23\n\
-    \\ACKsystem\CAN\ETX \SOH(\v2\ESC.sensors.systemdt.SystemoptR\ACKsystem\"\162\STX\n\
+    \\ACKsystem\CAN\ETX \SOH(\v2\ESC.sensors.systemdt.SystemoptR\ACKsystem\"\133\STX\n\
     \\aDevconf\DC2\ESC\n\
     \\tmqtt_host\CAN\SOH \SOH(\tR\bmqttHost\DC2\ESC\n\
-    \\tmqtt_port\CAN\STX \SOH(\ENQR\bmqttPort\DC2\ESC\n\
     \\tmqtt_user\CAN\ETX \SOH(\tR\bmqttUser\DC2\ESC\n\
     \\tmqtt_pass\CAN\EOT \SOH(\tR\bmqttPass\DC2%\n\
     \\SOburst_interval\CAN\ENQ \SOH(\ENQR\rburstInterval\DC2\US\n\
@@ -888,18 +844,18 @@ packedFileDescriptor
     \burstCount\DC2'\n\
     \\awake_on\CAN\a \ETX(\v2\SO.configdt.TimeR\ACKwakeOn\DC22\n\
     \\vsensor_conf\CAN\b \SOH(\v2\DC1.configdt.ModconfR\n\
-    \sensorConfJ\222\ACK\n\
-    \\ACK\DC2\EOT\NUL\NUL\FS\SOH\n\
+    \sensorConfJ\167\ACK\n\
+    \\ACK\DC2\EOT\NUL\NUL\ESC\SOH\n\
     \\b\n\
     \\SOH\f\DC2\ETX\NUL\NUL\DC2\n\
-    \\t\n\
-    \\STX\ETX\NUL\DC2\ETX\STX\NUL!\n\
-    \\t\n\
-    \\STX\ETX\SOH\DC2\ETX\ETX\NUL\GS\n\
-    \\t\n\
-    \\STX\ETX\STX\DC2\ETX\EOT\NUL \n\
     \\b\n\
-    \\SOH\STX\DC2\ETX\ACK\NUL\DC1\n\
+    \\SOH\STX\DC2\ETX\STX\NUL\DC1\n\
+    \\t\n\
+    \\STX\ETX\NUL\DC2\ETX\EOT\NUL!\n\
+    \\t\n\
+    \\STX\ETX\SOH\DC2\ETX\ENQ\NUL\GS\n\
+    \\t\n\
+    \\STX\ETX\STX\DC2\ETX\ACK\NUL \n\
     \\n\
     \\n\
     \\STX\EOT\NUL\DC2\EOT\b\NUL\v\SOH\n\
@@ -958,7 +914,7 @@ packedFileDescriptor
     \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETX\DLE'(\n\
     \\n\
     \\n\
-    \\STX\EOT\STX\DC2\EOT\DC3\NUL\FS\SOH\n\
+    \\STX\EOT\STX\DC2\EOT\DC3\NUL\ESC\SOH\n\
     \\n\
     \\n\
     \\ETX\EOT\STX\SOH\DC2\ETX\DC3\b\SI\n\
@@ -972,13 +928,14 @@ packedFileDescriptor
     \\f\n\
     \\ENQ\EOT\STX\STX\NUL\ETX\DC2\ETX\DC4\SYN\ETB\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\SOH\DC2\ETX\NAK\ETX\ETB\n\
+    \\EOT\EOT\STX\STX\SOH\DC2\ETX\NAK\ETX\CAN\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\ENQ\DC2\ETX\NAK\ETX\b\n\
+    \\ENQ\EOT\STX\STX\SOH\ENQ\DC2\ETX\NAK\ETX\t\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\ETX\NAK\t\DC2\n\
+    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\ETX\NAK\n\
+    \\DC3\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\ETX\NAK\NAK\SYN\n\
+    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\ETX\NAK\SYN\ETB\n\
     \\v\n\
     \\EOT\EOT\STX\STX\STX\DC2\ETX\SYN\ETX\CAN\n\
     \\f\n\
@@ -989,46 +946,37 @@ packedFileDescriptor
     \\f\n\
     \\ENQ\EOT\STX\STX\STX\ETX\DC2\ETX\SYN\SYN\ETB\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\ETX\DC2\ETX\ETB\ETX\CAN\n\
+    \\EOT\EOT\STX\STX\ETX\DC2\ETX\ETB\ETX\FS\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\ENQ\DC2\ETX\ETB\ETX\t\n\
+    \\ENQ\EOT\STX\STX\ETX\ENQ\DC2\ETX\ETB\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\ETX\ETB\n\
-    \\DC3\n\
+    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\ETX\ETB\t\ETB\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\ETX\ETB\SYN\ETB\n\
+    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\ETX\ETB\SUB\ESC\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\EOT\DC2\ETX\CAN\ETX\FS\n\
+    \\EOT\EOT\STX\STX\EOT\DC2\ETX\CAN\ETX\EM\n\
     \\f\n\
     \\ENQ\EOT\STX\STX\EOT\ENQ\DC2\ETX\CAN\ETX\b\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\ETX\CAN\t\ETB\n\
+    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\ETX\CAN\t\DC4\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\ETX\CAN\SUB\ESC\n\
+    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\ETX\CAN\ETB\CAN\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\ENQ\DC2\ETX\EM\ETX\EM\n\
+    \\EOT\EOT\STX\STX\ENQ\DC2\ETX\EM\ETX\GS\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\ENQ\DC2\ETX\EM\ETX\b\n\
+    \\ENQ\EOT\STX\STX\ENQ\EOT\DC2\ETX\EM\ETX\v\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\ETX\EM\t\DC4\n\
+    \\ENQ\EOT\STX\STX\ENQ\ACK\DC2\ETX\EM\f\DLE\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\ETX\EM\ETB\CAN\n\
+    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\ETX\EM\DC1\CAN\n\
+    \\f\n\
+    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\ETX\EM\ESC\FS\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\ACK\DC2\ETX\SUB\ETX\GS\n\
+    \\EOT\EOT\STX\STX\ACK\DC2\ETX\SUB\ETX\ESC\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\EOT\DC2\ETX\SUB\ETX\v\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\ACK\DC2\ETX\SUB\f\DLE\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\ETX\SUB\DC1\CAN\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\ETX\SUB\ESC\FS\n\
-    \\v\n\
-    \\EOT\EOT\STX\STX\a\DC2\ETX\ESC\ETX\ESC\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\a\ACK\DC2\ETX\ESC\ETX\n\
+    \\ENQ\EOT\STX\STX\ACK\ACK\DC2\ETX\SUB\ETX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\SOH\DC2\ETX\ESC\v\SYN\n\
+    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\ETX\SUB\v\SYN\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\ETX\DC2\ETX\ESC\EM\SUBb\ACKproto3"
+    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\ETX\SUB\EM\SUBb\ACKproto3"

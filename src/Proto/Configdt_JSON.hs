@@ -77,7 +77,6 @@ instance ToJSON Modconf where
 instance FromJSONPB Devconf where
   parseJSONPB = withObject "Devconf" $ \obj -> do
     mqttHost' <- obj .: "mqttHost"
-    mqttPort' <- obj .: "mqttPort"
     mqttUser' <- obj .: "mqttUser"
     mqttPass' <- obj .: "mqttPass"
     burstInterval' <- obj .: "burstInterval"
@@ -86,7 +85,6 @@ instance FromJSONPB Devconf where
     sensorConf' <- obj A..:? "sensorConf"
     pure $ defMessage
       & P.mqttHost .~ mqttHost'
-      & P.mqttPort .~ mqttPort'
       & P.mqttUser .~ mqttUser'
       & P.mqttPass .~ mqttPass'
       & P.burstInterval .~ burstInterval'
@@ -97,7 +95,6 @@ instance FromJSONPB Devconf where
 instance ToJSONPB Devconf where
   toJSONPB x = object
     [ "mqttHost" .= (x^.mqttHost)
-    , "mqttPort" .= (x^.mqttPort)
     , "mqttUser" .= (x^.mqttUser)
     , "mqttPass" .= (x^.mqttPass)
     , "burstInterval" .= (x^.burstInterval)
@@ -107,7 +104,6 @@ instance ToJSONPB Devconf where
     ]
   toEncodingPB x = pairs
     [ "mqttHost" .= (x^.mqttHost)
-    , "mqttPort" .= (x^.mqttPort)
     , "mqttUser" .= (x^.mqttUser)
     , "mqttPass" .= (x^.mqttPass)
     , "burstInterval" .= (x^.burstInterval)

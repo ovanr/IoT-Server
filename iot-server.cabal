@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 37a582a126eae46d5bb4eb90da6953866a3e362a09112b1c5eff518e7f08e322
+-- hash: be55e29734eb24c7c7d8ecb5c53f4fe3b0c4daf4ae2271b75ef2c532840e47f5
 
 name:           iot-server
 version:        0.2.0
@@ -34,6 +34,15 @@ library
       IOT.Server
       IOT.Server.Queue
       IOT.Server.Types
+      Proto.Cmd.Confupdatedt
+      Proto.Cmd.Confupdatedt_Fields
+      Proto.Cmd.Confupdatedt_JSON
+      Proto.Cmd.Rebootdt
+      Proto.Cmd.Rebootdt_Fields
+      Proto.Cmd.Rebootdt_JSON
+      Proto.Cmddt
+      Proto.Cmddt_Fields
+      Proto.Cmddt_JSON
       Proto.Configdt
       Proto.Configdt_Fields
       Proto.Configdt_JSON

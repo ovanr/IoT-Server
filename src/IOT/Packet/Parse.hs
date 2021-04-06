@@ -79,8 +79,8 @@ parsePacket uid pkt =
          forM_ dat $ \case
             Output'Cam img -> queueSensorImage uid img
             r -> queueSensorData uid r -- use json instance to get fields
-      Just (Packet'Conf conf) ->
-         logWarning "Received Config packet.. Don't know what to do with it"
+      Just (Packet'Cmds cmds) ->
+         logWarning "Received cmd packet.. Don't know what to do with it"
       _ -> fail "Incorrect packet format"
 
 {- | mqtt callback function on message received -}
