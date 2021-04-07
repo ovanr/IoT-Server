@@ -115,11 +115,11 @@ withTempPipeM fp cb = do
    liftIO $ removeFile fp
    return r
 
-hTryGetChar :: MonadIO m => Handle -> m (Maybe Char)
-hTryGetChar h =
+hTryGetLine :: MonadIO m => Handle -> m (Maybe String)
+hTryGetLine h =
    liftIO $
    ifM (hWaitForInput h 10) 
-      (Just <$> hGetChar h) 
+      (Just <$> hGetLine h) 
       (pure Nothing) 
    `Exception.catch` (\(e :: SomeException) -> pure Nothing)
 

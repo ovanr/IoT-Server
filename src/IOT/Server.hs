@@ -14,7 +14,8 @@ module IOT.Server
 import Colog.Core.Action ( LogAction(LogAction) )
 import Colog.Core.Severity
     ( Severity(Debug, Error, Warning, Info) )
-import Colog.Message ( logInfo )
+import Colog.Message ( logInfo, logDebug )
+import qualified Data.Text as T
 import IOT.Packet.Parse ( pktHandler )
 import Control.Lens ( (&), (^.), use, view, (.=), (.~) )
 import Control.Monad.Reader (MonadReader(ask))
@@ -50,7 +51,7 @@ import IOT.Server.Types
       verbosity )
 import Data.Aeson ( eitherDecode )
 import IOT.Misc
-    ( hTryGetChar,
+    ( hTryGetLine,
       liftEither,
       loopUntil,
       richMessageLogFileAction,
@@ -124,7 +125,9 @@ runApp = runner `finally` closeLog
        loopUntil $ do
           sleep 5
           lift flushQueues
-          c <- hTryGetChar handle
-          return $ c == Just 'E'
+          c <- hTryGetLine handle
+
+          lift (logDebug $ "Got input " <> T.pack (show c))
+          return $ c == Just "exit" 
        
        lift (logInfo "Exiting normally...")
