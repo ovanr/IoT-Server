@@ -16,10 +16,11 @@ import Colog.Core.Severity
     ( Severity(Debug, Error, Warning, Info) )
 import Colog.Message ( logInfo )
 import IOT.Packet.Parse ( pktHandler )
-import Control.Lens ( (&), (^.), use, view, (%~), (.=), (.~) )
-import Control.Monad.Reader ( MonadReader(ask), MonadIO(liftIO) )
+import Control.Lens ( (&), (^.), use, view, (.=), (.~) )
+import Control.Monad.Reader (MonadReader(ask))
 import Control.Monad.Catch ( finally )
 import qualified Data.ByteString.Lazy as BL ( readFile )
+import Control.Monad.Cont
 import Data.IORef ( newIORef )
 import Data.Version ( showVersion )
 import Database.InfluxDB
@@ -91,6 +92,14 @@ initApp args = do
 
    AppState env (Just logHandle) wp <$> connect mysqlInfo
 
+unHoistedAppEnv :: Monad m => App m (AppEnv m)
+unHoistedAppEnv = do
+      env <- ask
+      state <- get
+      LogAction lg <- view logAction
+      let newLogAction = LogAction $ \m -> fst <$> unApp (lg m) state
+      return $ env & logAction .~ newLogAction
+
 runApp :: App IO ()
 runApp = runner `finally` closeLog
   where
@@ -98,29 +107,24 @@ runApp = runner `finally` closeLog
        handle <- use logHandle
        liftIO $ maybe mempty hClose handle
        logHandle .= Nothing
-    runner = do
-       host <- view (sConf . amqpHost)
-       vhost <- view (sConf . amqpVhost)
-       user <- view (sConf . amqpUser)
-       pass <- view (sConf . amqpPass)
-       withAmqpConnection host vhost user pass $ \conn -> do
-          withAmqpChannel conn $ \chan -> do
-             env <- ask
-             state <- get
-             let envio = env & logAction %~ unHoist state
-             withAmqpConsumer (pktHandler envio) chan "q_all" $ \_ -> do
-                withTempPipeM "iot-server.run" $ \handle ->
-                   loopUntil $ do
-                      sleep 5
-                      flushQueues
-                      c <- hTryGetChar handle
-                      return $ c == Just 'E'
-       logInfo "Exiting normally..."
-      where
-        unHoist ::
-              Functor m
-           => AppState (App m)
-           -> LogAction (App m) x
-           -> LogAction m x
-        unHoist s (LogAction xappm) =
-           LogAction $ \x -> fst <$> unApp (xappm x) s
+
+    runner = flip runContT pure $ do
+       host   <- view (sConf . amqpHost)
+       vhost  <- view (sConf . amqpVhost)
+       user   <- view (sConf . amqpUser)
+       pass   <- view (sConf . amqpPass)
+       
+       conn   <- ContT $ withAmqpConnection host vhost user pass 
+       chan   <- ContT $ withAmqpChannel conn
+       
+       envio  <- lift unHoistedAppEnv
+       ContT $ withAmqpConsumer (pktHandler envio) chan "q_all"
+       handle <- ContT $ withTempPipeM "iot-server.run"
+
+       loopUntil $ do
+          sleep 5
+          lift flushQueues
+          c <- hTryGetChar handle
+          return $ c == Just 'E'
+       
+       lift (logInfo "Exiting normally...")
