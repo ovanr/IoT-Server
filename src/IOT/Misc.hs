@@ -31,24 +31,36 @@ import qualified Colog.Message as Colog
 import Colog.Core.Action
 import System.Directory
 import System.IO
+import Data.Aeson (Value(..), FromJSON(..), (.:))
+import Data.Aeson.Types (Parser, Object)
+import Yesod.Core (warp, YesodDispatch)
+import Data.Conduit ((.|), runConduit)
+import Conduit (foldC)
+import Yesod.Core (MonadHandler, rawRequestBody)
 
-refModify' :: (a -> a) -> IORef a -> IO a 
-refModify' f r = r `atomicModifyIORef'` (\a -> (f a, a)) 
+refModify' :: MonadIO m => (a -> a) -> IORef a -> m a 
+refModify' f r = liftIO $ r `atomicModifyIORef'` (\a -> (f a, a)) 
 
 liftEither :: (MonadFail m, Monad m) => Either String a -> m a
 liftEither (Left err) = fail err
 liftEither (Right a) = return a
 
-readerM :: (MonadTrans t, Monad m, MonadReader r (t m)) => (r -> m a) -> t m a
+readerM :: (MonadTrans t, Monad m, MonadReader r (t m)) 
+           => (r -> m a) 
+           -> t m a
 readerM r = reader r >>= lift
 
+-- same as threadDelay but in seconds
+-- and lifted to work with MonadIO
 sleep :: MonadIO m => Int -> m ()
 sleep = liftIO . threadDelay . (* 1000000)
 
-loopUntil :: Monad m => m Bool -> m ()
-loopUntil m = do
-   b <- m 
-   unless b $ loopUntil m
+-- retrieve the body of a request as a raw ByteString
+-- note that it can only be run once per request body
+getRawRequestBody :: MonadHandler m => m B.ByteString
+getRawRequestBody = runConduit $ rawRequestBody .| foldC
+
+-- exception-less MySQL statement execution
 executeStmt' ::
       MonadIO m => MySQLConn -> StmtID -> [MySQLValue] -> m (Either String OK)
 executeStmt' conn stmt vals =
@@ -56,6 +68,7 @@ executeStmt' conn stmt vals =
    (Right <$> executeStmt conn stmt vals) `catch`
    (\(e :: SomeException) -> return . Left . show $ e)
 
+-- generalisation of withFile
 withFileM ::
       (MonadMask m, MonadIO m) => FilePath -> IOMode -> (Handle -> m a) -> m a
 withFileM fp mode = bracket (liftIO $ openFile fp mode) (liftIO . hClose)
@@ -123,6 +136,9 @@ hTryGetLine h =
       (pure Nothing) 
    `Exception.catch` (\(e :: SomeException) -> pure Nothing)
 
+-- exception-less gzip decompression
+-- GZip.decompress is pure but can throw exceptions
+-- thus this function converts the exception to an Either
 gzipDecompress :: BL.ByteString -> Either String BL.ByteString
 gzipDecompress b =
    unsafePerformIO $
@@ -142,3 +158,7 @@ genSecureString len =
     randomBytes =
        MaybeT $
        (Just <$> readBytes) `catch` (\(e :: SomeException) -> pure Nothing)
+
+(.:^) :: (FromJSON a, MonadTrans t) 
+         => Object -> T.Text -> t Parser a
+(.:^) o k = lift (o .: k)

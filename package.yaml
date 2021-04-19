@@ -1,7 +1,7 @@
 name:                iot-server
 version:             0.2.0
 github:              "ovanr/IoT-Server"
-license:             GNU2
+license:             GPL-2
 author:              "Orpheas van Rooij"
 maintainer:          "orpheas.vanrooij@outlook.com"
 copyright:           "2020 Orpheas van Rooij"
@@ -59,6 +59,16 @@ dependencies:
 - proto-lens-jsonpb
 - proto-lens-runtime
 - proto-lens-protobuf-types
+- yesod
+- yesod-core
+- yaml
+- wai
+- wai-extra
+- warp
+- template-haskell
+- http-client
+- http-types
+- conduit
 
 library:
   source-dirs: src

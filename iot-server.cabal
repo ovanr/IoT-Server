@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: be55e29734eb24c7c7d8ecb5c53f4fe3b0c4daf4ae2271b75ef2c532840e47f5
+-- hash: 63b4e843245588d9dc287c7ab4379d761b83f8b10623d4c602af360ed9d5cf0b
 
 name:           iot-server
 version:        0.2.0
@@ -14,7 +14,7 @@ bug-reports:    https://github.com/ovanr/IoT-Server/issues
 author:         Orpheas van Rooij
 maintainer:     orpheas.vanrooij@outlook.com
 copyright:      2020 Orpheas van Rooij
-license:        GNU2
+license:        GPL-2
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -28,9 +28,16 @@ source-repository head
 library
   exposed-modules:
       IOT.Misc
+      IOT.Packet.Cmd
+      IOT.Packet.Config
       IOT.Packet.Format
+      IOT.Packet.Packet
       IOT.Packet.Parse
-      IOT.Packet.Types
+      IOT.Packet.Sensor
+      IOT.REST.Dispatch
+      IOT.REST.Foundation
+      IOT.REST.Handlers
+      IOT.REST.Import
       IOT.Server
       IOT.Server.Queue
       IOT.Server.Types
@@ -77,12 +84,15 @@ library
     , co-log-core
     , comonad
     , concurrent-extra
+    , conduit
     , containers
     , directory
     , either
     , exceptions
     , extra
     , hslogger
+    , http-client
+    , http-types
     , influxdb
     , io-streams
     , lens
@@ -96,12 +106,19 @@ library
     , proto-lens-protobuf-types
     , proto-lens-runtime
     , shelly
+    , template-haskell
     , text
     , time
     , transformers
     , unordered-containers
     , utf8-string
     , vector
+    , wai
+    , wai-extra
+    , warp
+    , yaml
+    , yesod
+    , yesod-core
     , zlib
   default-language: Haskell2010
 
@@ -124,12 +141,15 @@ executable iot-server
     , co-log-core
     , comonad
     , concurrent-extra
+    , conduit
     , containers
     , directory
     , either
     , exceptions
     , extra
     , hslogger
+    , http-client
+    , http-types
     , influxdb
     , io-streams
     , iot-server
@@ -144,12 +164,19 @@ executable iot-server
     , proto-lens-protobuf-types
     , proto-lens-runtime
     , shelly
+    , template-haskell
     , text
     , time
     , transformers
     , unordered-containers
     , utf8-string
     , vector
+    , wai
+    , wai-extra
+    , warp
+    , yaml
+    , yesod
+    , yesod-core
     , zlib
   default-language: Haskell2010
 
@@ -173,12 +200,15 @@ test-suite iot-server-test
     , co-log-core
     , comonad
     , concurrent-extra
+    , conduit
     , containers
     , directory
     , either
     , exceptions
     , extra
     , hslogger
+    , http-client
+    , http-types
     , influxdb
     , io-streams
     , iot-server
@@ -193,11 +223,18 @@ test-suite iot-server-test
     , proto-lens-protobuf-types
     , proto-lens-runtime
     , shelly
+    , template-haskell
     , text
     , time
     , transformers
     , unordered-containers
     , utf8-string
     , vector
+    , wai
+    , wai-extra
+    , warp
+    , yaml
+    , yesod
+    , yesod-core
     , zlib
   default-language: Haskell2010

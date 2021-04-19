@@ -20,6 +20,7 @@ import IOT.Packet.Parse ( pktHandler )
 import Control.Lens ( (&), (^.), use, view, (.=), (.~) )
 import Control.Monad.Reader (MonadReader(ask))
 import Control.Monad.Catch ( finally )
+import Control.Concurrent (forkIO, killThread)
 import qualified Data.ByteString.Lazy as BL ( readFile )
 import Control.Monad.Cont
 import Data.IORef ( newIORef )
@@ -40,7 +41,9 @@ import IOT.Server.Types
       amqpPass,
       amqpUser,
       amqpVhost,
+      amqpDataQueue,
       confPath,
+      restApp,
       infxDb,
       infxHost,
       logAction,
@@ -53,7 +56,6 @@ import Data.Aeson ( eitherDecode )
 import IOT.Misc
     ( hTryGetLine,
       liftEither,
-      loopUntil,
       richMessageLogFileAction,
       sleep,
       withAmqpChannel,
@@ -69,6 +71,8 @@ import System.IO
       openFile,
       BufferMode(LineBuffering) )
 import IOT.Server.Queue ( flushQueues )
+import IOT.REST.Import (RESTApp(..))
+import Yesod.Core (warp)
 
 initApp :: ServerArgs -> IO (AppState (App IO))
 initApp args = do
@@ -88,11 +92,13 @@ initApp args = do
    env <- AppEnv (richMessageLogFileAction level logHandle) conf
             <$> newIORef []
             <*> newIORef []
+            <*> (RESTApp <$> newIORef [])
 
    let mysqlInfo = mysqlConfig (env ^. sConf)
 
    AppState env (Just logHandle) wp <$> connect mysqlInfo
 
+-- convert from AppEnv (App m) to AppEnv m
 unHoistedAppEnv :: Monad m => App m (AppEnv m)
 unHoistedAppEnv = do
       env <- ask
@@ -108,26 +114,34 @@ runApp = runner `finally` closeLog
        handle <- use logHandle
        liftIO $ maybe mempty hClose handle
        logHandle .= Nothing
-
+    
     runner = flip runContT pure $ do
-       host   <- view (sConf . amqpHost)
-       vhost  <- view (sConf . amqpVhost)
-       user   <- view (sConf . amqpUser)
-       pass   <- view (sConf . amqpPass)
+       host      <- view (sConf . amqpHost)
+       vhost     <- view (sConf . amqpVhost)
+       user      <- view (sConf . amqpUser)
+       pass      <- view (sConf . amqpPass)
+       dataQueue <- view (sConf . amqpDataQueue)
        
        conn   <- ContT $ withAmqpConnection host vhost user pass 
        chan   <- ContT $ withAmqpChannel conn
        
        envio  <- lift unHoistedAppEnv
-       ContT $ withAmqpConsumer (pktHandler envio) chan "q_all"
-       handle <- ContT $ withTempPipeM "iot-server.run"
-
-       loopUntil $ do
-          sleep 5
-          lift flushQueues
-          c <- hTryGetLine handle
-
-          lift (logDebug $ "Got input " <> T.pack (show c))
-          return $ c == Just "exit" 
+       ContT $ withAmqpConsumer (pktHandler envio) chan dataQueue 
        
-       lift (logInfo "Exiting normally...")
+       restApp <- view restApp 
+       serverThread <- liftIO $ forkIO $ warp 3000 restApp 
+
+       handle <- ContT $ withTempPipeM "iot-server.run"
+       
+       let go = \exit -> do
+            sleep 5
+            lift (flushQueues chan)
+            c <- hTryGetLine handle
+            lift (logDebug $ "Got input " <> T.pack (show c))
+            if c == Just "exit"
+               then exit "Received exit signal"
+               else go exit 
+       
+       exitMsg <- callCC go
+       liftIO $ killThread serverThread
+       lift (logInfo $ "Exiting: " <> exitMsg)

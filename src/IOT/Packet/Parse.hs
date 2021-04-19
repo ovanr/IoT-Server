@@ -13,13 +13,8 @@ import Control.Monad.Reader.Class
 import IOT.Server.Types
 import IOT.Server.Queue (queueSensorImage, queueSensorData)
 import IOT.Packet.Format
-import IOT.Packet.Types
-import Proto.Packetdt
-import Proto.Packetdt_Fields
-import Proto.Sensordt
-import Proto.Sensordt_Fields
-import Proto.Sensors.Raspcamdt
-import Proto.Sensors.Raspcamdt_Fields
+import qualified IOT.Packet.Packet as P
+import qualified IOT.Packet.Sensor as S 
 import IOT.Misc (gzipDecompress)
 import Control.Exception
 import Control.Lens
@@ -32,20 +27,20 @@ import Colog hiding (Message)
 import qualified Control.Monad.Catch as MC
 
 {- | attempt to parse message body as a raw Raspberry Cam Image -}
-imgParse :: BL.ByteString -> T.Text -> Either String Packet
+imgParse :: BL.ByteString -> T.Text -> Either String P.Packet
 imgParse b pktUid = do
    enc <-
-      if | isPng b -> Right PNG
-         | isJpeg b -> Right JPEG
+      if | isPng b -> Right S.PNG
+         | isJpeg b -> Right S.JPEG
          | otherwise -> Left "unknown format"
-   let (out :: Output) =
+   let (out :: S.Output) =
           defMessage &
-          maybe'output ?~
-          Output'Cam (defMessage & encoding .~ enc & bin .~ BL.toStrict b)
-   let sensorOut = defMessage & outputs .~ [out] :: Sensorout
-   Right $ defMessage & uid .~ pktUid & maybe'type' ?~ Packet'Out sensorOut
+          S.maybe'output ?~
+          S.Output'Cam (defMessage & S.encoding .~ enc & S.bin .~ BL.toStrict b)
+   let sensorOut = defMessage & S.outputs .~ [out] :: S.Sensorout
+   Right $ defMessage & P.uid .~ pktUid & P.maybe'type' ?~ P.Packet'Out sensorOut
 
-parseBody :: Message -> T.Text -> Either String Packet
+parseBody :: Message -> T.Text -> Either String P.Packet
 parseBody msg pktUid = do
    
    --decompress if gzip encoded
@@ -69,17 +64,17 @@ parseBody msg pktUid = do
 
 parsePacket ::
       (MonadReader (AppEnv m) m, MonadIO m, MonadFail m)
-   => Uid
-   -> Packet
+   => P.UID
+   -> P.Packet
    -> m ()
 parsePacket uid pkt =
-   case pkt ^. maybe'type' of
-      Just (Packet'Out out) -> do
-         let dat = out ^.. vec'outputs . folded . maybe'output . _Just
+   case pkt ^. P.maybe'type' of
+      Just (P.Packet'Out out) -> do
+         let dat = out ^.. S.vec'outputs . folded . S.maybe'output . _Just
          forM_ dat $ \case
-            Output'Cam img -> queueSensorImage uid img
+            S.Output'Cam img -> queueSensorImage uid img
             r -> queueSensorData uid r -- use json instance to get fields
-      Just (Packet'Cmds cmds) ->
+      Just (P.Packet'Cmds cmds) ->
          logWarning "Received cmd packet.. Don't know what to do with it"
       _ -> fail "Incorrect packet format"
 

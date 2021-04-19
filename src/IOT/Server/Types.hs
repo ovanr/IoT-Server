@@ -36,11 +36,11 @@ import Database.InfluxDB
    , WriteParams(..)
    )
 import Database.MySQL.Base
+import IOT.REST.Import (RESTApp)
+import qualified IOT.Packet.Packet as P (UID)
 
 $(deriveJSON defaultOptions ''Measurement)
 $(deriveJSON defaultOptions {unwrapUnaryRecords = True} ''Database)
-
-type Uid = T.Text
 
 data ServerArgs =
   ServerArgs
@@ -54,17 +54,19 @@ makeLenses ''ServerArgs
 
 data ServerConf =
    ServerConf
-      { _infxHost :: T.Text
+      { _infxHost        :: T.Text
       , _infxMeasurement :: Measurement
-      , _infxDb :: Database
-      , _mysqlHost :: String
-      , _mysqlUser :: String
-      , _mysqlPass :: String
-      , _mysqlDb :: String
-      , _amqpHost :: String
-      , _amqpVhost :: T.Text
-      , _amqpUser :: T.Text
-      , _amqpPass :: T.Text
+      , _infxDb          :: Database
+      , _mysqlHost       :: String
+      , _mysqlUser       :: String
+      , _mysqlPass       :: String
+      , _mysqlDb         :: String
+      , _amqpHost        :: String
+      , _amqpVhost       :: T.Text
+      , _amqpUser        :: T.Text
+      , _amqpPass        :: T.Text
+      , _amqpExchange    :: T.Text
+      , _amqpDataQueue   :: T.Text
       }
 
 makeLenses ''ServerConf
@@ -73,27 +75,28 @@ $(deriveJSON defaultOptions {fieldLabelModifier = drop 1} ''ServerConf)
 mysqlConfig :: ServerConf -> ConnectInfo
 mysqlConfig conf = do
    defaultConnectInfo
-      { ciHost = conf ^. mysqlHost
-      , ciUser = BU.fromString $ view mysqlUser conf
+      { ciHost     = conf ^. mysqlHost
+      , ciUser     = BU.fromString $ view mysqlUser conf
       , ciPassword = BU.fromString $ view mysqlPass conf
       , ciDatabase = BU.fromString $ view mysqlDb conf
       }
 
 data AppEnv (m :: * -> *) =
    AppEnv
-      { _logAction :: LogAction m Message 
-      , _sConf :: ServerConf
-      , _pendingInfx :: IORef [Line UTCTime]
-      , _pendingMysql :: IORef [(Uid, B.ByteString)]
+      { _logAction    :: LogAction m Message 
+      , _sConf        :: ServerConf
+      , _pendingInfx  :: IORef [Line UTCTime]
+      , _pendingMysql :: IORef [(P.UID, B.ByteString)]
+      , _restApp      :: RESTApp 
       }
 
 makeLenses ''AppEnv
 
 data AppState (m :: * -> *) =
    AppState
-      { _appEnv :: AppEnv m 
+      { _appEnv    :: AppEnv m 
       , _logHandle :: Maybe Handle
-      , _infxConn :: WriteParams
+      , _infxConn  :: WriteParams
       , _mysqlConn :: MySQLConn
       }
 

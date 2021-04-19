@@ -3,28 +3,34 @@
 {-# LANGUAGE OverloadedStrings #-}
 module IOT.Server.Queue where
 
-import Control.Monad.Reader
 import qualified Data.Text as T
 import qualified Data.ByteString.Lazy.UTF8 as BLU
-import Database.InfluxDB.Line (Line(..), encodeLines, Precision(..), LineField, Field(..))
-import IOT.Misc 
-import Proto.Sensors.Raspcamdt (Raspcamout)
-import Proto.Sensors.Raspcamdt_Fields (bin)
-import Colog
-import Control.Lens (use, view, (.=), (^.), sequenceAOf, _2)
-import Data.Time
-import Database.MySQL.Base
-import IOT.Server.Types
+import qualified Data.ByteString.Lazy as BL
+import qualified IOT.Packet.Packet as P
 import qualified Control.Exception as Exception
-import Data.Maybe
-import Data.Aeson (encode, ToJSON(..), Value(..))
-import Data.Aeson.Types (Pair)
 import qualified Data.Aeson ((.=))
 import qualified Data.Map as Map
 import qualified Data.HashMap.Strict as HM
+import Database.InfluxDB.Line (Line(..), encodeLines, Precision(..), LineField, Field(..))
+import Proto.Sensors.Raspcamdt (Raspcamout)
+import Proto.Sensors.Raspcamdt_Fields (bin)
+import Colog
+import Control.Lens (use, view, (.=), (^.), sequenceAOf, _2, (.~), (&), (?~))
+import Data.Time
+import Database.MySQL.Base
+import Control.Monad.Reader
+import Data.Maybe
+import Data.Aeson (encode, ToJSON(..), Value(..))
+import Data.Aeson.Types (Pair)
 import Database.InfluxDB (scaleTo, writeBatch, Key) 
 import Data.Bifunctor (bimap)
 import Data.String (fromString)
+import IOT.Misc 
+import IOT.Server.Types
+import IOT.REST.Import (sharedCmdQueue)
+import Network.AMQP (Channel, publishMsg, Message(..), newMsg)
+import Data.ProtoLens.Encoding (encodeMessage)
+import Data.ProtoLens (defMessage)
 
 toInfluxFields :: Value -> Map.Map Key LineField
 toInfluxFields j =
@@ -41,6 +47,7 @@ toInfluxFields j =
                Object o -> toPairs (Object o)
                Array a -> []
                _ -> [k Data.Aeson..= v]
+    toPairs _ = []
 
     toInfluxField (Number n) = Just . FieldFloat . realToFrac $ n
     toInfluxField (String t) = Just $ FieldString t
@@ -68,7 +75,7 @@ getMysqlConnection = do
 
 queueSensorData ::
       (ToJSON j, Show j, MonadReader (AppEnv m) m, MonadIO m)
-   => Uid 
+   => P.UID 
    -> j 
    -> m ()
 queueSensorData uid f = do
@@ -85,7 +92,7 @@ queueSensorData uid f = do
              fields 
              (Just t)
    q <- view pendingInfx
-   liftIO $ refModify' (newL :) q
+   refModify' (newL :) q
    return ()
 
 queueSensorImage ::
@@ -93,7 +100,7 @@ queueSensorImage ::
 queueSensorImage uid img = do
    logInfo "Appending image to Mysql Queue"
    q <- view pendingMysql
-   liftIO $ refModify' ((uid, img ^. bin) :) q
+   refModify' ((uid, img ^. bin) :) q
    return ()
 
 flushImageQueue :: App IO ()
@@ -133,8 +140,31 @@ flushDataQueue = do
       infx <- use infxConn
       liftIO $ infx `writeBatch` l
 
-flushQueues :: App IO ()
-flushQueues = do
+flushCmdQueue :: Channel -> App IO ()
+flushCmdQueue chan = do
+   exchange <- view (sConf . amqpExchange)
+   cmds     <- view (restApp.sharedCmdQueue) 
+                >>= (liftIO . refModify' (const []))
+   unless (null cmds) $ do
+      let numCmds = T.pack . show . length $ cmds 
+      logInfo $ "Sending " <> numCmds <> " commands"
+      
+      forM_ cmds $ \(uid, cmd) ->
+         let topic = "cmd." <> uid
+             pcktCmd = P.Packet'Cmds (defMessage & P.cmds .~ [cmd])
+             pckt :: P.Packet = defMessage 
+                     & P.uid .~ uid
+                     & P.maybe'type' ?~ pcktCmd
+             body = BL.fromStrict . encodeMessage $ pckt
+             msg = newMsg{msgBody=body}
+          in do
+            logInfo $ "Sending to: " <> uid
+            logDebug $ T.pack (show pckt)
+            liftIO $ publishMsg chan exchange topic msg
+
+flushQueues :: Channel -> App IO ()
+flushQueues chan = do
    logDebug "Attempting to flush queues"
    flushDataQueue
    flushImageQueue
+   flushCmdQueue chan
