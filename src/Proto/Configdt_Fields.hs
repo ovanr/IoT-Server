@@ -28,6 +28,7 @@ import qualified Data.ProtoLens.Runtime.Data.Vector.Generic as Data.Vector.Gener
 import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unboxed
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
 import qualified Proto.Sensors.Cpudt
+import qualified Proto.Sensors.Genericdt
 import qualified Proto.Sensors.Raspcamdt
 import qualified Proto.Sensors.Systemdt
 burstCount ::
@@ -47,6 +48,11 @@ cpu ::
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "cpu" a) =>
   Lens.Family2.LensLike' f s a
 cpu = Data.ProtoLens.Field.field @"cpu"
+generic ::
+  forall f s a.
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "generic" a) =>
+  Lens.Family2.LensLike' f s a
+generic = Data.ProtoLens.Field.field @"generic"
 hour ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "hour" a) =>
@@ -58,6 +64,12 @@ maybe'cpu ::
    Data.ProtoLens.Field.HasField s "maybe'cpu" a) =>
   Lens.Family2.LensLike' f s a
 maybe'cpu = Data.ProtoLens.Field.field @"maybe'cpu"
+maybe'generic ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'generic" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'generic = Data.ProtoLens.Field.field @"maybe'generic"
 maybe'raspCam ::
   forall f s a.
   (Prelude.Functor f,

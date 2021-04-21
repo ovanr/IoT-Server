@@ -5,7 +5,7 @@
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
 module Proto.Sensordt (
         Output(), Output'Output(..), _Output'Cpu, _Output'Cam,
-        _Output'System, Sensorout()
+        _Output'System, _Output'Generic, Sensorout()
     ) where
 import qualified Data.ProtoLens.Runtime.Control.DeepSeq as Control.DeepSeq
 import qualified Data.ProtoLens.Runtime.Data.ProtoLens.Prism as Data.ProtoLens.Prism
@@ -33,6 +33,7 @@ import qualified Data.ProtoLens.Runtime.Data.Vector.Generic as Data.Vector.Gener
 import qualified Data.ProtoLens.Runtime.Data.Vector.Unboxed as Data.Vector.Unboxed
 import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
 import qualified Proto.Sensors.Cpudt
+import qualified Proto.Sensors.Genericdt
 import qualified Proto.Sensors.Raspcamdt
 import qualified Proto.Sensors.Systemdt
 {- | Fields :
@@ -43,7 +44,9 @@ import qualified Proto.Sensors.Systemdt
          * 'Proto.Sensordt_Fields.maybe'cam' @:: Lens' Output (Prelude.Maybe Proto.Sensors.Raspcamdt.Raspcamout)@
          * 'Proto.Sensordt_Fields.cam' @:: Lens' Output Proto.Sensors.Raspcamdt.Raspcamout@
          * 'Proto.Sensordt_Fields.maybe'system' @:: Lens' Output (Prelude.Maybe Proto.Sensors.Systemdt.Systemout)@
-         * 'Proto.Sensordt_Fields.system' @:: Lens' Output Proto.Sensors.Systemdt.Systemout@ -}
+         * 'Proto.Sensordt_Fields.system' @:: Lens' Output Proto.Sensors.Systemdt.Systemout@
+         * 'Proto.Sensordt_Fields.maybe'generic' @:: Lens' Output (Prelude.Maybe Proto.Sensors.Genericdt.Genericout)@
+         * 'Proto.Sensordt_Fields.generic' @:: Lens' Output Proto.Sensors.Genericdt.Genericout@ -}
 data Output
   = Output'_constructor {_Output'output :: !(Prelude.Maybe Output'Output),
                          _Output'_unknownFields :: !Data.ProtoLens.FieldSet}
@@ -57,7 +60,8 @@ instance Prelude.Show Output where
 data Output'Output
   = Output'Cpu !Proto.Sensors.Cpudt.Cpuout |
     Output'Cam !Proto.Sensors.Raspcamdt.Raspcamout |
-    Output'System !Proto.Sensors.Systemdt.Systemout
+    Output'System !Proto.Sensors.Systemdt.Systemout |
+    Output'Generic !Proto.Sensors.Genericdt.Genericout
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.Field.HasField Output "maybe'output" (Prelude.Maybe Output'Output) where
   fieldOf _
@@ -137,6 +141,30 @@ instance Data.ProtoLens.Field.HasField Output "system" Proto.Sensors.Systemdt.Sy
                       _otherwise -> Prelude.Nothing)
               (\ _ y__ -> Prelude.fmap Output'System y__))
            (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage))
+instance Data.ProtoLens.Field.HasField Output "maybe'generic" (Prelude.Maybe Proto.Sensors.Genericdt.Genericout) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _Output'output (\ x__ y__ -> x__ {_Output'output = y__}))
+        (Lens.Family2.Unchecked.lens
+           (\ x__
+              -> case x__ of
+                   (Prelude.Just (Output'Generic x__val)) -> Prelude.Just x__val
+                   _otherwise -> Prelude.Nothing)
+           (\ _ y__ -> Prelude.fmap Output'Generic y__))
+instance Data.ProtoLens.Field.HasField Output "generic" Proto.Sensors.Genericdt.Genericout where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _Output'output (\ x__ y__ -> x__ {_Output'output = y__}))
+        ((Prelude..)
+           (Lens.Family2.Unchecked.lens
+              (\ x__
+                 -> case x__ of
+                      (Prelude.Just (Output'Generic x__val)) -> Prelude.Just x__val
+                      _otherwise -> Prelude.Nothing)
+              (\ _ y__ -> Prelude.fmap Output'Generic y__))
+           (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage))
 instance Data.ProtoLens.Message Output where
   messageName _ = Data.Text.pack "sensordt.Output"
   packedMessageDescriptor _
@@ -144,7 +172,8 @@ instance Data.ProtoLens.Message Output where
       \\ACKOutput\DC2)\n\
       \\ETXcpu\CAN\SOH \SOH(\v2\NAK.sensors.cpudt.CpuoutH\NULR\ETXcpu\DC21\n\
       \\ETXcam\CAN\STX \SOH(\v2\GS.sensors.raspcamdt.RaspcamoutH\NULR\ETXcam\DC25\n\
-      \\ACKsystem\CAN\ETX \SOH(\v2\ESC.sensors.systemdt.SystemoutH\NULR\ACKsystemB\b\n\
+      \\ACKsystem\CAN\ETX \SOH(\v2\ESC.sensors.systemdt.SystemoutH\NULR\ACKsystem\DC29\n\
+      \\ageneric\CAN\EOT \SOH(\v2\GS.sensors.genericdt.GenericoutH\NULR\agenericB\b\n\
       \\ACKoutput"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
@@ -173,11 +202,20 @@ instance Data.ProtoLens.Message Output where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'system")) ::
               Data.ProtoLens.FieldDescriptor Output
+        generic__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "generic"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor Proto.Sensors.Genericdt.Genericout)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'generic")) ::
+              Data.ProtoLens.FieldDescriptor Output
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, cpu__field_descriptor),
            (Data.ProtoLens.Tag 2, cam__field_descriptor),
-           (Data.ProtoLens.Tag 3, system__field_descriptor)]
+           (Data.ProtoLens.Tag 3, system__field_descriptor),
+           (Data.ProtoLens.Tag 4, generic__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _Output'_unknownFields
@@ -227,6 +265,13 @@ instance Data.ProtoLens.Message Output where
                                              (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
                                        "system"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"system") y x)
+                        34
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "generic"
+                                loop (Lens.Family2.set (Data.ProtoLens.Field.field @"generic") y x)
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                         wire
@@ -272,6 +317,16 @@ instance Data.ProtoLens.Message Output where
                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
                                   (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Data.ProtoLens.encodeMessage v)
+                (Prelude.Just (Output'Generic v))
+                  -> (Data.Monoid.<>)
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 34)
+                       ((Prelude..)
+                          (\ bs
+                             -> (Data.Monoid.<>)
+                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  (Data.ProtoLens.Encoding.Bytes.putBytes bs))
                           Data.ProtoLens.encodeMessage v))
              (Data.ProtoLens.Encoding.Wire.buildFieldSet
                 (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -285,6 +340,7 @@ instance Control.DeepSeq.NFData Output'Output where
   rnf (Output'Cpu x__) = Control.DeepSeq.rnf x__
   rnf (Output'Cam x__) = Control.DeepSeq.rnf x__
   rnf (Output'System x__) = Control.DeepSeq.rnf x__
+  rnf (Output'Generic x__) = Control.DeepSeq.rnf x__
 _Output'Cpu ::
   Data.ProtoLens.Prism.Prism' Output'Output Proto.Sensors.Cpudt.Cpuout
 _Output'Cpu
@@ -311,6 +367,15 @@ _Output'System
       (\ p__
          -> case p__ of
               (Output'System p__val) -> Prelude.Just p__val
+              _otherwise -> Prelude.Nothing)
+_Output'Generic ::
+  Data.ProtoLens.Prism.Prism' Output'Output Proto.Sensors.Genericdt.Genericout
+_Output'Generic
+  = Data.ProtoLens.Prism.prism'
+      Output'Generic
+      (\ p__
+         -> case p__ of
+              (Output'Generic p__val) -> Prelude.Just p__val
               _otherwise -> Prelude.Nothing)
 {- | Fields :
      
@@ -446,15 +511,16 @@ instance Control.DeepSeq.NFData Sensorout where
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \\SOsensordt.proto\DC2\bsensordt\SUB\DC3sensors/cpudt.proto\SUB\ETBsensors/raspcamdt.proto\SUB\SYNsensors/systemdt.proto\"\167\SOH\n\
+    \\SOsensordt.proto\DC2\bsensordt\SUB\DC3sensors/cpudt.proto\SUB\ETBsensors/raspcamdt.proto\SUB\SYNsensors/systemdt.proto\SUB\ETBsensors/genericdt.proto\"\226\SOH\n\
     \\ACKOutput\DC2)\n\
     \\ETXcpu\CAN\SOH \SOH(\v2\NAK.sensors.cpudt.CpuoutH\NULR\ETXcpu\DC21\n\
     \\ETXcam\CAN\STX \SOH(\v2\GS.sensors.raspcamdt.RaspcamoutH\NULR\ETXcam\DC25\n\
-    \\ACKsystem\CAN\ETX \SOH(\v2\ESC.sensors.systemdt.SystemoutH\NULR\ACKsystemB\b\n\
+    \\ACKsystem\CAN\ETX \SOH(\v2\ESC.sensors.systemdt.SystemoutH\NULR\ACKsystem\DC29\n\
+    \\ageneric\CAN\EOT \SOH(\v2\GS.sensors.genericdt.GenericoutH\NULR\agenericB\b\n\
     \\ACKoutput\"7\n\
     \\tSensorout\DC2*\n\
-    \\aoutputs\CAN\STX \ETX(\v2\DLE.sensordt.OutputR\aoutputsJ\243\STX\n\
-    \\ACK\DC2\EOT\SOH\NUL\DC3\SOH\n\
+    \\aoutputs\CAN\STX \ETX(\v2\DLE.sensordt.OutputR\aoutputsJ\181\ETX\n\
+    \\ACK\DC2\EOT\SOH\NUL\NAK\SOH\n\
     \\b\n\
     \\SOH\f\DC2\ETX\SOH\NUL\DC2\n\
     \\b\n\
@@ -465,55 +531,65 @@ packedFileDescriptor
     \\STX\ETX\SOH\DC2\ETX\ACK\NUL!\n\
     \\t\n\
     \\STX\ETX\STX\DC2\ETX\a\NUL \n\
+    \\t\n\
+    \\STX\ETX\ETX\DC2\ETX\b\NUL!\n\
     \\n\
     \\n\
-    \\STX\EOT\NUL\DC2\EOT\t\NUL\SI\SOH\n\
+    \\STX\EOT\NUL\DC2\EOT\n\
+    \\NUL\DC1\SOH\n\
     \\n\
     \\n\
-    \\ETX\EOT\NUL\SOH\DC2\ETX\t\b\SO\n\
+    \\ETX\EOT\NUL\SOH\DC2\ETX\n\
+    \\b\SO\n\
     \\f\n\
-    \\EOT\EOT\NUL\b\NUL\DC2\EOT\n\
-    \\ETX\SO\EOT\n\
+    \\EOT\EOT\NUL\b\NUL\DC2\EOT\v\ETX\DLE\EOT\n\
     \\f\n\
-    \\ENQ\EOT\NUL\b\NUL\SOH\DC2\ETX\n\
-    \\t\SI\n\
+    \\ENQ\EOT\NUL\b\NUL\SOH\DC2\ETX\v\t\SI\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\NUL\DC2\ETX\v\ACK#\n\
+    \\EOT\EOT\NUL\STX\NUL\DC2\ETX\f\ACK#\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ACK\DC2\ETX\v\ACK\SUB\n\
+    \\ENQ\EOT\NUL\STX\NUL\ACK\DC2\ETX\f\ACK\SUB\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX\v\ESC\RS\n\
+    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX\f\ESC\RS\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX\v!\"\n\
+    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX\f!\"\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\SOH\DC2\ETX\f\ACK+\n\
+    \\EOT\EOT\NUL\STX\SOH\DC2\ETX\r\ACK+\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ACK\DC2\ETX\f\ACK\"\n\
+    \\ENQ\EOT\NUL\STX\SOH\ACK\DC2\ETX\r\ACK\"\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX\f#&\n\
+    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX\r#&\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX\f)*\n\
+    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX\r)*\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\STX\DC2\ETX\r\ACK,\n\
+    \\EOT\EOT\NUL\STX\STX\DC2\ETX\SO\ACK,\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\ACK\DC2\ETX\r\ACK \n\
+    \\ENQ\EOT\NUL\STX\STX\ACK\DC2\ETX\SO\ACK \n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\SOH\DC2\ETX\r!'\n\
+    \\ENQ\EOT\NUL\STX\STX\SOH\DC2\ETX\SO!'\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\ETX\DC2\ETX\r*+\n\
-    \\n\
-    \\n\
-    \\STX\EOT\SOH\DC2\EOT\DC1\NUL\DC3\SOH\n\
-    \\n\
-    \\n\
-    \\ETX\EOT\SOH\SOH\DC2\ETX\DC1\b\DC1\n\
+    \\ENQ\EOT\NUL\STX\STX\ETX\DC2\ETX\SO*+\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\NUL\DC2\ETX\DC2\ETX\US\n\
+    \\EOT\EOT\NUL\STX\ETX\DC2\ETX\SI\ACK/\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\EOT\DC2\ETX\DC2\ETX\v\n\
+    \\ENQ\EOT\NUL\STX\ETX\ACK\DC2\ETX\SI\ACK\"\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ACK\DC2\ETX\DC2\f\DC2\n\
+    \\ENQ\EOT\NUL\STX\ETX\SOH\DC2\ETX\SI#*\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETX\DC2\DC3\SUB\n\
+    \\ENQ\EOT\NUL\STX\ETX\ETX\DC2\ETX\SI-.\n\
+    \\n\
+    \\n\
+    \\STX\EOT\SOH\DC2\EOT\DC3\NUL\NAK\SOH\n\
+    \\n\
+    \\n\
+    \\ETX\EOT\SOH\SOH\DC2\ETX\DC3\b\DC1\n\
+    \\v\n\
+    \\EOT\EOT\SOH\STX\NUL\DC2\ETX\DC4\ETX\US\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETX\DC2\GS\RSb\ACKproto3"
+    \\ENQ\EOT\SOH\STX\NUL\EOT\DC2\ETX\DC4\ETX\v\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\NUL\ACK\DC2\ETX\DC4\f\DC2\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETX\DC4\DC3\SUB\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETX\DC4\GS\RSb\ACKproto3"

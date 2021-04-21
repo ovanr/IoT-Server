@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 63b4e843245588d9dc287c7ab4379d761b83f8b10623d4c602af360ed9d5cf0b
+-- hash: 762a0d9e031cbd0ab7cb2a304b2c40aca53d6db9c083dec8b80408d6249245fd
 
 name:           iot-server
 version:        0.2.0
@@ -62,6 +62,9 @@ library
       Proto.Sensors.Cpudt
       Proto.Sensors.Cpudt_Fields
       Proto.Sensors.Cpudt_JSON
+      Proto.Sensors.Genericdt
+      Proto.Sensors.Genericdt_Fields
+      Proto.Sensors.Genericdt_JSON_custom
       Proto.Sensors.Raspcamdt
       Proto.Sensors.Raspcamdt_Fields
       Proto.Sensors.Raspcamdt_JSON

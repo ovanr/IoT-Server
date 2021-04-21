@@ -17,6 +17,7 @@ import qualified Data.Text as T
 import           Proto.Sensors.Raspcamdt_JSON ()
 import           Proto.Sensors.Cpudt_JSON ()
 import           Proto.Sensors.Systemdt_JSON ()
+import           Proto.Sensors.Genericdt_JSON_custom ()
 import           Proto.Configdt as P
 import           Proto.Configdt_Fields as P
 
@@ -50,21 +51,25 @@ instance FromJSONPB Modconf where
     raspCam' <- obj A..:? "raspCam"
     cpu' <- obj A..:? "cpu"
     system' <- obj A..:? "system"
+    generic' <- obj A..:? "generic"
     pure $ defMessage
       & P.maybe'raspCam .~ raspCam'
       & P.maybe'cpu .~ cpu'
       & P.maybe'system .~ system'
+      & P.maybe'generic .~ generic'
 
 instance ToJSONPB Modconf where
   toJSONPB x = object
     [ "raspCam" .= (x^.maybe'raspCam)
     , "cpu" .= (x^.maybe'cpu)
     , "system" .= (x^.maybe'system)
+    , "generic" .= (x^.maybe'generic)
     ]
   toEncodingPB x = pairs
     [ "raspCam" .= (x^.maybe'raspCam)
     , "cpu" .= (x^.maybe'cpu)
     , "system" .= (x^.maybe'system)
+    , "generic" .= (x^.maybe'generic)
     ]
 
 instance FromJSON Modconf where

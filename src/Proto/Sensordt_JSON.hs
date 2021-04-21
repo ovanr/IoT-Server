@@ -17,6 +17,7 @@ import qualified Data.Text as T
 import           Proto.Sensors.Cpudt_JSON ()
 import           Proto.Sensors.Raspcamdt_JSON ()
 import           Proto.Sensors.Systemdt_JSON ()
+import           Proto.Sensors.Genericdt_JSON_custom ()
 import           Proto.Sensordt as P
 import           Proto.Sensordt_Fields as P
 
@@ -26,15 +27,18 @@ instance FromJSONPB Output'Output where
       Output'Cpu <$> parseField obj "cpu"
     , Output'Cam <$> parseField obj "cam"
     , Output'System <$> parseField obj "system"
+    , Output'Generic <$> parseField obj "generic"
     ]
 
 instance ToJSONPB Output'Output where
   toJSONPB (Output'Cpu x) = object [ "cpu" .= Just x ]
   toJSONPB (Output'Cam x) = object [ "cam" .= Just x ]
   toJSONPB (Output'System x) = object [ "system" .= Just x ]
+  toJSONPB (Output'Generic x) = object [ "generic" .= Just x ]
   toEncodingPB (Output'Cpu x) = pairs [ "cpu" .= Just x ]
   toEncodingPB (Output'Cam x) = pairs [ "cam" .= Just x ]
   toEncodingPB (Output'System x) = pairs [ "system" .= Just x ]
+  toEncodingPB (Output'Generic x) = pairs [ "generic" .= Just x ]
 
 instance FromJSON Output'Output where
   parseJSON = parseJSONPB
