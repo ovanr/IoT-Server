@@ -44,9 +44,9 @@ $(deriveJSON defaultOptions {unwrapUnaryRecords = True} ''Database)
 
 data ServerArgs =
   ServerArgs
-    { _verbosity :: Int
-    , _logPath   :: String
-    , _confPath  :: String
+    { _verbosity :: Int    -- ^ Verbosity in log file logging
+    , _logPath   :: String -- ^ File to write the logs to
+    , _confPath  :: String -- ^ Location of config file
     }
   deriving (Show)
 
@@ -54,24 +54,27 @@ makeLenses ''ServerArgs
 
 data ServerConf =
    ServerConf
-      { _infxHost        :: T.Text
-      , _infxMeasurement :: Measurement
-      , _infxDb          :: Database
-      , _mysqlHost       :: String
-      , _mysqlUser       :: String
-      , _mysqlPass       :: String
-      , _mysqlDb         :: String
-      , _amqpHost        :: String
-      , _amqpVhost       :: T.Text
-      , _amqpUser        :: T.Text
-      , _amqpPass        :: T.Text
-      , _amqpExchange    :: T.Text
-      , _amqpDataQueue   :: T.Text
+      { _infxHost        :: T.Text      -- ^ hostname of InfluxDB
+      , _infxMeasurement :: Measurement -- ^ measurement used in InfluxDB 
+      , _infxDb          :: Database    -- ^ database used in InfluxDB
+      , _mysqlHost       :: String      -- ^ hostname of MySQL DB
+      , _mysqlUser       :: String      -- ^ username for MySQL DB
+      , _mysqlPass       :: String      -- ^ password for MySQL DB
+      , _mysqlDb         :: String      -- ^ database name for MySQL DB
+      , _amqpHost        :: String      -- ^ hostname of AMQP broker
+      , _amqpVhost       :: T.Text      -- ^ virtual host for AMQP broker
+      , _amqpUser        :: T.Text      -- ^ username for AMQP broker
+      , _amqpPass        :: T.Text      -- ^ password for AMQP broker
+      , _amqpExchange    :: T.Text      -- ^ name of AMQP exchange to write to
+      , _amqpDataQueue   :: T.Text      -- ^ name of AMQP queue to subscribe to
       }
 
 makeLenses ''ServerConf
 $(deriveJSON defaultOptions {fieldLabelModifier = drop 1} ''ServerConf)
 
+{- |
+   Make a MySQL ConnectInfo config from a ServerConf 
+-}
 mysqlConfig :: ServerConf -> ConnectInfo
 mysqlConfig conf = do
    defaultConnectInfo
@@ -81,32 +84,45 @@ mysqlConfig conf = do
       , ciDatabase = BU.fromString $ view mysqlDb conf
       }
 
+{- |
+   The AppEnv data type is the reader environment for the App Type.
+   Its 'm' argument corresponds to the monad that log messages should be returned in
+-}
 data AppEnv (m :: * -> *) =
    AppEnv
-      { _logAction    :: LogAction m Message 
-      , _sConf        :: ServerConf
-      , _pendingInfx  :: IORef [Line UTCTime]
-      , _pendingMysql :: IORef [(P.UID, B.ByteString)]
-      , _restApp      :: RESTApp 
+      { _logAction    :: LogAction m Message           -- ^ Method to write to dump Log Messages
+      , _sConf        :: ServerConf                    -- ^ App config
+      , _pendingInfx  :: IORef [Line UTCTime]          -- ^ Influx Data Point Queue
+      , _pendingMysql :: IORef [(P.UID, B.ByteString)] -- ^ MySQL Image Queue
+      , _restApp      :: RESTApp                       -- ^ Yesod Foundation Data Type
       }
 
 makeLenses ''AppEnv
 
 data AppState (m :: * -> *) =
    AppState
-      { _appEnv    :: AppEnv m 
-      , _logHandle :: Maybe Handle
-      , _infxConn  :: WriteParams
-      , _mysqlConn :: MySQLConn
+      { _appEnv    :: AppEnv m     -- ^ the AppEnv specialised to m Monad
+      , _logHandle :: Maybe Handle -- ^ an open handle to the Log file
+      , _infxConn  :: WriteParams  -- ^ the active Influx Connection
+      , _mysqlConn :: MySQLConn    -- ^ the active MySQL Connection
       }
 
 makeLenses ''AppState
 
+{- |
+   The App data type is an unfolded Reader and State Monad Transformer
+-}
 newtype App (m :: * -> *) (a :: *) =
    App
-      { unApp :: AppState (App m) -> m (a, AppState (App m))
+      { unApp :: AppState (App m) -> m (a, AppState (App m)) -- ^ 
       }
 
+{- |
+   The AppCb Type Corresponds to the Reader Transformer 
+   used in an AMQP Message Callback.
+   Instead of directly running in the IO Monad, 
+   we run the Message parsing and handling in a ReaderT environment.
+-}
 newtype AppCb a =
    AppCb
       { unAppCb :: ReaderT (AppEnv AppCb) IO a
@@ -174,7 +190,10 @@ instance MonadCatch m => MonadCatch (App m) where
    catch (App app) handler =
       App $ \s -> app s `catch` (\e -> unApp (handler e) s)
 
--- Identical to StateT version
+{- |
+   This implementation is identical to the StateT version,
+   we only adjust the Value Constructors to work with the App Type
+-}
 instance MonadMask m => MonadMask (App m) where
    mask :: ((forall a. App m a -> App m a) -> App m b) -> App m b
    mask f = App $ \s -> mask $ \ma -> unApp (f $ maAppma ma) s

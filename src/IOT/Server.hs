@@ -24,7 +24,6 @@ import Control.Concurrent (forkIO, killThread)
 import qualified Data.ByteString.Lazy as BL ( readFile )
 import Control.Monad.Cont
 import Data.IORef ( newIORef )
-import Data.Version ( showVersion )
 import Database.InfluxDB
     ( host,
       writeParams,
@@ -62,7 +61,6 @@ import IOT.Misc
       withAmqpConnection,
       withAmqpConsumer,
       withTempPipeM )
-import Paths_iot_server ( version )
 import Control.Monad.State.Class ( MonadState(get) )
 import System.IO
     ( IOMode(WriteMode),
@@ -76,8 +74,6 @@ import Yesod.Core (warp)
 
 initApp :: ServerArgs -> IO (AppState (App IO))
 initApp args = do
-   putStrLn $ "IoT-Server v." ++ showVersion version
-
    let level = [Error, Warning, Info, Debug] !! min 3 (args ^. verbosity)
 
    conf <- liftEither . eitherDecode =<< BL.readFile (args ^. confPath)

@@ -5,6 +5,8 @@ module Main (
 import IOT.Server ( initApp, runApp )
 import IOT.Server.Types ( ServerArgs(..), unApp )
 import Control.Monad ( void )
+import Paths_iot_server ( version )
+import Data.Version ( showVersion )
 import Options.Applicative
     ( Parser,
       helper,
@@ -50,5 +52,5 @@ main = execParser opts >>= initApp >>= (void . unApp runApp)
   where
     opts = info (argParser <**> helper)
       ( fullDesc
-     <> progDesc "IoT-Server"
+     <> progDesc ("IoT-Server v." ++ showVersion version)
      <> header "IoT-Server - Forward data from IoT devices to persistent storage (db)" )

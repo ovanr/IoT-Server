@@ -46,7 +46,7 @@ refModify' :: MonadIO m => (a -> a) -> IORef a -> m a
 refModify' f r = liftIO $ r `atomicModifyIORef'` (\a -> (f a, a)) 
 
 {- |
-    transform an Either Data Type to a Data Typed
+    Transform an Either Data Type to a Data Type
     supporting Monad and MonadFail classes
     The error is simply thrown using MonadFail.fail
 -}
@@ -217,7 +217,7 @@ gzipDecompress b =
 
 {- |
     Generate cryptographically secure strings.
-    Note that this function depends on /dev/urandom.
+    Note that this function depends on \/dev\/urandom.
     In case of failure, a Nothing is returned and no
     exceptions are thrown.
 -}
