@@ -32,6 +32,10 @@ import Network.AMQP (Channel, publishMsg, Message(..), newMsg)
 import Data.ProtoLens.Encoding (encodeMessage)
 import Data.ProtoLens (defMessage)
 
+{- |
+   Transform a Data.Aeson Value data type to an 
+   InfluxDB Map of LineField data types
+-}
 toInfluxFields :: Value -> Map.Map Key LineField
 toInfluxFields j =
    Map.fromList $
@@ -54,12 +58,20 @@ toInfluxFields j =
     toInfluxField (Bool b) = Just $ FieldBool b
     toInfluxField _ = Nothing
 
+{- |
+   Check if a MySQL connection is still alive
+-}
 isOpenMysql :: MySQLConn -> IO Bool
 isOpenMysql c =
    Exception.catch
       (ping c >> return True)
       (\(e :: NetworkException) -> return False)
 
+{- |
+   Get the active MySQL connection.
+   If previously stored connection is broken, 
+   a new connection will be returned.   
+-}
 getMysqlConnection :: App IO MySQLConn
 getMysqlConnection = do
    conn <- use mysqlConn
@@ -73,6 +85,11 @@ getMysqlConnection = do
 
    return conn
 
+{- |
+   Store a JSON-like structure to the Influx Queue.
+   The Influx Queue buffers data points to be sent
+   all at once.
+-}
 queueSensorData ::
       (ToJSON j, Show j, MonadReader (AppEnv m) m, MonadIO m)
    => P.UID 
@@ -80,21 +97,30 @@ queueSensorData ::
    -> m ()
 queueSensorData uid f = do
    logInfo "Appending data item to Influx Queue"
+
    measurement <- view (sConf . infxMeasurement)
-   t <- liftIO getCurrentTime
+   time <- liftIO getCurrentTime
    let fields = toInfluxFields (toJSON f)
+   
    logDebug . T.pack . show . encode $ f  
    logDebug . T.pack . show $ fields
+
    let newL =
           Line
              measurement
              (Map.singleton "node_id" (fromString . T.unpack $ uid))
              fields 
-             (Just t)
+             (Just time)
+
    q <- view pendingInfx
    refModify' (newL :) q
    return ()
 
+{- |
+   Store a Raspberry Image to the Image Queue.
+   The Image Queue buffers images to be sent
+   all at once.
+-}
 queueSensorImage ::
       (MonadReader (AppEnv m) m, MonadIO m) => T.Text -> Raspcamout -> m ()
 queueSensorImage uid img = do
@@ -103,6 +129,10 @@ queueSensorImage uid img = do
    refModify' ((uid, img ^. bin) :) q
    return ()
 
+{- |
+   Send the contents of the Image Queue to the MySQL Database.
+   The Image Queue is emptied after that. 
+-}
 flushImageQueue :: App IO ()
 flushImageQueue = do
    imgs <- view pendingMysql >>= (liftIO . refModify' (const []))
@@ -130,6 +160,10 @@ flushImageQueue = do
     printOk (Right ok) =
        logInfo $ "Success on mysql insert: " <> T.pack (show ok)
 
+{- |
+   Send the contents of the Influx Queue to the Influx Database.
+   The Influx Queue is emptied after that. 
+-}
 flushDataQueue :: App IO ()
 flushDataQueue = do
    l <- view pendingInfx >>= (liftIO . refModify' (const []))
@@ -140,6 +174,11 @@ flushDataQueue = do
       infx <- use infxConn
       liftIO $ infx `writeBatch` l
 
+{- |
+   Send the queued Device commands to the devices
+   using the AMQP connection. The command queue 
+   is emptied after that.
+-}
 flushCmdQueue :: Channel -> App IO ()
 flushCmdQueue chan = do
    exchange <- view (sConf . amqpExchange)
@@ -162,6 +201,10 @@ flushCmdQueue chan = do
             logDebug $ T.pack (show pckt)
             liftIO $ publishMsg chan exchange topic msg
 
+{- |
+   Send all pending data from the internal queues to
+   their corresponding endpoints. 
+-}
 flushQueues :: Channel -> App IO ()
 flushQueues chan = do
    logDebug "Attempting to flush queues"

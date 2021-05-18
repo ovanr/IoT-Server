@@ -26,7 +26,10 @@ import Colog hiding (Message)
 
 import qualified Control.Monad.Catch as MC
 
-{- | attempt to parse message body as a raw Raspberry Cam Image -}
+{- | 
+   Try to parse a bytestring as a raw image
+   and if it is successful wrap it in a IOT.Packet.Packet
+-}
 imgParse :: BL.ByteString -> T.Text -> Either String P.Packet
 imgParse b pktUid = do
    enc <-
@@ -40,9 +43,15 @@ imgParse b pktUid = do
    let sensorOut = defMessage & S.outputs .~ [out] :: S.Sensorout
    Right $ defMessage & P.uid .~ pktUid & P.maybe'type' ?~ P.Packet'Out sensorOut
 
+{- |
+   Read out an IOT.Packet.Packet from an AMQP Message.
+   Handles payload compression, and different encoding formats.
+   The message may be encoded as a brotobuf or a JSON packet,
+   or can be a raw image (PNG or JPEG).
+   It can also be GZip compressed.
+-}
 parseBody :: Message -> T.Text -> Either String P.Packet
 parseBody msg pktUid = do
-   
    --decompress if gzip encoded
    rawBody <-
       if has (_Just . to (T.isPrefixOf "gzip;")) encodingHeader
@@ -51,17 +60,22 @@ parseBody msg pktUid = do
 
    --detect packet format 
    case encodingHeader >>= T.stripPrefix "gzip;" of
-      Just "application/protocol-buffer" -> decodeMessage (BL.toStrict rawBody)
+      Just "application/protocol-buffer" -> protobufDecode rawBody
       Just "application/json" -> eitherDecode rawBody
-      Just "" -> autoParse rawBody
+      Just _ -> autoParse rawBody
       Nothing -> autoParse rawBody
   
   where
     encodingHeader = T.replace " " "" . T.toLower <$> msgContentEncoding msg
-    autoParse j =
-       eitherDecode j `mplus` decodeMessage (BL.toStrict j) `mplus`
-       imgParse j pktUid
+    protobufDecode = decodeMessage . BL.toStrict
+    autoParse pkt =
+       eitherDecode pkt `mplus` protobufDecode pkt `mplus` imgParse pkt pktUid
 
+{- |
+   Perform an action depending on the packet type.
+   If it is a data packet, store the data points to the Influx Queue.
+   If it is an image packet, store it in the Image Queue.
+-}
 parsePacket ::
       (MonadReader (AppEnv m) m, MonadIO m, MonadFail m)
    => P.UID
@@ -78,7 +92,11 @@ parsePacket uid pkt =
          logWarning "Received cmd packet.. Don't know what to do with it"
       _ -> fail "Incorrect packet format"
 
-{- | mqtt callback function on message received -}
+{- | 
+   AMQP On Message Received Callback Function
+   Attempt to parse each AMQP message as an IOT.Packet.Packet 
+   and handle the packet according to its type.
+-}
 pktHandler :: AppEnv IO -> (Message, Envelope) -> IO ()
 pktHandler env (msg, e) =
    runAppCb menv $ flip MC.catch catcher $ do
