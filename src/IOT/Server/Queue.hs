@@ -17,6 +17,7 @@ import qualified Data.HashMap.Strict as HM
 import Database.InfluxDB.Line (Line(..), encodeLines, Precision(..), LineField, Field(..))
 import Proto.Sensors.Raspcamdt (Raspcamout)
 import Proto.Sensors.Raspcamdt_Fields (bin)
+import IOT.REST.Import (RESTApp)
 import Data.ProtoLens.Field
 import Colog
 import Control.Lens (use, view, (.=), (^.), sequenceAOf, _2, (.~), (&), (?~))
@@ -26,12 +27,14 @@ import Control.Monad.Reader
 import Data.Maybe
 import Data.Aeson (encode, ToJSON(..), Value(..))
 import Data.Aeson.Types (Pair)
-import Database.InfluxDB (scaleTo, writeBatch, Key) 
+import Database.InfluxDB (scaleTo, writeBatch, Key, WriteParams) 
 import Data.Bifunctor (bimap)
 import Data.String (fromString)
 import IOT.Misc 
 import IOT.Server.Types
 import IOT.REST.Import (sharedCmdQueue)
+import Control.Monad.Reader.Class (MonadReader)
+import Control.Monad.State.Class (MonadState)
 import Network.AMQP (Channel, publishMsg, Message(..), newMsg)
 import Data.ProtoLens.Encoding (encodeMessage)
 import Data.ProtoLens (defMessage)
@@ -76,16 +79,20 @@ isOpenMysql c =
    If previously stored connection is broken, 
    a new connection will be returned.   
 -}
--- getMysqlConnection :: (MonadIO m, MonadState s m, MonadReader r m, HasField r "mysqlConn") => m MySQLConn
+getMysqlConnection ::
+     ( MonadIO m
+     , ValidApp '[ '("mysqlConn", MySQLConn) ] '[ '("sConf", ServerConf) ] m s r
+     )
+  => m MySQLConn
 getMysqlConnection = do
-   conn <- use mysqlConn
-   conf <- view sConf
+   conn <- use (field @"mysqlConn")
+   conf <- view (field @"sConf")
    isActive <- liftIO (isOpenMysql conn)
    unless isActive $ do
       logWarning "Detected closed Mysql connection" 
       let mysqlconf = mysqlConfig conf 
       conn <- liftIO (connect mysqlconf)
-      mysqlConn .= conn
+      (field @"mysqlConn") .= conn
 
    return conn
 
@@ -97,10 +104,8 @@ getMysqlConnection = do
 queueSensorData ::
      ( ToJSON j
      , Show j
-     , MonadReader r m
      , MonadIO m
-     , HasField r "pendingInfx" InfluxQueue
-     , HasLog r Colog.Message m
+     , ValidApp '[] '[ '( "pendingInfx", InfluxQueue), '("sConf", ServerConf) ] m _1 r
      )
   => P.UID
   -> j
@@ -108,8 +113,7 @@ queueSensorData ::
 queueSensorData uid f = do
    logInfo "Appending data item to Influx Queue"
 
-   -- measurement <- view (sConf . infxMeasurement)
-   let measurement = "hi"
+   measurement <- view (field @"sConf" . infxMeasurement)
    time <- liftIO getCurrentTime
    let fields = toInfluxFields (toJSON f)
    
@@ -133,10 +137,15 @@ queueSensorData uid f = do
    all at once.
 -}
 queueSensorImage ::
-      (MonadReader (AppEnv m) m, MonadIO m) => T.Text -> Raspcamout -> m ()
+     ( MonadIO m
+     , ValidApp '[] '[ '( "pendingMysql", MySQLQueue) ] m _1 r
+     )
+  => T.Text
+  -> Raspcamout
+  -> m ()
 queueSensorImage uid img = do
    logInfo "Appending image to Mysql Queue"
-   q <- view pendingMysql
+   q <- view (field @"pendingMysql")
    refModify' ((uid, img ^. bin) :) q
    return ()
 
@@ -144,9 +153,12 @@ queueSensorImage uid img = do
    Send the contents of the Image Queue to the MySQL Database.
    The Image Queue is emptied after that. 
 -}
-flushImageQueue :: App IO ()
+flushImageQueue :: 
+     ( MonadIO m
+     , ValidApp '[ '( "mysqlConn", MySQLConn)] '[ '( "sConf", ServerConf), '( "pendingMysql", MySQLQueue) ] m s r
+     ) => m () 
 flushImageQueue = do
-   imgs <- view pendingMysql >>= (liftIO . refModify' (const []))
+   imgs <- view (field @"pendingMysql") >>= (liftIO . refModify' (const []))
    unless (null imgs) $ do
       logInfo "Uploading images to DB"
       conn <- getMysqlConnection
@@ -175,14 +187,17 @@ flushImageQueue = do
    Send the contents of the Influx Queue to the Influx Database.
    The Influx Queue is emptied after that. 
 -}
-flushDataQueue :: App IO ()
+flushDataQueue :: 
+     ( MonadIO m
+     , ValidApp '[ '( "infxConn", WriteParams)] '[ '( "pendingInfx", InfluxQueue) ] m s r
+     ) => m () 
 flushDataQueue = do
-   l <- view pendingInfx >>= (liftIO . refModify' (const []))
+   l <- view (field @"pendingInfx") >>= (liftIO . refModify' (const []))
    unless (null l) $ do
       logInfo $
          "Sending to Influx these: \n[" <>
          T.pack (BLU.toString $ encodeLines (scaleTo Second) l) <> "]"
-      infx <- use infxConn
+      infx <- use (field @"infxConn")
       liftIO $ infx `writeBatch` l
 
 {- |
@@ -190,10 +205,13 @@ flushDataQueue = do
    using the AMQP connection. The command queue 
    is emptied after that.
 -}
-flushCmdQueue :: Channel -> App IO ()
+flushCmdQueue :: 
+     ( MonadIO m
+     , ValidApp '[] '[ '( "sConf", ServerConf), '( "restApp", RESTApp) ] m s r
+     ) => Channel -> m () 
 flushCmdQueue chan = do
-   exchange <- view (sConf . amqpExchange)
-   cmds     <- view (restApp.sharedCmdQueue) 
+   exchange <- view (field @"sConf" . amqpExchange)
+   cmds     <- view (field @"restApp" . sharedCmdQueue) 
                 >>= (liftIO . refModify' (const []))
    unless (null cmds) $ do
       let numCmds = T.pack . show . length $ cmds 

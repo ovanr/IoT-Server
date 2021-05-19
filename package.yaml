@@ -70,6 +70,7 @@ dependencies:
 - http-types
 - conduit
 - ghc-prim
+- first-class-families
 
 library:
   source-dirs: src

@@ -10,6 +10,10 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE ConstraintKinds #-}
 
 module IOT.Server.Types where
 
@@ -19,6 +23,9 @@ import Colog.Message (Message(..))
 import Control.Lens (view, (%~), (&), (^.), makeLenses)
 import Control.Monad.Catch
 import Control.Monad.IO.Class
+import Data.ProtoLens.Field
+import Data.Kind (Type)
+import GHC.Types (Symbol)
 import Control.Monad.Reader.Class
 import Control.Monad.State.Class
 import Control.Monad.Trans.Class (MonadTrans(..))
@@ -40,6 +47,10 @@ import Database.MySQL.Base
 import IOT.REST.Import (RESTApp)
 import qualified IOT.Packet.Packet as P (UID)
 import IOT.Server.Field
+import Fcf (Eval, Uncurry, Pure2, Map, Constraints, If)
+import Fcf.Data.List (Length)
+import qualified Fcf.Data.Nat as Fcf (type (>))
+import qualified Fcf as Fcf
 
 $(deriveJSON defaultOptions ''Measurement)
 $(deriveJSON defaultOptions {unwrapUnaryRecords = True} ''Database)
@@ -53,7 +64,7 @@ data ServerArgs =
   deriving (Show)
 
 makeLenses ''ServerArgs
-makeHasFieldFieldInstances ''ServerArgs
+makeHasFieldInstances ''ServerArgs
 
 data ServerConf =
    ServerConf
@@ -73,7 +84,7 @@ data ServerConf =
       }
 
 makeLenses ''ServerConf
-makeHasFieldFieldInstances ''ServerConf
+makeHasFieldInstances ''ServerConf
 $(deriveJSON defaultOptions {fieldLabelModifier = drop 1} ''ServerConf)
 
 {- |
@@ -105,7 +116,7 @@ data AppEnv (m :: * -> *) =
       }
 
 makeLenses ''AppEnv
-makeHasFieldFieldInstances ''AppEnv
+makeHasFieldInstances ''AppEnv
 
 data AppState (m :: * -> *) =
    AppState
@@ -116,7 +127,7 @@ data AppState (m :: * -> *) =
       }
 
 makeLenses ''AppState
-makeHasFieldFieldInstances ''AppState
+makeHasFieldInstances ''AppState
 
 {- |
    The App data type is an unfolded Reader and State Monad Transformer
@@ -148,6 +159,42 @@ newtype AppCb a =
             )
 
 runAppCb env (AppCb app) = runReaderT app env
+
+type MakeHasField (fs :: [(Symbol, Type)]) (m :: Type) =
+   Eval (Map (Uncurry (Pure2 (HasField m))) fs)
+
+type MakeMonadStateConstraint (sf :: [a]) s m =
+   If (Eval (Eval (Length sf) Fcf.> 0))
+      '[ MonadState s m ]
+      '[]
+
+type MakeMonadReaderConstraint (rf :: [a]) r m =
+   If (Eval (Eval (Length rf) Fcf.> 0))
+      '[ MonadReader r m ]
+      '[]
+
+type ValidApp (sf :: [(Symbol, Type)]) (rf :: [(Symbol, Type)]) (m :: Type -> Type) (s :: Type) (r :: Type) =
+   Eval (
+      Constraints ( 
+         MonadFail m
+         ':
+         HasLog r Message m 
+         ': 
+         Eval (
+            Eval (
+               Eval ( 
+                  MakeHasField sf s 
+                  Fcf.++ 
+                  MakeHasField rf r
+               )
+               Fcf.++
+               MakeMonadStateConstraint sf s m
+            )
+            Fcf.++
+            MakeMonadReaderConstraint rf r m
+         )
+      )
+   )
 
 instance HasLog (AppEnv m) Message m where
    logActionL = logAction

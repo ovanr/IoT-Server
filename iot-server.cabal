@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 41cc00bdb6c3513aef0c1e44e0d6321ed293736c097630491dddf5ef9703cdc7
+-- hash: 96573be752769f41b173ac60789c4dfa53f99d03a92d526c28bd9e38b7717a33
 
 name:           iot-server
 version:        0.2.0
@@ -94,6 +94,7 @@ library
     , either
     , exceptions
     , extra
+    , first-class-families
     , ghc-prim
     , hslogger
     , http-client
@@ -152,6 +153,7 @@ executable iot-server
     , either
     , exceptions
     , extra
+    , first-class-families
     , ghc-prim
     , hslogger
     , http-client
@@ -212,6 +214,7 @@ test-suite iot-server-test
     , either
     , exceptions
     , extra
+    , first-class-families
     , ghc-prim
     , hslogger
     , http-client
