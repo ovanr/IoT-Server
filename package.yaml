@@ -69,6 +69,7 @@ dependencies:
 - http-client
 - http-types
 - conduit
+- ghc-prim
 
 library:
   source-dirs: src

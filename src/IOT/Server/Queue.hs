@@ -1,6 +1,9 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE DataKinds #-}
 module IOT.Server.Queue where
 
 import qualified Data.Text as T
@@ -14,6 +17,7 @@ import qualified Data.HashMap.Strict as HM
 import Database.InfluxDB.Line (Line(..), encodeLines, Precision(..), LineField, Field(..))
 import Proto.Sensors.Raspcamdt (Raspcamout)
 import Proto.Sensors.Raspcamdt_Fields (bin)
+import Data.ProtoLens.Field
 import Colog
 import Control.Lens (use, view, (.=), (^.), sequenceAOf, _2, (.~), (&), (?~))
 import Data.Time
@@ -72,7 +76,7 @@ isOpenMysql c =
    If previously stored connection is broken, 
    a new connection will be returned.   
 -}
-getMysqlConnection :: App IO MySQLConn
+-- getMysqlConnection :: (MonadIO m, MonadState s m, MonadReader r m, HasField r "mysqlConn") => m MySQLConn
 getMysqlConnection = do
    conn <- use mysqlConn
    conf <- view sConf
@@ -91,14 +95,21 @@ getMysqlConnection = do
    all at once.
 -}
 queueSensorData ::
-      (ToJSON j, Show j, MonadReader (AppEnv m) m, MonadIO m)
-   => P.UID 
-   -> j 
-   -> m ()
+     ( ToJSON j
+     , Show j
+     , MonadReader r m
+     , MonadIO m
+     , HasField r "pendingInfx" InfluxQueue
+     , HasLog r Colog.Message m
+     )
+  => P.UID
+  -> j
+  -> m ()
 queueSensorData uid f = do
    logInfo "Appending data item to Influx Queue"
 
-   measurement <- view (sConf . infxMeasurement)
+   -- measurement <- view (sConf . infxMeasurement)
+   let measurement = "hi"
    time <- liftIO getCurrentTime
    let fields = toInfluxFields (toJSON f)
    
@@ -112,7 +123,7 @@ queueSensorData uid f = do
              fields 
              (Just time)
 
-   q <- view pendingInfx
+   q <- view (field @"pendingInfx")
    refModify' (newL :) q
    return ()
 

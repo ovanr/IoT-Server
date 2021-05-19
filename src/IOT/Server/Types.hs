@@ -9,6 +9,7 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE DataKinds #-}
 
 module IOT.Server.Types where
 
@@ -38,6 +39,7 @@ import Database.InfluxDB
 import Database.MySQL.Base
 import IOT.REST.Import (RESTApp)
 import qualified IOT.Packet.Packet as P (UID)
+import IOT.Server.Field
 
 $(deriveJSON defaultOptions ''Measurement)
 $(deriveJSON defaultOptions {unwrapUnaryRecords = True} ''Database)
@@ -51,6 +53,7 @@ data ServerArgs =
   deriving (Show)
 
 makeLenses ''ServerArgs
+makeHasFieldFieldInstances ''ServerArgs
 
 data ServerConf =
    ServerConf
@@ -70,6 +73,7 @@ data ServerConf =
       }
 
 makeLenses ''ServerConf
+makeHasFieldFieldInstances ''ServerConf
 $(deriveJSON defaultOptions {fieldLabelModifier = drop 1} ''ServerConf)
 
 {- |
@@ -84,6 +88,9 @@ mysqlConfig conf = do
       , ciDatabase = BU.fromString $ view mysqlDb conf
       }
 
+type InfluxQueue = IORef [Line UTCTime]
+type MySQLQueue  = IORef [(P.UID, B.ByteString)]
+
 {- |
    The AppEnv data type is the reader environment for the App Type.
    Its 'm' argument corresponds to the monad that log messages should be returned in
@@ -92,12 +99,13 @@ data AppEnv (m :: * -> *) =
    AppEnv
       { _logAction    :: LogAction m Message           -- ^ Method to write to dump Log Messages
       , _sConf        :: ServerConf                    -- ^ App config
-      , _pendingInfx  :: IORef [Line UTCTime]          -- ^ Influx Data Point Queue
-      , _pendingMysql :: IORef [(P.UID, B.ByteString)] -- ^ MySQL Image Queue
+      , _pendingInfx  :: InfluxQueue                   -- ^ Influx Data Point Queue
+      , _pendingMysql :: MySQLQueue                    -- ^ MySQL Image Queue
       , _restApp      :: RESTApp                       -- ^ Yesod Foundation Data Type
       }
 
 makeLenses ''AppEnv
+makeHasFieldFieldInstances ''AppEnv
 
 data AppState (m :: * -> *) =
    AppState
@@ -108,6 +116,7 @@ data AppState (m :: * -> *) =
       }
 
 makeLenses ''AppState
+makeHasFieldFieldInstances ''AppState
 
 {- |
    The App data type is an unfolded Reader and State Monad Transformer
