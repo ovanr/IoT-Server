@@ -1,13 +1,13 @@
 # IoT-Server
 
-A simple IoT-Server app that listens for data 
-received from IoT-devices that run 
-[IoT-Client](https://github.com/ovanr/IoT-client) 
-and forwards them to relational (MySQL) and non-relational 
-(InfluxDB) databases. It can additionally forward commands
-to the devices. To communicate with the IoT-Devices it uses 
-a RabbitMQ broker intermediary. All messages exchanged between 
-them are MQTT or AMQP messages.
+A IoT-Server app that communicates with devices running [IoT-Client](https://github.com/ovanr/IoT-client). 
+It will forward their data to relational (MySQL) and non-relational (InfluxDB) databases and it can additionally forward commands to the devices. 
+To communicate with the IoT devices it uses a RabbitMQ broker intermediary. 
+All messages exchanged between them are MQTT or AMQP messages.
+
+## Architecture
+
+![Architecture Diagram](https://github.com/ovanr/IoT-Server/raw/main/architecture.png)
 
 ## Installation
 
