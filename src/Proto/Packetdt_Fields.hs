@@ -57,6 +57,12 @@ out ::
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "out" a) =>
   Lens.Family2.LensLike' f s a
 out = Data.ProtoLens.Field.field @"out"
+timestamp ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "timestamp" a) =>
+  Lens.Family2.LensLike' f s a
+timestamp = Data.ProtoLens.Field.field @"timestamp"
 uid ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "uid" a) =>

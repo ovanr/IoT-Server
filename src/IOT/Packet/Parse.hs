@@ -17,6 +17,8 @@ import qualified IOT.Packet.Packet as P
 import qualified IOT.Packet.Sensor as S 
 import IOT.Misc (gzipDecompress)
 import Control.Exception
+import Data.Time
+import Data.Time.Clock.POSIX
 import Control.Lens
 import Data.ProtoLens hiding (Message)
 import Data.Aeson
@@ -81,13 +83,14 @@ parsePacket ::
    => P.UID
    -> P.Packet
    -> m ()
-parsePacket uid pkt =
+parsePacket uid pkt = do
+   let timestamp = posixSecondsToUTCTime $ realToFrac (pkt ^. P.timestamp)
    case pkt ^. P.maybe'type' of
       Just (P.Packet'Out out) -> do
          let dat = out ^.. S.vec'outputs . folded . S.maybe'output . _Just
          forM_ dat $ \case
-            S.Output'Cam img -> queueSensorImage uid img
-            r -> queueSensorData uid r -- use json instance to get fields
+            S.Output'Cam img -> queueSensorImage uid img timestamp
+            r -> queueSensorData uid r timestamp -- use json instance to get fields
       Just (P.Packet'Cmds cmds) ->
          logWarning "Received cmd packet.. Don't know what to do with it"
       _ -> fail "Incorrect packet format"

@@ -49,7 +49,6 @@ import qualified IOT.Packet.Packet as P (UID)
 import IOT.Server.Field
 import Fcf (Eval, Uncurry, Pure2, Map, Constraints, If)
 import Fcf.Data.List (Length)
-import qualified Fcf.Data.Nat as Fcf (type (>))
 import qualified Fcf as Fcf
 
 $(deriveJSON defaultOptions ''Measurement)
@@ -100,7 +99,7 @@ mysqlConfig conf = do
       }
 
 type InfluxQueue = IORef [Line UTCTime]
-type MySQLQueue  = IORef [(P.UID, B.ByteString)]
+type MySQLQueue  = IORef [(P.UID, B.ByteString, UTCTime)]
 
 {- |
    The AppEnv data type is the reader environment for the App Type.

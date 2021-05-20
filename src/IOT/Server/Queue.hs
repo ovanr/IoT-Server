@@ -22,6 +22,7 @@ import Data.ProtoLens.Field
 import Colog
 import Control.Lens (use, view, (.=), (^.), sequenceAOf, _2, (.~), (&), (?~))
 import Data.Time
+import Data.Time.LocalTime
 import Database.MySQL.Base
 import Control.Monad.Reader
 import Data.Maybe
@@ -109,12 +110,12 @@ queueSensorData ::
      )
   => P.UID
   -> j
+  -> UTCTime
   -> m ()
-queueSensorData uid f = do
+queueSensorData uid f timestamp = do
    logInfo "Appending data item to Influx Queue"
 
    measurement <- view (field @"sConf" . infxMeasurement)
-   time <- liftIO getCurrentTime
    let fields = toInfluxFields (toJSON f)
    
    logDebug . T.pack . show . encode $ f  
@@ -125,7 +126,7 @@ queueSensorData uid f = do
              measurement
              (Map.singleton "node_id" (fromString . T.unpack $ uid))
              fields 
-             (Just time)
+             (Just timestamp)
 
    q <- view (field @"pendingInfx")
    refModify' (newL :) q
@@ -142,11 +143,12 @@ queueSensorImage ::
      )
   => T.Text
   -> Raspcamout
+  -> UTCTime
   -> m ()
-queueSensorImage uid img = do
+queueSensorImage uid img timestamp = do
    logInfo "Appending image to Mysql Queue"
    q <- view (field @"pendingMysql")
-   refModify' ((uid, img ^. bin) :) q
+   refModify' ((uid, img ^. bin, timestamp) :) q
    return ()
 
 {- |
@@ -166,8 +168,8 @@ flushImageQueue = do
          liftIO $
          prepareStmt
             conn
-            "INSERT INTO device_images (id, node_id, bin) VALUES (?,?,?)"
-      forM_ imgs $ \(uid, bin) -> do
+            "INSERT INTO device_images (id, node_id, insertion_date, bin) VALUES (?,?,?,?)"
+      forM_ imgs $ \(uid, bin, timestamp) -> do
          id <- genSecureString 64
          when (isNothing id) $ fail "Unable to generate secure string"
          printOk =<<
@@ -176,6 +178,7 @@ flushImageQueue = do
                stmt
                [ MySQLText $ fromJust id
                , MySQLText uid
+               , MySQLTimeStamp (utcToLocalTime utc timestamp)
                , MySQLBytes bin
                ]
   where

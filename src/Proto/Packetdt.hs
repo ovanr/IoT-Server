@@ -36,6 +36,7 @@ import qualified Proto.Sensordt
 {- | Fields :
      
          * 'Proto.Packetdt_Fields.uid' @:: Lens' Packet Data.Text.Text@
+         * 'Proto.Packetdt_Fields.timestamp' @:: Lens' Packet Data.Int.Int64@
          * 'Proto.Packetdt_Fields.maybe'type'' @:: Lens' Packet (Prelude.Maybe Packet'Type)@
          * 'Proto.Packetdt_Fields.maybe'cmds' @:: Lens' Packet (Prelude.Maybe Proto.Cmddt.Cmdin)@
          * 'Proto.Packetdt_Fields.cmds' @:: Lens' Packet Proto.Cmddt.Cmdin@
@@ -43,6 +44,7 @@ import qualified Proto.Sensordt
          * 'Proto.Packetdt_Fields.out' @:: Lens' Packet Proto.Sensordt.Sensorout@ -}
 data Packet
   = Packet'_constructor {_Packet'uid :: !Data.Text.Text,
+                         _Packet'timestamp :: !Data.Int.Int64,
                          _Packet'type' :: !(Prelude.Maybe Packet'Type),
                          _Packet'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
@@ -61,6 +63,12 @@ instance Data.ProtoLens.Field.HasField Packet "uid" Data.Text.Text where
     = (Prelude..)
         (Lens.Family2.Unchecked.lens
            _Packet'uid (\ x__ y__ -> x__ {_Packet'uid = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField Packet "timestamp" Data.Int.Int64 where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _Packet'timestamp (\ x__ y__ -> x__ {_Packet'timestamp = y__}))
         Prelude.id
 instance Data.ProtoLens.Field.HasField Packet "maybe'type'" (Prelude.Maybe Packet'Type) where
   fieldOf _
@@ -121,7 +129,8 @@ instance Data.ProtoLens.Message Packet where
   packedMessageDescriptor _
     = "\n\
       \\ACKPacket\DC2\DLE\n\
-      \\ETXuid\CAN\SOH \SOH(\tR\ETXuid\DC2\"\n\
+      \\ETXuid\CAN\SOH \SOH(\tR\ETXuid\DC2\FS\n\
+      \\ttimestamp\CAN\STX \SOH(\ETXR\ttimestamp\DC2\"\n\
       \\EOTcmds\CAN\ETX \SOH(\v2\f.cmddt.CmdinH\NULR\EOTcmds\DC2'\n\
       \\ETXout\CAN\EOT \SOH(\v2\DC3.sensordt.SensoroutH\NULR\ETXoutB\ACK\n\
       \\EOTtype"
@@ -135,6 +144,15 @@ instance Data.ProtoLens.Message Packet where
                  Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"uid")) ::
+              Data.ProtoLens.FieldDescriptor Packet
+        timestamp__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "timestamp"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.Int64Field ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Int.Int64)
+              (Data.ProtoLens.PlainField
+                 Data.ProtoLens.Optional
+                 (Data.ProtoLens.Field.field @"timestamp")) ::
               Data.ProtoLens.FieldDescriptor Packet
         cmds__field_descriptor
           = Data.ProtoLens.FieldDescriptor
@@ -155,6 +173,7 @@ instance Data.ProtoLens.Message Packet where
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, uid__field_descriptor),
+           (Data.ProtoLens.Tag 2, timestamp__field_descriptor),
            (Data.ProtoLens.Tag 3, cmds__field_descriptor),
            (Data.ProtoLens.Tag 4, out__field_descriptor)]
   unknownFields
@@ -164,6 +183,7 @@ instance Data.ProtoLens.Message Packet where
   defMessage
     = Packet'_constructor
         {_Packet'uid = Data.ProtoLens.fieldDefault,
+         _Packet'timestamp = Data.ProtoLens.fieldDefault,
          _Packet'type' = Prelude.Nothing, _Packet'_unknownFields = []}
   parseMessage
     = let
@@ -198,6 +218,14 @@ instance Data.ProtoLens.Message Packet where
                                                 (Prelude.Right r) -> Prelude.Right r))
                                        "uid"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"uid") y x)
+                        16
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.fromIntegral
+                                          Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                       "timestamp"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"timestamp") y x)
                         26
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -239,39 +267,53 @@ instance Data.ProtoLens.Message Packet where
                                  (Data.ProtoLens.Encoding.Bytes.putBytes bs))
                          Data.Text.Encoding.encodeUtf8 _v))
              ((Data.Monoid.<>)
-                (case
-                     Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'type'") _x
-                 of
-                   Prelude.Nothing -> Data.Monoid.mempty
-                   (Prelude.Just (Packet'Cmds v))
-                     -> (Data.Monoid.<>)
-                          (Data.ProtoLens.Encoding.Bytes.putVarInt 26)
-                          ((Prelude..)
-                             (\ bs
-                                -> (Data.Monoid.<>)
-                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                     (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Data.ProtoLens.encodeMessage v)
-                   (Prelude.Just (Packet'Out v))
-                     -> (Data.Monoid.<>)
-                          (Data.ProtoLens.Encoding.Bytes.putVarInt 34)
-                          ((Prelude..)
-                             (\ bs
-                                -> (Data.Monoid.<>)
-                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                     (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Data.ProtoLens.encodeMessage v))
-                (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                   (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                (let
+                   _v = Lens.Family2.view (Data.ProtoLens.Field.field @"timestamp") _x
+                 in
+                   if (Prelude.==) _v Data.ProtoLens.fieldDefault then
+                       Data.Monoid.mempty
+                   else
+                       (Data.Monoid.<>)
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 16)
+                         ((Prelude..)
+                            Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral _v))
+                ((Data.Monoid.<>)
+                   (case
+                        Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'type'") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just (Packet'Cmds v))
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 26)
+                             ((Prelude..)
+                                (\ bs
+                                   -> (Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Data.ProtoLens.encodeMessage v)
+                      (Prelude.Just (Packet'Out v))
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 34)
+                             ((Prelude..)
+                                (\ bs
+                                   -> (Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Data.ProtoLens.encodeMessage v))
+                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
 instance Control.DeepSeq.NFData Packet where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
              (_Packet'_unknownFields x__)
              (Control.DeepSeq.deepseq
-                (_Packet'uid x__) (Control.DeepSeq.deepseq (_Packet'type' x__) ()))
+                (_Packet'uid x__)
+                (Control.DeepSeq.deepseq
+                   (_Packet'timestamp x__)
+                   (Control.DeepSeq.deepseq (_Packet'type' x__) ())))
 instance Control.DeepSeq.NFData Packet'Type where
   rnf (Packet'Cmds x__) = Control.DeepSeq.rnf x__
   rnf (Packet'Out x__) = Control.DeepSeq.rnf x__
@@ -296,13 +338,14 @@ _Packet'Out
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \\SOpacketdt.proto\DC2\bpacketdt\SUB\vcmddt.proto\SUB\SOsensordt.proto\"o\n\
+    \\SOpacketdt.proto\DC2\bpacketdt\SUB\vcmddt.proto\SUB\SOsensordt.proto\"\141\SOH\n\
     \\ACKPacket\DC2\DLE\n\
-    \\ETXuid\CAN\SOH \SOH(\tR\ETXuid\DC2\"\n\
+    \\ETXuid\CAN\SOH \SOH(\tR\ETXuid\DC2\FS\n\
+    \\ttimestamp\CAN\STX \SOH(\ETXR\ttimestamp\DC2\"\n\
     \\EOTcmds\CAN\ETX \SOH(\v2\f.cmddt.CmdinH\NULR\EOTcmds\DC2'\n\
     \\ETXout\CAN\EOT \SOH(\v2\DC3.sensordt.SensoroutH\NULR\ETXoutB\ACK\n\
-    \\EOTtypeJ\139\STX\n\
-    \\ACK\DC2\EOT\SOH\NUL\SO\SOH\n\
+    \\EOTtypeJ\194\STX\n\
+    \\ACK\DC2\EOT\SOH\NUL\SI\SOH\n\
     \\b\n\
     \\SOH\f\DC2\ETX\SOH\NUL\DC2\n\
     \\b\n\
@@ -313,7 +356,7 @@ packedFileDescriptor
     \\STX\ETX\SOH\DC2\ETX\ACK\NUL\CAN\n\
     \\n\
     \\n\
-    \\STX\EOT\NUL\DC2\EOT\b\NUL\SO\SOH\n\
+    \\STX\EOT\NUL\DC2\EOT\b\NUL\SI\SOH\n\
     \\n\
     \\n\
     \\ETX\EOT\NUL\SOH\DC2\ETX\b\b\SO\n\
@@ -325,25 +368,35 @@ packedFileDescriptor
     \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX\t\t\f\n\
     \\f\n\
     \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX\t\SI\DLE\n\
-    \\f\n\
-    \\EOT\EOT\NUL\b\NUL\DC2\EOT\n\
-    \\STX\r\ETX\n\
-    \\f\n\
-    \\ENQ\EOT\NUL\b\NUL\SOH\DC2\ETX\n\
-    \\b\f\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\SOH\DC2\ETX\v\ENQ\SUB\n\
+    \\EOT\EOT\NUL\STX\SOH\DC2\ETX\n\
+    \\STX\SYN\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ACK\DC2\ETX\v\ENQ\DLE\n\
+    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\ETX\n\
+    \\STX\a\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX\v\DC1\NAK\n\
+    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX\n\
+    \\b\DC1\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX\v\CAN\EM\n\
+    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX\n\
+    \\DC4\NAK\n\
+    \\f\n\
+    \\EOT\EOT\NUL\b\NUL\DC2\EOT\v\STX\SO\ETX\n\
+    \\f\n\
+    \\ENQ\EOT\NUL\b\NUL\SOH\DC2\ETX\v\b\f\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\STX\DC2\ETX\f\ENQ \n\
+    \\EOT\EOT\NUL\STX\STX\DC2\ETX\f\ENQ\SUB\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\ACK\DC2\ETX\f\ENQ\ETB\n\
+    \\ENQ\EOT\NUL\STX\STX\ACK\DC2\ETX\f\ENQ\DLE\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\SOH\DC2\ETX\f\CAN\ESC\n\
+    \\ENQ\EOT\NUL\STX\STX\SOH\DC2\ETX\f\DC1\NAK\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\ETX\DC2\ETX\f\RS\USb\ACKproto3"
+    \\ENQ\EOT\NUL\STX\STX\ETX\DC2\ETX\f\CAN\EM\n\
+    \\v\n\
+    \\EOT\EOT\NUL\STX\ETX\DC2\ETX\r\ENQ \n\
+    \\f\n\
+    \\ENQ\EOT\NUL\STX\ETX\ACK\DC2\ETX\r\ENQ\ETB\n\
+    \\f\n\
+    \\ENQ\EOT\NUL\STX\ETX\SOH\DC2\ETX\r\CAN\ESC\n\
+    \\f\n\
+    \\ENQ\EOT\NUL\STX\ETX\ETX\DC2\ETX\r\RS\USb\ACKproto3"

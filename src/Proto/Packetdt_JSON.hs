@@ -42,18 +42,22 @@ instance ToJSON Packet'Type where
 instance FromJSONPB Packet where
   parseJSONPB = withObject "Packet" $ \obj -> do
     uid' <- obj .: "uid"
+    timestamp' <- obj .: "timestamp"
     type'' <- obj A..:? "type'"
     pure $ defMessage
       & P.uid .~ uid'
+      & P.timestamp .~ timestamp'
       & P.maybe'type' .~ type''
 
 instance ToJSONPB Packet where
   toJSONPB x = object
     [ "uid" .= (x^.uid)
+    , "timestamp" .= (x^.timestamp)
     , "type'" .= (x^.maybe'type')
     ]
   toEncodingPB x = pairs
     [ "uid" .= (x^.uid)
+    , "timestamp" .= (x^.timestamp)
     , "type'" .= (x^.maybe'type')
     ]
 
