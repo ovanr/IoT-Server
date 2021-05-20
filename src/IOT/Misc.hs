@@ -185,8 +185,8 @@ withTempPipeM ::
 withTempPipeM fp cb = do
    unlessM (liftIO $ mkfifo fp) $ fail "Unable to make pipe"
 
-   -- at least one dummy Writer must be present at the named pipe
-   r <- withFileM fp WriteMode $ const $ withFileM fp ReadMode cb
+   -- at least one dummy ReadWriter must be present at the named pipe
+   r <- withFileM fp ReadWriteMode $ const $ withFileM fp ReadMode cb
 
    liftIO $ removeFile fp
    return r
