@@ -11,18 +11,23 @@ import Data.Aeson (Value, (.=), object)
 import Yesod.Core
    ( HandlerFor
    , invalidArgs
-   , notFound
    , getsYesod
    )
 import Yesod.Core.Json (requireCheckJsonBody, returnJson)
-import Data.ProtoLens
 import Data.Text (Text)
 import Control.Lens ((^.))
 import Data.Maybe
 
+{- |
+   Not yet implemented.
+-}
 getStatusR :: P.UID -> HandlerFor RESTApp ()
 getStatusR = undefined
 
+{- |
+   Read Command packet as JSON from the HTTP body
+   and add the command to the Queue.
+-}
 postSendCmdR :: P.UID -> HandlerFor RESTApp Value 
 postSendCmdR uid = do
    (c :: Cmd) <- requireCheckJsonBody 

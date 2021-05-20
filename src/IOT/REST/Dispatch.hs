@@ -2,34 +2,31 @@
 
 module IOT.REST.Dispatch where
 
-import Data.Aeson (Value)
 import IOT.REST.Foundation
 import IOT.REST.Handlers (getStatusR, postSendCmdR)
 import Yesod.Core
-   ( HandlerFor
-   , RenderRoute(..)
-   , Yesod
-   , YesodDispatch(..)
+   ( YesodDispatch(..)
    , yesodRunner
-   , parseRoutes
-   , redirect
    , notFound
-   , toPathPiece
    , fromPathPiece
    , toTypedContent
-   , warp
    )
 import Network.Wai (pathInfo, Request(..))
-import qualified Data.Text as T
 import Data.Text (Text)
 import Network.HTTP.Types.Method
 
+{- |
+   Parse a url path to a Typed Route
+-}
 parseRoute :: Method -> [Text] -> Maybe (Route RESTApp)
 parseRoute m ["node", uid] 
    | m == methodGet  = DevStatusR <$> fromPathPiece uid 
    | m == methodPost = DevCmdSendR <$> fromPathPiece uid 
 parseRoute _ _ = Nothing
 
+{- |
+   Declare the link between url path to handler
+-}
 instance YesodDispatch RESTApp where
    yesodDispatch yesodRunnerEnv req sendResponse =
       let maybeRoute = parseRoute (requestMethod req) (pathInfo req)

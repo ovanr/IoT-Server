@@ -72,6 +72,13 @@ import IOT.Server.Queue ( flushQueues )
 import IOT.REST.Import (RESTApp(..))
 import Yesod.Core (warp)
 
+{- |
+   Create the AppState data type.
+   This function will:
+      1) read the Configuration file,
+      2) open the MySQL and Influx Connections,
+      3) open the Log File for writing 
+-}
 initApp :: ServerArgs -> IO (AppState (App IO))
 initApp args = do
    let level = [Error, Warning, Info, Debug] !! min 3 (args ^. verbosity)
@@ -94,7 +101,11 @@ initApp args = do
 
    AppState env (Just logHandle) wp <$> connect mysqlInfo
 
--- convert from AppEnv (App m) to AppEnv m
+{- |
+   Return an AppEnv 'm' datatype from the existing AppEnv (App 'm')
+   environment. Tranforms the LogAction from returning a Stateful
+   computation to one returning the action in the base monad.
+-}
 unHoistedAppEnv :: Monad m => App m (AppEnv m)
 unHoistedAppEnv = do
       env <- ask
@@ -103,6 +114,19 @@ unHoistedAppEnv = do
       let newLogAction = LogAction $ \m -> fst <$> unApp (lg m) state
       return $ env & logAction .~ newLogAction
 
+{- |
+   App runner.
+   Runner runs in a ContT () (App IO) () monad
+   in order to easily manage callbacks using a
+   continuation-style computation. 
+
+   This function will open the AMQP connection,
+   start the simple REST service, and listen for
+   any new messages from the broker.
+
+   Commands to the server can be provided using
+   the named pipe file 'iot-server.run'.
+-}
 runApp :: App IO ()
 runApp = runner `finally` closeLog
   where

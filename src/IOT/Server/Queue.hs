@@ -17,12 +17,11 @@ import qualified Data.HashMap.Strict as HM
 import Database.InfluxDB.Line (Line(..), encodeLines, Precision(..), LineField, Field(..))
 import Proto.Sensors.Raspcamdt (Raspcamout)
 import Proto.Sensors.Raspcamdt_Fields (bin)
-import IOT.REST.Import (RESTApp)
+import IOT.REST.Import (RESTApp, sharedCmdQueue)
 import Data.ProtoLens.Field
 import Colog
 import Control.Lens (use, view, (.=), (^.), sequenceAOf, _2, (.~), (&), (?~))
 import Data.Time
-import Data.Time.LocalTime
 import Database.MySQL.Base
 import Control.Monad.Reader
 import Data.Maybe
@@ -33,9 +32,6 @@ import Data.Bifunctor (bimap)
 import Data.String (fromString)
 import IOT.Misc 
 import IOT.Server.Types
-import IOT.REST.Import (sharedCmdQueue)
-import Control.Monad.Reader.Class (MonadReader)
-import Control.Monad.State.Class (MonadState)
 import Network.AMQP (Channel, publishMsg, Message(..), newMsg)
 import Data.ProtoLens.Encoding (encodeMessage)
 import Data.ProtoLens (defMessage)
@@ -237,9 +233,8 @@ flushCmdQueue chan = do
    Send all pending data from the internal queues to
    their corresponding endpoints. 
 -}
-flushQueues :: Channel -> App IO ()
-flushQueues chan = do
-   logDebug "Attempting to flush queues"
-   flushDataQueue
-   flushImageQueue
-   flushCmdQueue chan
+flushQueues channel = do
+  logDebug "Attempting to flush queues"
+  flushDataQueue
+  flushImageQueue
+  flushCmdQueue channel
