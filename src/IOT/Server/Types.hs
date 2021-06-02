@@ -114,7 +114,7 @@ makeLenses ''AppEnv
 makeHasFieldInstances ''AppEnv
 
 {- |
-   The App data type is an unfolded Reader and State Monad Transformer
+   The App data type acts like a ReaderT
 -}
 newtype App (m :: * -> *) (a :: *) =
    App
