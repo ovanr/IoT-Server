@@ -8,6 +8,7 @@ import qualified Data.Text as T
 import qualified Codec.Compression.GZip as GZip
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Base64 as Base64
+import Control.Concurrent (forkIO, killThread, threadDelay, ThreadId)
 import Control.Monad.Trans.Maybe
 import qualified Data.ByteString as B
 import Network.AMQP
@@ -16,13 +17,11 @@ import Control.Monad.Trans.Class (MonadTrans(..))
 import qualified Data.Text.Encoding as TE
 import System.Exit (ExitCode(..))
 import Control.Monad.Reader.Class
-import Database.MySQL.Base hiding (Packet(..))
 import Control.Monad.IO.Class
 import Control.Monad.Catch
 import System.IO.Unsafe (unsafePerformIO)
 import Control.Monad
 import Control.Monad.Extra
-import Control.Concurrent (threadDelay)
 import Colog.Core.Severity
 import Colog.Actions
 import System.Process (readProcessWithExitCode)
@@ -80,17 +79,6 @@ sleep = liftIO . threadDelay . (* 1000000)
 getRawRequestBody :: MonadHandler m => m B.ByteString
 getRawRequestBody = runConduit $ rawRequestBody .| foldC
 
-{- |
-    MySQL exception-less executeStmt function.
-    Same as MySQL.executeStmt but returns a Left error
-    instead of throwing an exception 
--}
-executeStmt' ::
-      MonadIO m => MySQLConn -> StmtID -> [MySQLValue] -> m (Either String OK)
-executeStmt' conn stmt vals =
-   liftIO $
-   (Right <$> executeStmt conn stmt vals) `catch`
-   (\(e :: SomeException) -> return . Left . show $ e)
 
 {- |
    Generalisation of System.IO.withFile to work
@@ -100,6 +88,7 @@ withFileM ::
       (MonadMask m, MonadIO m) => FilePath -> IOMode -> (Handle -> m a) -> m a
 withFileM fp mode = bracket (liftIO $ openFile fp mode) (liftIO . hClose)
 
+   
 {- |
    Bracket version of Network.AMQP.openConnection
    Passes the newly created AMQP connection to the
@@ -147,6 +136,11 @@ withAmqpConsumer cb chan tag =
    bracket
       (liftIO $ consumeMsgs chan tag NoAck cb)
       (liftIO . cancelConsumer chan)
+
+withThread ::
+      (MonadMask m, MonadIO m)
+   => IO () -> (ThreadId -> m a) -> m a
+withThread action = bracket (liftIO $ forkIO action) (liftIO . killThread)
 
 {- |
    Colog LogAction that pretty writes a Colog.Message  

@@ -17,7 +17,6 @@ import qualified IOT.Packet.Packet as P
 import qualified IOT.Packet.Sensor as S 
 import IOT.Misc (gzipDecompress)
 import Control.Exception
-import Data.Time
 import Data.Time.Clock.POSIX
 import Control.Lens
 import Data.ProtoLens hiding (Message)
@@ -100,9 +99,9 @@ parsePacket uid pkt = do
    Attempt to parse each AMQP message as an IOT.Packet.Packet 
    and handle the packet according to its type.
 -}
-pktHandler :: AppEnv IO -> (Message, Envelope) -> IO ()
+pktHandler :: AppEnv (App IO) -> (Message, Envelope) -> IO ()
 pktHandler env (msg, e) =
-   runAppCb menv $ flip MC.catch catcher $ do
+   flip unApp env $ flip MC.catch catcher $ do
       logInfo $ "Received a msg with key " <> envRoutingKey e
       either
          (\b -> logError $ "Body parse error: " <> T.pack (show b))
@@ -110,5 +109,4 @@ pktHandler env (msg, e) =
          (parseBody msg pktUid)
   where
     catcher (e :: SomeException) = logWarning $ T.pack (show e)
-    menv = env & logAction %~ hoistLogAction liftIO
     pktUid = last . T.split (== '.') . envRoutingKey $ e

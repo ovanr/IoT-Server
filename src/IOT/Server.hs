@@ -7,8 +7,8 @@
 {-# LANGUAGE TypeApplications #-}
 
 module IOT.Server
-   ( initApp
-   , runApp
+   ( 
+   runApp
    ) where
 
 import Colog.Core.Action ( LogAction(LogAction) )
@@ -22,18 +22,19 @@ import Control.Monad.Reader (MonadReader(ask))
 import Control.Monad.Catch ( finally )
 import Control.Concurrent (forkIO, killThread)
 import qualified Data.ByteString.Lazy as BL ( readFile )
-import Control.Monad.Cont
+import Control.Monad.Trans.Cont
+import Control.Monad.IO.Class
 import Data.IORef ( newIORef )
 import Database.InfluxDB
     ( host,
       writeParams,
+      WriteParams,
       HasPrecision(precision),
       HasServer(server),
       Precision(Second) )
 import Database.MySQL.Base ( connect )
 import IOT.Server.Types
     ( App(unApp),
-      AppState(AppState),
       AppEnv(AppEnv),
       ServerArgs,
       amqpHost,
@@ -41,14 +42,17 @@ import IOT.Server.Types
       amqpUser,
       amqpVhost,
       amqpDataQueue,
-      confPath,
+      mysqlHost,
+      mysqlUser,
+      mysqlPass,
+      mysqlDb,
       restApp,
       infxDb,
       infxHost,
       logAction,
-      logHandle,
       logPath,
-      mysqlConfig,
+      confPath,
+      ServerConf,
       sConf,
       verbosity )
 import Data.Aeson ( eitherDecode )
@@ -58,67 +62,63 @@ import IOT.Misc
       richMessageLogFileAction,
       sleep,
       withAmqpChannel,
+      withThread,
       withAmqpConnection,
       withAmqpConsumer,
+      withFileM,
       withTempPipeM )
 import Control.Monad.State.Class ( MonadState(get) )
 import System.IO
     ( IOMode(WriteMode),
       hClose,
       hSetBuffering,
+      Handle,
       openFile,
       BufferMode(LineBuffering) )
 import IOT.Server.Queue ( flushQueues )
+import qualified Database.MySQL.Base as MySQL
 import IOT.REST.Import (RESTApp(..))
 import Yesod.Core (warp)
+import Database.Persist hiding (Key, get)
+import Database.Persist.MySQL hiding (Key, get)
+import qualified Colog (Message)
 
 {- |
-   Create the AppState data type.
-   This function will:
-      1) read the Configuration file,
-      2) open the MySQL and Influx Connections,
-      3) open the Log File for writing 
+   Create the Colog.LogAction using the ServerArgs and an open handle
 -}
-initApp :: ServerArgs -> IO (AppState (App IO))
-initApp args = do
-   let level = [Error, Warning, Info, Debug] !! min 3 (args ^. verbosity)
-
-   conf <- liftEither . eitherDecode =<< BL.readFile (args ^. confPath)
-   let wp =
-          writeParams (conf ^. infxDb) &
-          server . host .~ (conf ^. infxHost) &
-          precision .~ Second
-
-   logHandle <- openFile (args ^. logPath) WriteMode
-   hSetBuffering logHandle LineBuffering
-
-   env <- AppEnv (richMessageLogFileAction level logHandle) conf
-            <$> newIORef []
-            <*> newIORef []
-            <*> (RESTApp <$> newIORef [])
-
-   let mysqlInfo = mysqlConfig (env ^. sConf)
-
-   AppState env (Just logHandle) wp <$> connect mysqlInfo
+makeLogFileAction :: MonadIO m => ServerArgs -> Handle -> LogAction m Colog.Message
+makeLogFileAction args = richMessageLogFileAction level 
+    where
+        level = [Error, Warning, Info, Debug] !! min 3 (args ^. verbosity)
 
 {- |
-   Return an AppEnv 'm' datatype from the existing AppEnv (App 'm')
-   environment. Tranforms the LogAction from returning a Stateful
-   computation to one returning the action in the base monad.
+   Make a WriteParams Influx config from a ServerConf 
 -}
-unHoistedAppEnv :: Monad m => App m (AppEnv m)
-unHoistedAppEnv = do
-      env <- ask
-      state <- get
-      LogAction lg <- view logAction
-      let newLogAction = LogAction $ \m -> fst <$> unApp (lg m) state
-      return $ env & logAction .~ newLogAction
+makeInfluxConf :: ServerConf -> WriteParams
+makeInfluxConf conf = 
+    writeParams (conf ^. infxDb) 
+        & server . host .~ (conf ^. infxHost) 
+        & precision .~ Second
+
+{- |
+   Make a MySQL ConnectInfo config from a ServerConf 
+-}
+makeMysqlConf :: ServerConf -> MySQL.ConnectInfo
+makeMysqlConf conf = do
+   MySQL.defaultConnectInfo
+      { MySQL.connectHost     = view mysqlHost conf
+      , MySQL.connectUser     = view mysqlUser conf
+      , MySQL.connectPassword = view mysqlPass conf
+      , MySQL.connectDatabase = view mysqlDb   conf
+      , MySQL.connectOptions  = [ MySQL.Reconnect True ]
+      }
 
 {- |
    App runner.
-   Runner runs in a ContT () (App IO) () monad
-   in order to easily manage callbacks using a
-   continuation-style computation. 
+   runApp runs in a ContT () IO () monad
+   in order to easily initalize connections/services 
+   using continuation-style computations. 
+   Internally the App runs as a ReaderT-like transformer monad.
 
    This function will open the AMQP connection,
    start the simple REST service, and listen for
@@ -127,41 +127,43 @@ unHoistedAppEnv = do
    Commands to the server can be provided using
    the named pipe file 'iot-server.run'.
 -}
-runApp :: App IO ()
-runApp = runner `finally` closeLog
-  where
-    closeLog = do
-       handle <- use logHandle
-       liftIO $ maybe mempty hClose handle
-       logHandle .= Nothing
-    
-    runner = flip runContT pure $ do
-       host      <- view (sConf . amqpHost)
-       vhost     <- view (sConf . amqpVhost)
-       user      <- view (sConf . amqpUser)
-       pass      <- view (sConf . amqpPass)
-       dataQueue <- view (sConf . amqpDataQueue)
-       
-       conn   <- ContT $ withAmqpConnection host vhost user pass 
-       chan   <- ContT $ withAmqpChannel conn
-       
-       envio  <- lift unHoistedAppEnv
-       ContT $ withAmqpConsumer (pktHandler envio) chan dataQueue 
-       
-       restApp <- view restApp 
-       serverThread <- liftIO $ forkIO $ warp 3000 restApp 
+runApp :: ServerArgs -> IO ()
+runApp args =
+  evalContT $ do
+    raw <- liftIO $ BL.readFile (args ^. confPath)
+    (conf :: ServerConf) <- liftEither . eitherDecode $ raw
 
-       handle <- ContT $ withTempPipeM "iot-server.run"
-       
-       let go = \exit -> do
-            sleep 5
-            lift (flushQueues chan)
-            c <- hTryGetLine handle
-            lift (logDebug $ "Got input " <> T.pack (show c))
-            if c == Just "exit"
-               then exit "Received exit signal"
-               else go exit 
-       
-       exitMsg <- callCC go
-       liftIO $ killThread serverThread
-       lift (logInfo $ "Exiting: " <> exitMsg)
+    logHandle <- ContT $ withFileM (args ^. logPath) WriteMode
+    liftIO $ hSetBuffering logHandle LineBuffering
+
+    let logger    = makeLogFileAction args logHandle
+        inflxInfo = makeInfluxConf conf
+        mysqlInfo = makeMysqlConf conf
+
+    env <- liftIO $ 
+        AppEnv logger conf inflxInfo 
+            <$> newIORef [] <*> newIORef [] <*> (RESTApp <$> newIORef [])
+
+    conn <-
+      ContT $
+      withAmqpConnection
+        (conf ^. amqpHost)
+        (conf ^. amqpVhost)
+        (conf ^. amqpUser)
+        (conf ^. amqpPass)
+
+    chan <- ContT $ withAmqpChannel conn
+    ContT $ withAmqpConsumer (pktHandler env) chan (conf ^. amqpDataQueue)
+    ContT $ withThread $ warp 3000 (env ^. restApp)
+    handle <- ContT $ withTempPipeM "iot-server.run"
+
+    let go backend = do
+          sleep 5
+          flushQueues chan backend
+          c <- hTryGetLine handle
+          logDebug $ "Got input " <> T.pack (show c)
+          if c == Just "exit"
+            then logInfo "Exiting due to user signal"
+            else go backend
+
+    liftIO $ flip unApp env $ withMySQLPool mysqlInfo 1 go

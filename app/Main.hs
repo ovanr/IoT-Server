@@ -2,7 +2,7 @@ module Main (
   argParser,
   main ) where
 
-import IOT.Server ( initApp, runApp )
+import IOT.Server ( runApp )
 import IOT.Server.Types ( ServerArgs(..), unApp )
 import Control.Monad ( void )
 import Paths_iot_server ( version )
@@ -48,7 +48,7 @@ argParser = ServerArgs
          <> help "Configuration file")
 
 main :: IO ()
-main = execParser opts >>= initApp >>= (void . unApp runApp)
+main = execParser opts >>= runApp
   where
     opts = info (argParser <**> helper)
       ( fullDesc

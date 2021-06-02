@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 45a9a283f24f064ae23a6ee4d9beba37229a1364250d119082af07f279021b96
+-- hash: 9123b32e7df8e5b2576103f27b4a822924058c735e047012d05a7ca6306e2eaa
 
 name:           iot-server
 version:        0.2.0
@@ -40,6 +40,7 @@ library
       IOT.REST.Import
       IOT.Server
       IOT.Server.Field
+      IOT.Server.Models
       IOT.Server.Queue
       IOT.Server.Types
       Proto.Cmd.Confupdatedt
@@ -103,20 +104,27 @@ library
     , influxdb
     , io-streams
     , lens
+    , monad-logger
     , mtl
-    , mysql-haskell
+    , mysql
+    , mysql-simple
     , network-uri
     , optparse-applicative
+    , persistent
+    , persistent-mysql
+    , persistent-template
     , process
     , proto-lens
     , proto-lens-jsonpb
     , proto-lens-protobuf-types
     , proto-lens-runtime
+    , resource-pool
     , shelly
     , template-haskell
     , text
     , time
     , transformers
+    , unliftio-core
     , unordered-containers
     , utf8-string
     , vector
@@ -163,20 +171,27 @@ executable iot-server
     , io-streams
     , iot-server
     , lens
+    , monad-logger
     , mtl
-    , mysql-haskell
+    , mysql
+    , mysql-simple
     , network-uri
     , optparse-applicative
+    , persistent
+    , persistent-mysql
+    , persistent-template
     , process
     , proto-lens
     , proto-lens-jsonpb
     , proto-lens-protobuf-types
     , proto-lens-runtime
+    , resource-pool
     , shelly
     , template-haskell
     , text
     , time
     , transformers
+    , unliftio-core
     , unordered-containers
     , utf8-string
     , vector
@@ -224,20 +239,27 @@ test-suite iot-server-test
     , io-streams
     , iot-server
     , lens
+    , monad-logger
     , mtl
-    , mysql-haskell
+    , mysql
+    , mysql-simple
     , network-uri
     , optparse-applicative
+    , persistent
+    , persistent-mysql
+    , persistent-template
     , process
     , proto-lens
     , proto-lens-jsonpb
     , proto-lens-protobuf-types
     , proto-lens-runtime
+    , resource-pool
     , shelly
     , template-haskell
     , text
     , time
     , transformers
+    , unliftio-core
     , unordered-containers
     , utf8-string
     , vector

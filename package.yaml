@@ -25,6 +25,11 @@ dependencies:
 - bytestring
 - hslogger
 - comonad
+- monad-logger
+- unliftio-core
+- mysql-simple
+- resource-pool
+- mysql
 - mtl
 - transformers
 - directory
@@ -38,7 +43,9 @@ dependencies:
 - utf8-string
 - containers
 - zlib
-- mysql-haskell
+- persistent
+- persistent-template
+- persistent-mysql
 - io-streams
 - base64-bytestring
 - concurrent-extra

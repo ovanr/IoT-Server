@@ -2,6 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE DataKinds #-}
 module IOT.Server.Queue where
@@ -10,19 +11,27 @@ import qualified Data.Text as T
 import qualified Data.ByteString.Lazy.UTF8 as BLU
 import qualified Data.ByteString.Lazy as BL
 import qualified IOT.Packet.Packet as P
-import qualified Control.Exception as Exception
 import qualified Data.Aeson ((.=))
 import qualified Data.Map as Map
 import qualified Data.HashMap.Strict as HM
+import Control.Exception (SomeException)
+import qualified Control.Monad.Catch as MC
 import Database.InfluxDB.Line (Line(..), encodeLines, Precision(..), LineField, Field(..))
+
+import Database.Persist hiding (Key)
+import Database.Persist.MySQL hiding (Key)
+import Data.Pool
+
 import Proto.Sensors.Raspcamdt (Raspcamout)
 import Proto.Sensors.Raspcamdt_Fields (bin)
 import IOT.REST.Import (RESTApp, sharedCmdQueue)
+
+import IOT.Server.Models hiding (Key)
+
 import Data.ProtoLens.Field
 import Colog
-import Control.Lens (use, view, (.=), (^.), sequenceAOf, _2, (.~), (&), (?~))
+import Control.Lens (view, (^.), sequenceAOf, _2, (.~), (&), (?~))
 import Data.Time
-import Database.MySQL.Base
 import Control.Monad.Reader
 import Data.Maybe
 import Data.Aeson (encode, ToJSON(..), Value(..))
@@ -63,37 +72,6 @@ toInfluxFields j =
     toInfluxField _ = Nothing
 
 {- |
-   Check if a MySQL connection is still alive
--}
-isOpenMysql :: MySQLConn -> IO Bool
-isOpenMysql c =
-   Exception.catch
-      (ping c >> return True)
-      (\(e :: NetworkException) -> return False)
-
-{- |
-   Get the active MySQL connection.
-   If previously stored connection is broken, 
-   a new connection will be returned.   
--}
-getMysqlConnection ::
-     ( MonadIO m
-     , ValidApp '[ '("mysqlConn", MySQLConn) ] '[ '("sConf", ServerConf) ] m s r
-     )
-  => m MySQLConn
-getMysqlConnection = do
-   conn <- use (field @"mysqlConn")
-   conf <- view (field @"sConf")
-   isActive <- liftIO (isOpenMysql conn)
-   unless isActive $ do
-      logWarning "Detected closed Mysql connection" 
-      let mysqlconf = mysqlConfig conf 
-      conn <- liftIO (connect mysqlconf)
-      (field @"mysqlConn") .= conn
-
-   return conn
-
-{- |
    Store a JSON-like structure to the Influx Queue.
    The Influx Queue buffers data points to be sent
    all at once.
@@ -102,7 +80,7 @@ queueSensorData ::
      ( ToJSON j
      , Show j
      , MonadIO m
-     , ValidApp '[] '[ '( "pendingInfx", InfluxQueue), '("sConf", ServerConf) ] m _1 r
+     , ValidApp '[ '( "pendingInfx", InfluxQueue), '("sConf", ServerConf) ] m r
      )
   => P.UID
   -> j
@@ -135,7 +113,7 @@ queueSensorData uid f timestamp = do
 -}
 queueSensorImage ::
      ( MonadIO m
-     , ValidApp '[] '[ '( "pendingMysql", MySQLQueue) ] m _1 r
+     , ValidApp '[ '( "pendingMysql", MySQLQueue) ] m r
      )
   => T.Text
   -> Raspcamout
@@ -153,34 +131,28 @@ queueSensorImage uid img timestamp = do
 -}
 flushImageQueue :: 
      ( MonadIO m
-     , ValidApp '[ '( "mysqlConn", MySQLConn)] '[ '( "sConf", ServerConf), '( "pendingMysql", MySQLQueue) ] m s r
-     ) => m () 
-flushImageQueue = do
+     , ValidApp '[ '( "sConf", ServerConf), '( "pendingMysql", MySQLQueue) ] m r
+     ) => Pool SqlBackend -> m () 
+flushImageQueue backend = do
    imgs <- view (field @"pendingMysql") >>= (liftIO . refModify' (const []))
+
    unless (null imgs) $ do
       logInfo "Uploading images to DB"
-      conn <- getMysqlConnection
-      stmt <-
-         liftIO $
-         prepareStmt
-            conn
-            "INSERT INTO device_images (id, node_id, insertion_date, bin) VALUES (?,?,?,?)"
-      forM_ imgs $ \(uid, bin, timestamp) -> do
-         id <- genSecureString 64
-         when (isNothing id) $ fail "Unable to generate secure string"
-         printOk =<<
-            executeStmt'
-               conn
-               stmt
-               [ MySQLText $ fromJust id
-               , MySQLText uid
-               , MySQLTimeStamp (utcToLocalTime utc timestamp)
-               , MySQLBytes bin
-               ]
-  where
-    printOk (Left err) = logWarning $ "Error on mysql insert: " <> T.pack err
-    printOk (Right ok) =
-       logInfo $ "Success on mysql insert: " <> T.pack (show ok)
+      errors <- liftIO $ flip runSqlPool backend $
+         forM imgs uploadImage
+
+      mapM_ logWarning (catMaybes errors)
+
+    where
+        catcher (e :: SomeException) = pure . Just . T.pack . show $ e
+        uploadImage (uid, bin, timestamp) = do 
+            maybeId <- genSecureString 64
+            id <- maybe (fail "Unable to generate an id") pure maybeId
+
+            flip MC.catch catcher $ do 
+                let newImage = DeviceImage (DeviceKey uid) timestamp bin 0 0
+                insertKey (DeviceImageKey id) newImage
+                pure Nothing
 
 {- |
    Send the contents of the Influx Queue to the Influx Database.
@@ -188,7 +160,7 @@ flushImageQueue = do
 -}
 flushDataQueue :: 
      ( MonadIO m
-     , ValidApp '[ '( "infxConn", WriteParams)] '[ '( "pendingInfx", InfluxQueue) ] m s r
+     , ValidApp '[ '( "infxConn", WriteParams), '( "pendingInfx", InfluxQueue) ] m r
      ) => m () 
 flushDataQueue = do
    l <- view (field @"pendingInfx") >>= (liftIO . refModify' (const []))
@@ -196,7 +168,7 @@ flushDataQueue = do
       logInfo $
          "Sending to Influx these: \n[" <>
          T.pack (BLU.toString $ encodeLines (scaleTo Second) l) <> "]"
-      infx <- use (field @"infxConn")
+      infx <- view (field @"infxConn")
       liftIO $ infx `writeBatch` l
 
 {- |
@@ -206,7 +178,7 @@ flushDataQueue = do
 -}
 flushCmdQueue :: 
      ( MonadIO m
-     , ValidApp '[] '[ '( "sConf", ServerConf), '( "restApp", RESTApp) ] m s r
+     , ValidApp '[ '( "sConf", ServerConf), '( "restApp", RESTApp) ] m r
      ) => Channel -> m () 
 flushCmdQueue chan = do
    exchange <- view (field @"sConf" . amqpExchange)
@@ -233,8 +205,8 @@ flushCmdQueue chan = do
    Send all pending data from the internal queues to
    their corresponding endpoints. 
 -}
-flushQueues channel = do
+flushQueues channel backend = do
   logDebug "Attempting to flush queues"
   flushDataQueue
-  flushImageQueue
+  flushImageQueue backend
   flushCmdQueue channel
