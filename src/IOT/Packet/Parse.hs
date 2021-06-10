@@ -78,7 +78,7 @@ parseBody msg pktUid = do
    If it is an image packet, store it in the Image Queue.
 -}
 parsePacket ::
-      (MonadReader (AppEnv m) m, MonadIO m, MonadFail m)
+      (MonadReader (AppEnv m) m, MC.MonadMask m, MonadIO m, MonadFail m)
    => P.UID
    -> P.Packet
    -> m ()

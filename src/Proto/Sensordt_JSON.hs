@@ -17,7 +17,7 @@ import qualified Data.Text as T
 import           Proto.Sensors.Cpudt_JSON ()
 import           Proto.Sensors.Raspcamdt_JSON ()
 import           Proto.Sensors.Systemdt_JSON ()
-import           Proto.Sensors.Genericdt_JSON ()
+import           Proto.Sensors.Genericdt_JSON_custom ()
 import           Proto.Sensordt as P
 import           Proto.Sensordt_Fields as P
 

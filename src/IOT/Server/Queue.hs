@@ -13,21 +13,23 @@ import qualified Data.ByteString.Lazy as BL
 import qualified IOT.Packet.Packet as P
 import qualified Data.Aeson ((.=))
 import qualified Data.Map as Map
+import Data.IORef (readIORef)
 import qualified Data.HashMap.Strict as HM
 import Control.Exception (SomeException)
 import qualified Control.Monad.Catch as MC
 import Database.InfluxDB.Line (Line(..), encodeLines, Precision(..), LineField, Field(..))
 
+import qualified Database.Persist as Persist (Key)
 import Database.Persist hiding (Key)
 import Database.Persist.MySQL hiding (Key)
+import IOT.Server.Models hiding (Key)
 import Data.Pool
 
 import Proto.Sensors.Raspcamdt (Raspcamout)
 import Proto.Sensors.Raspcamdt_Fields (bin)
-import IOT.REST.Import (RESTApp, sharedCmdQueue)
+import IOT.REST.Import (RESTApp, sharedCmdQueue, alertRuleUpdate)
 
-import IOT.Server.Models hiding (Key)
-
+import Control.Monad.Extra (whenM)
 import Data.ProtoLens.Field
 import Colog
 import Control.Lens (view, (^.), sequenceAOf, _2, (.~), (&), (?~))
@@ -41,6 +43,7 @@ import Data.Bifunctor (bimap)
 import Data.String (fromString)
 import IOT.Misc 
 import IOT.Server.Types
+import IOT.Server.Alerts (checkAndSendAlerts, syncAlertRules)
 import Network.AMQP (Channel, publishMsg, Message(..), newMsg)
 import Data.ProtoLens.Encoding (encodeMessage)
 import Data.ProtoLens (defMessage)
@@ -78,7 +81,6 @@ toInfluxFields j =
 -}
 queueSensorData ::
      ( ToJSON j
-     , Show j
      , MonadIO m
      , ValidApp '[ '( "pendingInfx", InfluxQueue), '("sConf", ServerConf) ] m r
      )
@@ -90,6 +92,7 @@ queueSensorData uid f timestamp = do
    logInfo "Appending data item to Influx Queue"
 
    measurement <- view (field @"sConf" . infxMeasurement)
+   logError $ T.pack $ show $ toJSON f
    let fields = toInfluxFields (toJSON f)
    
    logDebug . T.pack . show . encode $ f  
@@ -150,8 +153,8 @@ flushImageQueue backend = do
             id <- maybe (fail "Unable to generate an id") pure maybeId
 
             flip MC.catch catcher $ do 
-                let newImage = DeviceImage (DeviceKey uid) timestamp bin 0 0
-                insertKey (DeviceImageKey id) newImage
+                let newImage = DevImage (DeviceKey uid) timestamp bin 0 0
+                insertKey (DevImageKey id) newImage
                 pure Nothing
 
 {- |
@@ -160,16 +163,22 @@ flushImageQueue backend = do
 -}
 flushDataQueue :: 
      ( MonadIO m
-     , ValidApp '[ '( "infxConn", WriteParams), '( "pendingInfx", InfluxQueue) ] m r
-     ) => m () 
-flushDataQueue = do
-   l <- view (field @"pendingInfx") >>= (liftIO . refModify' (const []))
-   unless (null l) $ do
-      logInfo $
-         "Sending to Influx these: \n[" <>
-         T.pack (BLU.toString $ encodeLines (scaleTo Second) l) <> "]"
+     , ValidApp '[ '( "alertRules",  AlertRules), 
+                   '( "infxConn",    WriteParams), 
+                   '( "pendingInfx", InfluxQueue) ] m r
+     ) => Pool SqlBackend -> m () 
+flushDataQueue backend = do
+   lines <- view (field @"pendingInfx") >>= (liftIO . refModify' (const []))
+
+   unless (null lines) $ do
+      logInfo "Sending to Influx:" 
+      logInfo $ T.pack (BLU.toString $ encodeLines (scaleTo Second) lines)
+
+      forM_ lines $ 
+         checkAndSendAlerts backend
+
       infx <- view (field @"infxConn")
-      liftIO $ infx `writeBatch` l
+      liftIO $ infx `writeBatch` lines
 
 {- |
    Send the queued Device commands to the devices
@@ -206,7 +215,8 @@ flushCmdQueue chan = do
    their corresponding endpoints. 
 -}
 flushQueues channel backend = do
-  logDebug "Attempting to flush queues"
-  flushDataQueue
-  flushImageQueue backend
-  flushCmdQueue channel
+   logDebug "Attempting to flush queues"
+   flushDataQueue backend
+   flushImageQueue backend
+   flushCmdQueue channel
+   syncAlertRules backend

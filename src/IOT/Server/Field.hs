@@ -19,7 +19,7 @@ makeHasFieldInstances s = do
    (tyConName, tyVars, cs) <- case tyCon of
      DataD _ nm tyVars _ cs _   -> return (nm, tyVars, cs)
      NewtypeD _ nm tyVars _ c _ -> return (nm, tyVars, [c])
-     _ -> fail "makeHasFieldFieldInstances: Type must either be a data or a newtype"
+     _ -> fail "makeHasFieldInstances: Type must either be a data or a newtype"
    
    let sType = foldl apply (ConT tyConName) tyVars
    
@@ -37,7 +37,7 @@ toLensName nm =
 makeInstances :: Type -> Con -> Q [Dec]
 makeInstances s (RecC _ fields) = 
    forM fields $ \(field, _, a) -> makeSingleInstance s (toLensName field) a 
-makeInstances _ _ = fail "makeHasFieldFieldInstances: Unsupported Value Constructor encountered!" 
+makeInstances _ _ = fail "makeHasFieldInstances: Unsupported Value Constructor encountered!" 
 
 makeSingleInstance :: Type -> Name -> Type -> Q Dec
 makeSingleInstance s f a = do

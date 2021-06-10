@@ -56,6 +56,8 @@ import IOT.Server.Field
 import Fcf (Eval, Uncurry, Pure2, Map, Constraints, If)
 import Fcf.Data.List (Length)
 import qualified Fcf as Fcf
+import IOT.Server.Models
+import qualified Data.Map as M (Map)
 
 $(deriveJSON defaultOptions ''Measurement)
 $(deriveJSON defaultOptions {unwrapUnaryRecords = True} ''Database)
@@ -95,6 +97,7 @@ $(deriveJSON defaultOptions {fieldLabelModifier = drop 1} ''ServerConf)
 
 type InfluxQueue = IORef [Line UTCTime]
 type MySQLQueue  = IORef [(P.UID, B.ByteString, UTCTime)]
+type AlertRules  = IORef (M.Map DeviceId (M.Map T.Text [Entity DevAlertRule])) 
 
 {- |
    The AppEnv data type is the reader environment for the App Type.
@@ -102,12 +105,13 @@ type MySQLQueue  = IORef [(P.UID, B.ByteString, UTCTime)]
 -}
 data AppEnv (m :: * -> *) =
    AppEnv
-      { _logAction    :: LogAction m Message           -- ^ Function to write Log Messages
-      , _sConf        :: ServerConf                    -- ^ App config
-      , _infxConn     :: WriteParams                   -- ^ Influx connection info
-      , _pendingInfx  :: InfluxQueue                   -- ^ Influx Data Point Queue
-      , _pendingMysql :: MySQLQueue                    -- ^ MySQL Image Queue
-      , _restApp      :: RESTApp                       -- ^ Yesod Foundation Data Type
+      { _logAction    :: LogAction m Message   -- ^ Function to write Log Messages
+      , _sConf        :: ServerConf            -- ^ App config
+      , _infxConn     :: WriteParams           -- ^ Influx connection info
+      , _pendingInfx  :: InfluxQueue           -- ^ Influx Data Point Queue
+      , _pendingMysql :: MySQLQueue            -- ^ MySQL Image Queue
+      , _restApp      :: RESTApp               -- ^ Yesod Foundation Data Type
+      , _alertRules   :: AlertRules            -- ^ Device Alert rules for triggering alerts
       }
 
 makeLenses ''AppEnv
@@ -166,8 +170,7 @@ instance Monad m => Monad (App m) where
    (App ma) >>= amb =
       App $ \r -> do
          !a <- ma r
-         b <- unApp (amb a) r
-         return b
+         unApp (amb a) r
 
 instance MonadFail m => MonadFail (App m) where
    fail = lift . fail
@@ -177,15 +180,16 @@ instance Monad m => MonadReader (AppEnv (App m)) (App m) where
    local f (App app) = App $ \r -> app (f r)
 
 instance MonadTrans App where
-   lift m = App $ \_ -> m
+   lift m = App $ const m
 
 instance MonadIO m => MonadIO (App m) where
    liftIO m = App $ \_ -> liftIO m
 
 instance (MonadIO m) => MonadLogger (App m) where
-   -- monadLoggerLog :: ToLogStr msg => Loc -> LogSource -> LogLevel -> msg -> m ()   
-   monadLoggerLog _ _ level msg = Colog.log (toSeverity level) (decodeUtf8 . fromLogStr . toLogStr $ msg)
-     where
+   monadLoggerLog :: ToLogStr msg => Loc -> LogSource -> LogLevel -> msg -> App m ()   
+   monadLoggerLog _ _ level msg = 
+      Colog.log (toSeverity level) (decodeUtf8 . fromLogStr . toLogStr $ msg)
+      where
        toSeverity LevelDebug = Debug 
        toSeverity LevelInfo  = Info
        toSeverity LevelWarn  = Warning 

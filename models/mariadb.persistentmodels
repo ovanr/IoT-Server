@@ -1,27 +1,57 @@
 User sql=users 
-    Id           Text    sql=username
-    fullName     Text    sql=full_name
-    passHash     Text    sql=pass_hash
-    email        Text    sql=email
-    phoneNumber  Text    sql=phone_number
-    emailUpdates Bool    sql=email_updates
-    verified     Bool    sql=verified
-    lastSeen     UTCTime sql=last_seen default=CURRENT_TIMESTAMP
-    passSalt     Text    sql=pass_salt
+    Id              Text    sql=username
+    fullName        Text    sql=full_name
+    passHash        Text    sql=pass_hash
+    email           Text    sql=email
+    phoneNumber     Text    sql=phone_number
+    emailUpdates    Bool    sql=email_updates
+    verified        Bool    sql=verified
+    lastSeen        UTCTime sql=last_seen default=CURRENT_TIMESTAMP
+    passSalt        Text    sql=pass_salt
+    deriving Show Eq
+DevModel sql=device_models
+    Id              Text    sql=name
+    minVoltage      Double  sql=min_voltage
+    maxVoltage      Double  sql=max_voltage
     deriving Show Eq
 Device sql=devices
-    Id             Text     sql=node_id
-    model          Text     sql=model
-    username       UserId   sql=username
-    nickname       Text     sql=nickname
-    latitude       Double   sql=latitude
-    longitude      Double   sql=longitude
+    Id              Text          sql=node_id
+    model           DevModelId    sql=model
+    username        UserId        sql=username
+    nickname        Text          sql=nickname
+    latitude        Double        sql=latitude
+    longitude       Double        sql=longitude
     deriving Show Eq
-DeviceImage sql=device_images
-    Id             Text       sql=id
-    nodeId         DeviceId   sql=node_id
-    insertionDate  UTCTime    sql=insertion_date default=CURRENT_TIMESTAMP
-    bin            ByteString sql=bin
-    measuredBugs   Int        sql=measured_bugs default=0
-    actualBugs     Int        sql=actual_bugs   default=0
+DevField sql=device_fields
+    Id              Int     sql=id
+    shortName       Text    sql=short_name
+    fullName        Text    sql=full_name
+    unit            Text    sql=unit
+    system          Bool    sql=system
+    featherCode     Text    sql=feather_code
+    deriving Show Eq
+DevModelFields sql=device_model_fields    
+    modelName       DevModelId   sql=m_name
+    fieldId         DevFieldId   sql=field_id
+DevAlertRule sql=device_alert_rules
+    Id              Int               sql=id
+    deviceId        DeviceId          sql=node_id
+    fieldId         DevFieldId        sql=field_id
+    threshold       Double            sql=threshold
+    function        Text              sql=function
+    deriving Show Eq
+DevAlert sql=device_alerts
+    Id              Int               sql=id
+    deviceAlertRule DevAlertRuleId    sql=device_alert_rule_id
+    value           Double            sql=value
+    seen            Bool              sql=seen
+    timestamp       UTCTime           sql=timestamp
+    deriving Show Eq
+DevImage sql=device_images
+    Id              Text       sql=id
+    deviceId        DeviceId   sql=node_id
+    insertionDate   UTCTime    sql=insertion_date default=CURRENT_TIMESTAMP
+    bin             ByteString sql=bin
+    measuredBugs    Int        sql=measured_bugs default=0
+    actualBugs      Int        sql=actual_bugs   default=0
     deriving Show Eq

@@ -6,8 +6,9 @@ module IOT.REST.Handlers where
 import IOT.REST.Foundation
 import IOT.Misc (refModify')
 import IOT.Packet.Cmd 
+import Control.Monad.IO.Class 
 import qualified IOT.Packet.Packet as P (UID) 
-import Data.Aeson (Value, (.=), object)
+import Data.Aeson (Value, (.=), object, toJSON, pairs)
 import Yesod.Core
    ( HandlerFor
    , invalidArgs
@@ -39,3 +40,15 @@ postSendCmdR uid = do
          refModify' ((uid,c):) queue 
          returnJson response
       else invalidArgs [ "No command given" ] 
+
+
+postUpdateDevAlertRules :: HandlerFor RESTApp Value
+postUpdateDevAlertRules = do
+   ref <- getsYesod _alertRuleUpdate
+   liftIO $ refModify' (const True) ref
+
+   return $ object [ "status" .= ("success" :: Text) ] 
+   
+    
+
+    

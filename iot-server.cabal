@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9123b32e7df8e5b2576103f27b4a822924058c735e047012d05a7ca6306e2eaa
+-- hash: 6685e6f03caba1ef3b37d12306b5d48d95072c39feb3201e2e954065a2a40459
 
 name:           iot-server
 version:        0.2.0
@@ -39,6 +39,7 @@ library
       IOT.REST.Handlers
       IOT.REST.Import
       IOT.Server
+      IOT.Server.Alerts
       IOT.Server.Field
       IOT.Server.Models
       IOT.Server.Queue

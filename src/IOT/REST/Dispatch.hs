@@ -3,7 +3,7 @@
 module IOT.REST.Dispatch where
 
 import IOT.REST.Foundation
-import IOT.REST.Handlers (getStatusR, postSendCmdR)
+import IOT.REST.Handlers (getStatusR, postSendCmdR, postUpdateDevAlertRules)
 import Yesod.Core
    ( YesodDispatch(..)
    , yesodRunner
@@ -22,6 +22,7 @@ parseRoute :: Method -> [Text] -> Maybe (Route RESTApp)
 parseRoute m ["node", uid] 
    | m == methodGet  = DevStatusR <$> fromPathPiece uid 
    | m == methodPost = DevCmdSendR <$> fromPathPiece uid 
+parseRoute methodPost ["alert-rule", "update"] = Just DevAlertRuleUpdateR
 parseRoute _ _ = Nothing
 
 {- |
@@ -32,7 +33,8 @@ instance YesodDispatch RESTApp where
       let maybeRoute = parseRoute (requestMethod req) (pathInfo req)
           handler =
                case maybeRoute of
-                  Nothing                -> notFound
-                  Just (DevStatusR uid)  -> toTypedContent <$> getStatusR uid
-                  Just (DevCmdSendR uid) -> toTypedContent <$> postSendCmdR uid
+                  Nothing                  -> notFound
+                  Just (DevStatusR uid)    -> toTypedContent <$> getStatusR uid
+                  Just (DevCmdSendR uid)   -> toTypedContent <$> postSendCmdR uid
+                  Just DevAlertRuleUpdateR -> toTypedContent <$> postUpdateDevAlertRules
        in yesodRunner handler yesodRunnerEnv maybeRoute req sendResponse

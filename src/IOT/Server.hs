@@ -21,6 +21,7 @@ import Control.Lens ( (&), (^.), use, view, (.=), (.~) )
 import Control.Monad.Reader (MonadReader(ask))
 import Control.Monad.Catch ( finally )
 import Control.Concurrent (forkIO, killThread)
+import qualified Data.Map as M
 import qualified Data.ByteString.Lazy as BL ( readFile )
 import Control.Monad.Trans.Cont
 import Control.Monad.IO.Class
@@ -76,6 +77,7 @@ import System.IO
       openFile,
       BufferMode(LineBuffering) )
 import IOT.Server.Queue ( flushQueues )
+import IOT.Server.Alerts ( syncAlertRules )
 import qualified Database.MySQL.Base as MySQL
 import IOT.REST.Import (RESTApp(..))
 import Yesod.Core (warp)
@@ -142,7 +144,10 @@ runApp args =
 
     env <- liftIO $ 
         AppEnv logger conf inflxInfo 
-            <$> newIORef [] <*> newIORef [] <*> (RESTApp <$> newIORef [])
+            <$> newIORef [] 
+            <*> newIORef [] 
+            <*> (RESTApp <$> newIORef [] <*> newIORef True) 
+            <*> newIORef M.empty
 
     conn <-
       ContT $
@@ -159,7 +164,10 @@ runApp args =
 
     let go backend = do
           sleep 5
+
           flushQueues chan backend
+          syncAlertRules backend
+
           c <- hTryGetLine handle
           logDebug $ "Got input " <> T.pack (show c)
           if c == Just "exit"
