@@ -83,7 +83,7 @@ persistAlerts backend alerts =
 
 checkAndSendAlerts backend line = do
    alerts <- checkForAlerts line
-   logDebug $ "Got new alerts: " <> T.pack (show alerts)
+   logInfo $ "Got new alerts: " <> T.pack (show alerts)
    unless (null alerts) $ 
       void $ persistAlerts backend alerts
 
