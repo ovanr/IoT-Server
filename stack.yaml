@@ -17,8 +17,7 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver: lts-17.14
-
+resolver: lts-17.15
 # User packages to be built.
 # Various formats can be used as shown in the example below.
 #
@@ -45,7 +44,12 @@ extra-deps:
 - wire-streams-0.1.1.0@sha256:08816c7fa53b20f52e5c465252c106d9de8e6d9580ec0b6d9f000a34c7bcefc8,2130
 - smuggler2-0.3.6.2@sha256:743fb8982f90d8612db86ff01a76eaa008c261a8999c518e8cdb7ed720c38957,3943
 - proto-lens-jsonpb-0.2.0.2@sha256:a361759d615e54a58a2f92eecd991ec8ad563dfdf0169bef2ea02054cf581da1,2019
-  # Override default flag values for local packages and extra-deps
+
+- persistent-mysql-2.13.0.1@sha256:070567e662937676dbf6455b3a9eb4fc9c6b2b0ee24ca31c03e903cab7dd0c3e,2724
+- persistent-2.13.0.2@sha256:edc8c5bd22fb828cf7624c3ce92f4e9c7cf979c6a1d458745d33cd70f06e10fc,6297
+- lift-type-0.1.0.1@sha256:6e38e49bf086fd2203346417d96ad2e6c300d8d8f41d222780abdccc7a4e451b,1106
+- persistent-template-2.12.0.0@sha256:7c68de6624ff83e14b674745e1c895dcf7c8676f6f24be131c89e2e4c2fa4510,1008
+# Override default flag values for local packages and extra-deps
 # flags: {}
 
 # Extra package databases containing global packages

@@ -3,8 +3,6 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 6685e6f03caba1ef3b37d12306b5d48d95072c39feb3201e2e954065a2a40459
 
 name:           iot-server
 version:        0.2.0
@@ -113,7 +111,6 @@ library
     , optparse-applicative
     , persistent
     , persistent-mysql
-    , persistent-template
     , process
     , proto-lens
     , proto-lens-jsonpb
@@ -180,7 +177,6 @@ executable iot-server
     , optparse-applicative
     , persistent
     , persistent-mysql
-    , persistent-template
     , process
     , proto-lens
     , proto-lens-jsonpb
@@ -248,7 +244,6 @@ test-suite iot-server-test
     , optparse-applicative
     , persistent
     , persistent-mysql
-    , persistent-template
     , process
     , proto-lens
     , proto-lens-jsonpb

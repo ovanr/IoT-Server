@@ -44,7 +44,6 @@ dependencies:
 - containers
 - zlib
 - persistent
-- persistent-template
 - persistent-mysql
 - io-streams
 - base64-bytestring

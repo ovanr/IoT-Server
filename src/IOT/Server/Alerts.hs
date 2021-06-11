@@ -77,24 +77,28 @@ checkForAlerts (Line _ tags lineMap (Just datetime)) = do
 
 persistAlerts ::
       ( MonadIO m 
-      ) => Pool SqlBackend -> [ DevAlert ] -> m [ DevAlertId ] 
-persistAlerts backend alerts =
-   liftIO $ runSqlPool (insertMany alerts) backend
+      , ValidApp '[ '( "sqlBackend",  SqlBackend) ] m r
+      ) => [ DevAlert ] -> m [ DevAlertId ] 
+persistAlerts alerts = do
+   backend <- view (field @"sqlBackend")
+   liftIO $ runSqlConn (insertMany alerts) backend
 
-checkAndSendAlerts backend line = do
+checkAndSendAlerts line = do
    alerts <- checkForAlerts line
    logInfo $ "Got new alerts: " <> T.pack (show alerts)
    unless (null alerts) $ 
-      void $ persistAlerts backend alerts
+      void $ persistAlerts alerts
 
 fetchAlertRules :: 
      ( MonadIO m
      , MC.MonadMask m
-     , ValidApp '[ '( "alertRules", AlertRules) ] m r
-     ) => Pool SqlBackend -> m ([ Entity DevAlertRule ] , [ Entity DevField ])
-fetchAlertRules backend =
+     , ValidApp '[ '( "alertRules", AlertRules),
+                   '( "sqlBackend",  SqlBackend) ] m r
+     ) => m ([ Entity DevAlertRule ] , [ Entity DevField ])
+fetchAlertRules = do
+   backend <- view (field @"sqlBackend")
    MC.catch 
-      (liftIO $ runSqlPool (liftA2 (,) (selectList [] []) (selectList [] [])) backend)
+      (liftIO $ runSqlConn (liftA2 (,) (selectList [] []) (selectList [] [])) backend)
       catcher
    where
       catcher (e :: SomeException) = do
@@ -138,11 +142,13 @@ updateAlertRules newAlertRules fields = do
 syncAlertRules ::
      ( MonadIO m
      , MC.MonadMask m
-     , ValidApp '[ '("alertRules", AlertRules), '( "restApp", RESTApp) ] m r
-     ) => Pool SqlBackend -> m () 
-syncAlertRules backend = do
+     , ValidApp '[ '("alertRules", AlertRules), 
+                   '( "sqlBackend",  SqlBackend),
+                   '( "restApp", RESTApp) ] m r
+     ) => m () 
+syncAlertRules = do
    ref <- view (field @"restApp" . alertRuleUpdate)
    whenM (liftIO $ readIORef ref) $ do
-      (rules, fields) <- fetchAlertRules backend
+      (rules, fields) <- fetchAlertRules 
       updateAlertRules rules fields
       void $ refModify' (const False) ref

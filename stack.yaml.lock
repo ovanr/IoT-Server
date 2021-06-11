@@ -39,9 +39,37 @@ packages:
       sha256: 01c64e9221112b22f1a0db8383fb115eff949a4cd81bc6f65d28710c8c945edd
   original:
     hackage: proto-lens-jsonpb-0.2.0.2@sha256:a361759d615e54a58a2f92eecd991ec8ad563dfdf0169bef2ea02054cf581da1,2019
+- completed:
+    hackage: persistent-mysql-2.13.0.1@sha256:070567e662937676dbf6455b3a9eb4fc9c6b2b0ee24ca31c03e903cab7dd0c3e,2724
+    pantry-tree:
+      size: 594
+      sha256: a39024200a8631561bf18f6fb4a12fd35cb4b810c618fe0c09a95eba5d3a7f8b
+  original:
+    hackage: persistent-mysql-2.13.0.1@sha256:070567e662937676dbf6455b3a9eb4fc9c6b2b0ee24ca31c03e903cab7dd0c3e,2724
+- completed:
+    hackage: persistent-2.13.0.2@sha256:edc8c5bd22fb828cf7624c3ce92f4e9c7cf979c6a1d458745d33cd70f06e10fc,6297
+    pantry-tree:
+      size: 5274
+      sha256: 49172d5284066f2d5b6e61697705bca101ec8f3d24987f2308abba470dd2caca
+  original:
+    hackage: persistent-2.13.0.2@sha256:edc8c5bd22fb828cf7624c3ce92f4e9c7cf979c6a1d458745d33cd70f06e10fc,6297
+- completed:
+    hackage: lift-type-0.1.0.1@sha256:6e38e49bf086fd2203346417d96ad2e6c300d8d8f41d222780abdccc7a4e451b,1106
+    pantry-tree:
+      size: 361
+      sha256: 9de4bdc6ce32b78c28b4bce75b5b2e488bf0f875a136ae269a02df804eb94a1a
+  original:
+    hackage: lift-type-0.1.0.1@sha256:6e38e49bf086fd2203346417d96ad2e6c300d8d8f41d222780abdccc7a4e451b,1106
+- completed:
+    hackage: persistent-template-2.12.0.0@sha256:7c68de6624ff83e14b674745e1c895dcf7c8676f6f24be131c89e2e4c2fa4510,1008
+    pantry-tree:
+      size: 267
+      sha256: 6d31d8a3bde912d0c8b28d9d18caa77a5a7add42104d8bb109f7cd298f21a78f
+  original:
+    hackage: persistent-template-2.12.0.0@sha256:7c68de6624ff83e14b674745e1c895dcf7c8676f6f24be131c89e2e4c2fa4510,1008
 snapshots:
 - completed:
-    size: 567677
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/17/14.yaml
-    sha256: 3740f22286bf5e6e3d82f88125e1c708b6e27847211f956b530aa5d83cf39383
-  original: lts-17.14
+    size: 567679
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/17/15.yaml
+    sha256: 72e87841a0ab5b72f6f018e8ee692fd972b7bb32a944990f028e10d6eb528e63
+  original: lts-17.15

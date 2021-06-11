@@ -19,19 +19,16 @@ module IOT.Server.Types where
 
 import qualified Colog (log)
 import Colog.Core.Action
+import qualified Network.AMQP as Amqp (Channel)
 import Colog.Core.Class (HasLog(..))
 import Colog.Message (Message(..))
-import Colog.Core.Severity (Severity(..))
 import Control.Lens (view, (%~), (&), (^.), makeLenses)
 import Control.Monad.Catch
 import Control.Monad.IO.Class
 import Data.ProtoLens.Field
 import Data.Kind (Type)
 import Control.Monad.IO.Unlift
-import Data.Pool
 import GHC.Types (Symbol)
-import Control.Monad.Logger (fromLogStr)
-import Data.Text.Encoding (decodeUtf8)
 import Control.Monad.Reader.Class
 import Control.Monad.Trans.Class (MonadTrans(..))
 import Control.Monad.Trans.Reader hiding (reader)
@@ -108,6 +105,8 @@ data AppEnv (m :: * -> *) =
       { _logAction    :: LogAction m Message   -- ^ Function to write Log Messages
       , _sConf        :: ServerConf            -- ^ App config
       , _infxConn     :: WriteParams           -- ^ Influx connection info
+      , _sqlBackend   :: SqlBackend            -- ^ Sql Backend to communicate with MySQL
+      , _amqpChannel  :: Amqp.Channel          -- ^ Active channel to communicate with RabbitMQ
       , _pendingInfx  :: InfluxQueue           -- ^ Influx Data Point Queue
       , _pendingMysql :: MySQLQueue            -- ^ MySQL Image Queue
       , _restApp      :: RESTApp               -- ^ Yesod Foundation Data Type
@@ -184,24 +183,6 @@ instance MonadTrans App where
 
 instance MonadIO m => MonadIO (App m) where
    liftIO m = App $ \_ -> liftIO m
-
-instance (MonadIO m) => MonadLogger (App m) where
-   monadLoggerLog :: ToLogStr msg => Loc -> LogSource -> LogLevel -> msg -> App m ()   
-   monadLoggerLog _ _ level msg = 
-      Colog.log (toSeverity level) (decodeUtf8 . fromLogStr . toLogStr $ msg)
-      where
-       toSeverity LevelDebug = Debug 
-       toSeverity LevelInfo  = Info
-       toSeverity LevelWarn  = Warning 
-       toSeverity LevelError = Error
-       toSeverity _          = Info
-
-instance MonadUnliftIO m => MonadUnliftIO (App m) where
-  {-# INLINE withRunInIO #-}
-  withRunInIO inner =
-    App $ \r ->
-    withRunInIO $ \run ->
-    inner (run . flip unApp r)
 
 instance MonadThrow m => MonadThrow (App m) where
    throwM = lift . throwM 

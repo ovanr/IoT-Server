@@ -35,6 +35,8 @@ import Data.Aeson.Types (Parser, Object)
 import Data.Conduit ((.|), runConduit)
 import Conduit (foldC)
 import Yesod.Core (MonadHandler, rawRequestBody)
+import Database.Persist.MySQL (SqlBackend, openMySQLConn, LogFunc)
+import qualified Database.MySQL.Base as MySQL (close, ConnectInfo)
 
 {- |
    Atomically modify an IORef by applying a function
@@ -136,6 +138,24 @@ withAmqpConsumer cb chan tag =
    bracket
       (liftIO $ consumeMsgs chan tag NoAck cb)
       (liftIO . cancelConsumer chan)
+
+{- |
+   Bracket version of Database.MySQL.Base
+   Passes the newly created SqlBackend to the
+   callback and automatically closes the connection 
+   upon error or finish.
+-}
+withMySqlBackend ::
+      (MonadMask m, MonadIO m)
+   => MySQL.ConnectInfo
+   -> LogFunc
+   -> (SqlBackend -> m a)
+   -> m a
+withMySqlBackend info logFunc cb =
+   bracket
+      (liftIO $ openMySQLConn info logFunc)
+      (liftIO . MySQL.close . fst)
+      (cb . snd)
 
 withThread ::
       (MonadMask m, MonadIO m)

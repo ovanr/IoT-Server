@@ -14,8 +14,10 @@ module IOT.Server
 import Colog.Core.Action ( LogAction(LogAction) )
 import Colog.Core.Severity
     ( Severity(Debug, Error, Warning, Info) )
-import Colog.Message ( logInfo, logDebug )
+import Colog.Message ( logInfo, logDebug, Msg(..), Message)
 import qualified Data.Text as T
+import Data.Text.Encoding (decodeUtf8)
+import Control.Monad.Logger (fromLogStr, LogLevel(..))
 import IOT.Packet.Parse ( pktHandler )
 import Control.Lens ( (&), (^.), use, view, (.=), (.~) )
 import Control.Monad.Reader (MonadReader(ask))
@@ -66,6 +68,7 @@ import IOT.Misc
       withThread,
       withAmqpConnection,
       withAmqpConsumer,
+      withMySqlBackend, 
       withFileM,
       withTempPipeM )
 import Control.Monad.State.Class ( MonadState(get) )
@@ -83,7 +86,8 @@ import IOT.REST.Import (RESTApp(..))
 import Yesod.Core (warp)
 import Database.Persist hiding (Key, get)
 import Database.Persist.MySQL hiding (Key, get)
-import qualified Colog (Message)
+import qualified Colog (Message(..))
+import GHC.Stack.Types (CallStack(..))
 
 {- |
    Create the Colog.LogAction using the ServerArgs and an open handle
@@ -92,6 +96,18 @@ makeLogFileAction :: MonadIO m => ServerArgs -> Handle -> LogAction m Colog.Mess
 makeLogFileAction args = richMessageLogFileAction level 
     where
         level = [Error, Warning, Info, Debug] !! min 3 (args ^. verbosity)
+
+makeLogFunc :: LogAction IO Colog.Message -> LogFunc
+makeLogFunc (LogAction logger) _ _ level msg = logger message
+   where
+      toSeverity LevelDebug = Debug 
+      toSeverity LevelInfo  = Info
+      toSeverity LevelWarn  = Warning 
+      toSeverity LevelError = Error
+      toSeverity _          = Info
+
+      msgText = decodeUtf8 . fromLogStr $ msg
+      message = Msg (toSeverity level) EmptyCallStack msgText
 
 {- |
    Make a WriteParams Influx config from a ServerConf 
@@ -142,36 +158,40 @@ runApp args =
         inflxInfo = makeInfluxConf conf
         mysqlInfo = makeMysqlConf conf
 
+    conn <-
+      ContT $
+         withAmqpConnection
+           (conf ^. amqpHost)
+           (conf ^. amqpVhost)
+           (conf ^. amqpUser)
+           (conf ^. amqpPass)
+
+    chan <- ContT $ withAmqpChannel conn
+    let logFunc = makeLogFunc (makeLogFileAction args logHandle)
+    sqlBackend <- ContT $ withMySqlBackend mysqlInfo logFunc
+
     env <- liftIO $ 
-        AppEnv logger conf inflxInfo 
+        AppEnv logger conf inflxInfo sqlBackend chan
             <$> newIORef [] 
             <*> newIORef [] 
             <*> (RESTApp <$> newIORef [] <*> newIORef True) 
             <*> newIORef M.empty
 
-    conn <-
-      ContT $
-      withAmqpConnection
-        (conf ^. amqpHost)
-        (conf ^. amqpVhost)
-        (conf ^. amqpUser)
-        (conf ^. amqpPass)
-
-    chan <- ContT $ withAmqpChannel conn
     ContT $ withAmqpConsumer (pktHandler env) chan (conf ^. amqpDataQueue)
     ContT $ withThread $ warp 3000 (env ^. restApp)
+
     handle <- ContT $ withTempPipeM "iot-server.run"
 
-    let go backend = do
+    let (go :: App IO ()) = do
           sleep 5
 
-          flushQueues chan backend
-          syncAlertRules backend
+          flushQueues
+          syncAlertRules
 
           c <- hTryGetLine handle
           logDebug $ "Got input " <> T.pack (show c)
           if c == Just "exit"
             then logInfo "Exiting due to user signal"
-            else go backend
+            else go
 
-    liftIO $ flip unApp env $ withMySQLPool mysqlInfo 1 go
+    liftIO $ unApp go env 

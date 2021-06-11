@@ -92,7 +92,7 @@ queueSensorData uid f timestamp = do
    logInfo "Appending data item to Influx Queue"
 
    measurement <- view (field @"sConf" . infxMeasurement)
-   logError $ T.pack $ show $ toJSON f
+   logDebug $ T.pack $ show $ toJSON f
    let fields = toInfluxFields (toJSON f)
    
    logDebug . T.pack . show . encode $ f  
@@ -134,14 +134,17 @@ queueSensorImage uid img timestamp = do
 -}
 flushImageQueue :: 
      ( MonadIO m
-     , ValidApp '[ '( "sConf", ServerConf), '( "pendingMysql", MySQLQueue) ] m r
-     ) => Pool SqlBackend -> m () 
-flushImageQueue backend = do
+     , ValidApp '[ '( "sConf", ServerConf), 
+                   '( "sqlBackend",  SqlBackend),
+                   '( "pendingMysql", MySQLQueue) ] m r
+     ) => m () 
+flushImageQueue = do
    imgs <- view (field @"pendingMysql") >>= (liftIO . refModify' (const []))
 
+   backend <- view (field @"sqlBackend")
    unless (null imgs) $ do
       logInfo "Uploading images to DB"
-      errors <- liftIO $ flip runSqlPool backend $
+      errors <- liftIO $ flip runSqlConn backend $
          forM imgs uploadImage
 
       mapM_ logWarning (catMaybes errors)
@@ -164,18 +167,18 @@ flushImageQueue backend = do
 flushDataQueue :: 
      ( MonadIO m
      , ValidApp '[ '( "alertRules",  AlertRules), 
+                   '( "sqlBackend",  SqlBackend),
                    '( "infxConn",    WriteParams), 
                    '( "pendingInfx", InfluxQueue) ] m r
-     ) => Pool SqlBackend -> m () 
-flushDataQueue backend = do
+     ) => m () 
+flushDataQueue = do
    lines <- view (field @"pendingInfx") >>= (liftIO . refModify' (const []))
 
    unless (null lines) $ do
       logInfo "Sending to Influx:" 
       logInfo $ T.pack (BLU.toString $ encodeLines (scaleTo Second) lines)
 
-      forM_ lines $ 
-         checkAndSendAlerts backend
+      forM_ lines checkAndSendAlerts 
 
       infx <- view (field @"infxConn")
       liftIO $ infx `writeBatch` lines
@@ -187,9 +190,12 @@ flushDataQueue backend = do
 -}
 flushCmdQueue :: 
      ( MonadIO m
-     , ValidApp '[ '( "sConf", ServerConf), '( "restApp", RESTApp) ] m r
-     ) => Channel -> m () 
-flushCmdQueue chan = do
+     , ValidApp '[ '( "amqpChannel", Channel), 
+                   '( "sConf", ServerConf), 
+                   '( "restApp", RESTApp) ] m r
+     ) => m () 
+flushCmdQueue = do
+   chan     <- view (field @"amqpChannel")
    exchange <- view (field @"sConf" . amqpExchange)
    cmds     <- view (field @"restApp" . sharedCmdQueue) 
                 >>= (liftIO . refModify' (const []))
@@ -213,10 +219,11 @@ flushCmdQueue chan = do
 {- |
    Send all pending data from the internal queues to
    their corresponding endpoints. 
--}
-flushQueues channel backend = do
+-- -}
+flushQueues :: App IO ()
+flushQueues = do
    logDebug "Attempting to flush queues"
-   flushDataQueue backend
-   flushImageQueue backend
-   flushCmdQueue channel
-   syncAlertRules backend
+   flushDataQueue 
+   flushImageQueue 
+   flushCmdQueue 
+   syncAlertRules
