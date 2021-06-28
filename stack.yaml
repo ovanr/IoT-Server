@@ -11,13 +11,13 @@
 # resolver: lts-3.5
 # resolver: nightly-2015-09-21
 # resolver: ghc-7.10.2
-#
+allow-newer: true
 # The location of a snapshot can be provided as a file or url. Stack assumes
 # a snapshot provided as a file might change, whereas a url resource does not.
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver: lts-17.15
+resolver: lts-18.0
 # User packages to be built.
 # Various formats can be used as shown in the example below.
 #
@@ -39,16 +39,16 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
 extra-deps:
-- mysql-haskell-0.8.4.3@sha256:d3ca21ae8cc88670f8adb17c7cacb8bb770f1a58d60b5bff346d1f3fc843d98c,3489
-- tcp-streams-1.0.1.1@sha256:35e9ecfa515797052f8c3c01834d2daebd5e93f3152c7fc98b32652bf6f0c052,2329
-- wire-streams-0.1.1.0@sha256:08816c7fa53b20f52e5c465252c106d9de8e6d9580ec0b6d9f000a34c7bcefc8,2130
-- smuggler2-0.3.6.2@sha256:743fb8982f90d8612db86ff01a76eaa008c261a8999c518e8cdb7ed720c38957,3943
+- co-log-0.4.0.1@sha256:3d4c17f37693c80d1aa2c41669bc3438fac3e89dc5f479e57d79bc3ddc4dfcc5,5087
+- proto-lens-0.7.0.0@sha256:2c44a62375f7712f9381f84b1d30cee2f94384f1c98801db2f4450359a8e5036,3036
 - proto-lens-jsonpb-0.2.0.2@sha256:a361759d615e54a58a2f92eecd991ec8ad563dfdf0169bef2ea02054cf581da1,2019
+- proto-lens-protobuf-types-0.7.0.0@sha256:e93fdb27d509b4d0886a2c45676267069c7b7036064372e938b8b6b7cceaecc9,2860
+- proto-lens-runtime-0.7.0.0@sha256:d6cfab159a63f5c42a1a507638c674a714dfa5f69a06f559e8da840eaafde3ab,3115
+- ansi-terminal-0.10.3@sha256:e2fbcef5f980dc234c7ad8e2fa433b0e8109132c9e643bc40ea5608cd5697797,3226
+- proto-lens-protoc-0.7.0.0@sha256:04e57ec59ce21dc781b9debe063f03d85a7ec2ad1ee5c2deb1c30282119e9119,2304
+- proto-lens-setup-0.4.0.4@sha256:c44d1b6d68a8faf1d2f9c7ca492ce3c9c2ee66d255452c683f762f10c9ebe430,3185
+- profunctors-5.6.2@sha256:4db306297d827cf65a32d9124d6f1a23105479ebb1988783006578bc5d4209da,2377
 
-- persistent-mysql-2.13.0.1@sha256:070567e662937676dbf6455b3a9eb4fc9c6b2b0ee24ca31c03e903cab7dd0c3e,2724
-- persistent-2.13.0.2@sha256:edc8c5bd22fb828cf7624c3ce92f4e9c7cf979c6a1d458745d33cd70f06e10fc,6297
-- lift-type-0.1.0.1@sha256:6e38e49bf086fd2203346417d96ad2e6c300d8d8f41d222780abdccc7a4e451b,1106
-- persistent-template-2.12.0.0@sha256:7c68de6624ff83e14b674745e1c895dcf7c8676f6f24be131c89e2e4c2fa4510,1008
 # Override default flag values for local packages and extra-deps
 # flags: {}
 

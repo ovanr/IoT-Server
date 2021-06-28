@@ -5,33 +5,19 @@
 
 packages:
 - completed:
-    hackage: mysql-haskell-0.8.4.3@sha256:d3ca21ae8cc88670f8adb17c7cacb8bb770f1a58d60b5bff346d1f3fc843d98c,3489
+    hackage: co-log-0.4.0.1@sha256:3d4c17f37693c80d1aa2c41669bc3438fac3e89dc5f479e57d79bc3ddc4dfcc5,5087
     pantry-tree:
-      size: 1754
-      sha256: c974f4d4f24bb7e17d633301a442a0a5162d30e163cad618a961d61192b6debc
+      size: 1126
+      sha256: e73165ff8f744709428e2e87984c9d60ca1cec43d8455c413181c7c466e7497c
   original:
-    hackage: mysql-haskell-0.8.4.3@sha256:d3ca21ae8cc88670f8adb17c7cacb8bb770f1a58d60b5bff346d1f3fc843d98c,3489
+    hackage: co-log-0.4.0.1@sha256:3d4c17f37693c80d1aa2c41669bc3438fac3e89dc5f479e57d79bc3ddc4dfcc5,5087
 - completed:
-    hackage: tcp-streams-1.0.1.1@sha256:35e9ecfa515797052f8c3c01834d2daebd5e93f3152c7fc98b32652bf6f0c052,2329
+    hackage: proto-lens-0.7.0.0@sha256:2c44a62375f7712f9381f84b1d30cee2f94384f1c98801db2f4450359a8e5036,3036
     pantry-tree:
-      size: 1004
-      sha256: 572071fca40a0b6c4cc950d10277a6f12e83cf4846882b6ef83fcccaa2c18c45
+      size: 1857
+      sha256: b8e95cae7459e6a601abe32df92c5b24685765f4dd402fd84d8fd1e5b04892d2
   original:
-    hackage: tcp-streams-1.0.1.1@sha256:35e9ecfa515797052f8c3c01834d2daebd5e93f3152c7fc98b32652bf6f0c052,2329
-- completed:
-    hackage: wire-streams-0.1.1.0@sha256:08816c7fa53b20f52e5c465252c106d9de8e6d9580ec0b6d9f000a34c7bcefc8,2130
-    pantry-tree:
-      size: 506
-      sha256: c99a12bfcbeacc5da8f166fbed1eb105a45f08be1a3a071fe9f903b386b14e1d
-  original:
-    hackage: wire-streams-0.1.1.0@sha256:08816c7fa53b20f52e5c465252c106d9de8e6d9580ec0b6d9f000a34c7bcefc8,2130
-- completed:
-    hackage: smuggler2-0.3.6.2@sha256:743fb8982f90d8612db86ff01a76eaa008c261a8999c518e8cdb7ed720c38957,3943
-    pantry-tree:
-      size: 24252
-      sha256: 3075dfc34bb2986487302b79d3e2f1897d2161171f9c6cc366f60bf226a9f56e
-  original:
-    hackage: smuggler2-0.3.6.2@sha256:743fb8982f90d8612db86ff01a76eaa008c261a8999c518e8cdb7ed720c38957,3943
+    hackage: proto-lens-0.7.0.0@sha256:2c44a62375f7712f9381f84b1d30cee2f94384f1c98801db2f4450359a8e5036,3036
 - completed:
     hackage: proto-lens-jsonpb-0.2.0.2@sha256:a361759d615e54a58a2f92eecd991ec8ad563dfdf0169bef2ea02054cf581da1,2019
     pantry-tree:
@@ -40,36 +26,50 @@ packages:
   original:
     hackage: proto-lens-jsonpb-0.2.0.2@sha256:a361759d615e54a58a2f92eecd991ec8ad563dfdf0169bef2ea02054cf581da1,2019
 - completed:
-    hackage: persistent-mysql-2.13.0.1@sha256:070567e662937676dbf6455b3a9eb4fc9c6b2b0ee24ca31c03e903cab7dd0c3e,2724
+    hackage: proto-lens-protobuf-types-0.7.0.0@sha256:e93fdb27d509b4d0886a2c45676267069c7b7036064372e938b8b6b7cceaecc9,2860
     pantry-tree:
-      size: 594
-      sha256: a39024200a8631561bf18f6fb4a12fd35cb4b810c618fe0c09a95eba5d3a7f8b
+      size: 931
+      sha256: 517e76804a7ec5bfd29aec42f7426193f3fef668fc46f193af1a3b81d274229e
   original:
-    hackage: persistent-mysql-2.13.0.1@sha256:070567e662937676dbf6455b3a9eb4fc9c6b2b0ee24ca31c03e903cab7dd0c3e,2724
+    hackage: proto-lens-protobuf-types-0.7.0.0@sha256:e93fdb27d509b4d0886a2c45676267069c7b7036064372e938b8b6b7cceaecc9,2860
 - completed:
-    hackage: persistent-2.13.0.2@sha256:edc8c5bd22fb828cf7624c3ce92f4e9c7cf979c6a1d458745d33cd70f06e10fc,6297
+    hackage: proto-lens-runtime-0.7.0.0@sha256:d6cfab159a63f5c42a1a507638c674a714dfa5f69a06f559e8da840eaafde3ab,3115
     pantry-tree:
-      size: 5274
-      sha256: 49172d5284066f2d5b6e61697705bca101ec8f3d24987f2308abba470dd2caca
+      size: 168
+      sha256: 25214e3dfa3d36b453da5be39f392699ac78ada5ded8a1384668e3e3cd9234e4
   original:
-    hackage: persistent-2.13.0.2@sha256:edc8c5bd22fb828cf7624c3ce92f4e9c7cf979c6a1d458745d33cd70f06e10fc,6297
+    hackage: proto-lens-runtime-0.7.0.0@sha256:d6cfab159a63f5c42a1a507638c674a714dfa5f69a06f559e8da840eaafde3ab,3115
 - completed:
-    hackage: lift-type-0.1.0.1@sha256:6e38e49bf086fd2203346417d96ad2e6c300d8d8f41d222780abdccc7a4e451b,1106
+    hackage: ansi-terminal-0.10.3@sha256:e2fbcef5f980dc234c7ad8e2fa433b0e8109132c9e643bc40ea5608cd5697797,3226
     pantry-tree:
-      size: 361
-      sha256: 9de4bdc6ce32b78c28b4bce75b5b2e488bf0f875a136ae269a02df804eb94a1a
+      size: 1461
+      sha256: 02f05d52be3ffcf36c78876629cbab80b63420672685371aea4fd10e1c4aabb6
   original:
-    hackage: lift-type-0.1.0.1@sha256:6e38e49bf086fd2203346417d96ad2e6c300d8d8f41d222780abdccc7a4e451b,1106
+    hackage: ansi-terminal-0.10.3@sha256:e2fbcef5f980dc234c7ad8e2fa433b0e8109132c9e643bc40ea5608cd5697797,3226
 - completed:
-    hackage: persistent-template-2.12.0.0@sha256:7c68de6624ff83e14b674745e1c895dcf7c8676f6f24be131c89e2e4c2fa4510,1008
+    hackage: proto-lens-protoc-0.7.0.0@sha256:04e57ec59ce21dc781b9debe063f03d85a7ec2ad1ee5c2deb1c30282119e9119,2304
     pantry-tree:
-      size: 267
-      sha256: 6d31d8a3bde912d0c8b28d9d18caa77a5a7add42104d8bb109f7cd298f21a78f
+      size: 1219
+      sha256: 990ccd28c9fda706123c50032d83adbf1ba3bdc914f206d8587ddb6d49d4686e
   original:
-    hackage: persistent-template-2.12.0.0@sha256:7c68de6624ff83e14b674745e1c895dcf7c8676f6f24be131c89e2e4c2fa4510,1008
+    hackage: proto-lens-protoc-0.7.0.0@sha256:04e57ec59ce21dc781b9debe063f03d85a7ec2ad1ee5c2deb1c30282119e9119,2304
+- completed:
+    hackage: proto-lens-setup-0.4.0.4@sha256:c44d1b6d68a8faf1d2f9c7ca492ce3c9c2ee66d255452c683f762f10c9ebe430,3185
+    pantry-tree:
+      size: 235
+      sha256: 3e7d12c20ebfa4d261254278331d2a708e49278f763183da2f680a4b668e881f
+  original:
+    hackage: proto-lens-setup-0.4.0.4@sha256:c44d1b6d68a8faf1d2f9c7ca492ce3c9c2ee66d255452c683f762f10c9ebe430,3185
+- completed:
+    hackage: profunctors-5.6.2@sha256:4db306297d827cf65a32d9124d6f1a23105479ebb1988783006578bc5d4209da,2377
+    pantry-tree:
+      size: 1588
+      sha256: 5e640a3a4613c8850d19d322b4ec8444345deb0cf4ee020590da82e2d657be26
+  original:
+    hackage: profunctors-5.6.2@sha256:4db306297d827cf65a32d9124d6f1a23105479ebb1988783006578bc5d4209da,2377
 snapshots:
 - completed:
-    size: 567679
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/17/15.yaml
-    sha256: 72e87841a0ab5b72f6f018e8ee692fd972b7bb32a944990f028e10d6eb528e63
-  original: lts-17.15
+    size: 585393
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/0.yaml
+    sha256: c632012da648385b9fa3c29f4e0afd56ead299f1c5528ee789058be410e883c0
+  original: lts-18.0

@@ -21,7 +21,6 @@ import qualified Control.Monad.Catch as MC
 import Control.Monad.Extra
 import Data.Maybe (fromMaybe, fromJust)
 import Control.Lens (view)
-import Data.Pool
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Database.Persist.MySQL
 import qualified Data.Map as Map
