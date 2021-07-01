@@ -145,9 +145,13 @@ syncAlertRules ::
                    '( "sqlBackend",  SqlBackend),
                    '( "restApp", RESTApp) ] m r
      ) => m () 
-syncAlertRules = do
+syncAlertRules = 
+   flip MC.catch catcher $ do
    ref <- view (field @"restApp" . alertRuleUpdate)
    whenM (liftIO $ readIORef ref) $ do
       (rules, fields) <- fetchAlertRules 
       updateAlertRules rules fields
       void $ refModify' (const False) ref
+   
+   where
+      catcher (e :: SomeException) = logWarning $ T.pack (show e)

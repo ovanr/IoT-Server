@@ -189,6 +189,7 @@ runApp args =
           syncAlertRules
 
           c <- hTryGetLine handle
+          let c = Just "hola"
           logDebug $ "Got input " <> T.pack (show c)
           if c == Just "exit"
             then logInfo "Exiting due to user signal"

@@ -1,8 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
+--
+-- hash: 242d5be2440d6ebc4619271384060c2ec1c527c3d4f3477afb19063ec30e7277
 
 name:           iot-server
 version:        0.2.0
