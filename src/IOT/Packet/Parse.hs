@@ -84,7 +84,8 @@ parsePacket ::
    -> P.Packet
    -> m ()
 parsePacket uid pkt = do
-   let timestamp = posixSecondsToUTCTime $ realToFrac (pkt ^. P.timestamp)
+   -- let timestamp = posixSecondsToUTCTime $ realToFrac (pkt ^. P.timestamp)
+   timestamp <- liftIO getCurrentTime
    case pkt ^. P.maybe'type' of
       Just (P.Packet'Out out) -> do
          let dat = out ^.. S.vec'outputs . folded . S.maybe'output . _Just
