@@ -132,7 +132,7 @@ updateAlertRules ::
 updateAlertRules newAlertRules fields = do
    ref <- view (field @"alertRules")
    let newRuleMap = restructureRules newAlertRules fieldMap
-   logInfo $ "Got new alert rules" <> T.pack (show newRuleMap)
+   --logInfo $ "Got new alert rules" <> T.pack (show newRuleMap)
    refModify' (const newRuleMap) ref
    return ()
    where

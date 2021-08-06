@@ -59,6 +59,7 @@ parseBody msg pktUid = do
          then gzipDecompress . msgBody $ msg
          else Right $ msgBody msg
 
+
    --detect packet format 
    case encodingHeader >>= T.stripPrefix "gzip;" of
       Just "application/protocol-buffer" -> protobufDecode rawBody
@@ -103,6 +104,7 @@ pktHandler :: AppEnv (App IO) -> (Message, Envelope) -> IO ()
 pktHandler env (msg, e) =
    flip unApp env $ flip MC.catch catcher $ do
       logInfo $ "Received a msg with key " <> envRoutingKey e
+      logInfo $ "Received msg:" <> (T.pack $ show msg)
       either
          (\b -> logError $ "Body parse error: " <> T.pack (show b))
          (parsePacket pktUid)
